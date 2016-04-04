@@ -37,7 +37,7 @@ namespace Plato.WinAPI
             /// <summary>
             /// This logon type is intended for high performance servers to authenticate plain-text passwords.
             /// </summary>
-            /// The LogonUser function does not cache credentials for this logon type.
+            /// The LogonUser function does not cache credentials for this logon type. 
             LOGON32_LOGON_NETWORK = 3,
             /// <summary>
             /// This logon type preserves the name and password in the authentication package, which allows the server to make 
