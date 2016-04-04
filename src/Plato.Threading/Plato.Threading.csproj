@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{54328F32-1C58-4BA0-BE59-57423BF5271C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Plato.Threading</RootNamespace>
+    <AssemblyName>Plato.Threading</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Enums\BaseThreadState.cs" />
+    <Compile Include="DelegateThread.cs" />
+    <Compile Include="Interfaces\IBaseWorker.cs" />
+    <Compile Include="Interfaces\IBaseThread.cs" />
+    <Compile Include="Enums\ManagerRuntimeStates.cs" />
+    <Compile Include="Interfaces\IWorkPackage.cs" />
+    <Compile Include="Interfaces\IWorkManagerDependencyResolver.cs" />
+    <Compile Include="Enums\MessageManagerId.cs" />
+    <Compile Include="Enums\MessageState.cs" />
+    <Compile Include="WorkManagement\BaseWorker.cs" />
+    <Compile Include="WorkManagement\MessageManager.cs" />
+    <Compile Include="WorkManagement\MessageManagerInfo.cs" />
+    <Compile Include="WorkManagement\Notification.cs" />
+    <Compile Include="WorkManagement\ThreadWatcher.cs" />
+    <Compile Include="WorkManagement\ThreadWatcherInfo.cs" />
+    <Compile Include="WorkManagement\WorkerRegisteryPackage.cs" />
+    <Compile Include="WorkManagement\WorkManager.cs" />
+    <Compile Include="WorkManagement\WorkManagerConfig.cs" />
+    <Compile Include="WorkManagement\WorkManagerNotification.cs" />
+    <Compile Include="WorkManagement\WorkManagerRegistry.cs" />
+    <Compile Include="WorkManagement\WorkPackage.cs" />
+    <Compile Include="Enums\HandleExceptionType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BaseThread.cs" />
+    <Compile Include="Exceptions\ThreadWorkException.cs" />
+    <Compile Include="Exceptions\WorkManagerException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Plato.NET.licenseheader">
+      <Link>Plato.NET.licenseheader</Link>
+    </None>
+    <None Include="Plato.Threading.Worker.Sample.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plato.Configuration\Plato.Configuration.csproj">
+      <Project>{4e421333-54d9-48ce-ba71-a3ec80e9fa0f}</Project>
+      <Name>Plato.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plato.ExceptionManagement\Plato.ExceptionManagement.csproj">
+      <Project>{bfc32a00-9a3b-496f-a9c9-8bea6ee79c33}</Project>
+      <Name>Plato.ExceptionManagement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plato.Utils\Plato.Utils.csproj">
+      <Project>{fe8c4552-9ad9-4d4c-b6ec-64bf4fd0e3f4}</Project>
+      <Name>Plato.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
