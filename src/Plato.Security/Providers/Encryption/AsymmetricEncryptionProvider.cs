@@ -17,10 +17,10 @@ namespace Plato.Security.Providers.Encryption
     /// <seealso cref="Plato.Security.Interfaces.IEncryptionProvider" />
     public class AsymmetricEncryptionProvider : IEncryptionProvider
     {
+        private string _thumbprintParam;
         private string _storeNameParam;
         private StoreLocation _storeLocationParam;
-        private string _thumbprintParam;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="AsymmetricEncryptionProvider"/> class.
         /// </summary>
@@ -56,7 +56,7 @@ namespace Plato.Security.Providers.Encryption
             }
 
             StoreLocation sloc;
-            if (!Enum.TryParse<StoreLocation>(storeLocation, out sloc))
+            if (!Enum.TryParse(storeLocation, out sloc))
             {
                 throw new ArgumentException(string.Format("AsymmetricEncryptionProvider: Invalid parameter for storeLocation: '{0}'", storeLocation), "storeLocation");
             }
