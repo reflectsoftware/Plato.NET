@@ -12,7 +12,7 @@ using System.Text;
 namespace Plato.Security.Cryptography
 {
     /// <summary>
-    /// 
+    /// This is a Asymmetric class.
     /// </summary>
     /// <seealso cref="System.IDisposable" />
     public class Asymmetric : IDisposable
