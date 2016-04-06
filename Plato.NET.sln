@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.Cache", "src\Plato.Cache\Plato.Cache.csproj", "{96E1C168-23CA-4423-96F9-46E547561F3C}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -51,6 +51,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. SolutionItems", "01. So
 		src\Plato.NET.licenseheader = src\Plato.NET.licenseheader
 		src\VersionInfo.cs = src\VersionInfo.cs
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.NET", "Plato.NET\Plato.NET.csproj", "{83137E60-E628-4D10-850D-F9F0B3816080}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -106,6 +108,10 @@ Global
 		{48DA206A-F520-45D6-AF51-5CEC4EB505EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48DA206A-F520-45D6-AF51-5CEC4EB505EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48DA206A-F520-45D6-AF51-5CEC4EB505EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83137E60-E628-4D10-850D-F9F0B3816080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83137E60-E628-4D10-850D-F9F0B3816080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83137E60-E628-4D10-850D-F9F0B3816080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83137E60-E628-4D10-850D-F9F0B3816080}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,5 +129,6 @@ Global
 		{AAA49797-2AFF-4444-9DA8-382644EE485E} = {28D2CB15-FCC1-44A6-B2CC-E78887774870}
 		{54328F32-1C58-4BA0-BE59-57423BF5271C} = {28D2CB15-FCC1-44A6-B2CC-E78887774870}
 		{48DA206A-F520-45D6-AF51-5CEC4EB505EC} = {28D2CB15-FCC1-44A6-B2CC-E78887774870}
+		{83137E60-E628-4D10-850D-F9F0B3816080} = {28D2CB15-FCC1-44A6-B2CC-E78887774870}
 	EndGlobalSection
 EndGlobal
