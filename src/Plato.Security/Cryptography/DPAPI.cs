@@ -20,7 +20,7 @@ namespace Plato.Security.Cryptography
         /// Encrypts the specified plain data.
         /// </summary>
         /// <param name="plainData">The plain data.</param>
-        /// <param name="entropyBytes">The entropy bytes.</param>
+        /// <param name="entropyBytes">The entropy bytes.</param> 
         /// <param name="scope">The scope.</param>
         /// <returns></returns>
         public static byte[] Encrypt(byte[] plainData, byte[] entropyBytes, DataProtectionScope scope)
