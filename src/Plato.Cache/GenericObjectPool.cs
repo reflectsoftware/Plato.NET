@@ -10,12 +10,11 @@ using System.Threading;
 namespace Plato.Cache
 {
     /// <summary>
-    ///
+    /// GenericObjectPool class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="System.IDisposable"/>
-    public abstract class GenericObjectPool<T> : IDisposable
-        where T: class
+    public abstract class GenericObjectPool<T> : IDisposable where T: class
     {
         private Stack<T> _objectPool;
         private Semaphore _poolSemaphore;
