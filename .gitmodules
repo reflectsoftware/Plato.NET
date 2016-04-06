@@ -1,0 +1,3 @@
+[submodule "Telmetrics"]
+	path = Telmetrics
+	url = https://github.com/Telmetrics/Plato.NET.git
