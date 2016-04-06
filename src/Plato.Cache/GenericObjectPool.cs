@@ -10,7 +10,7 @@ using System.Threading;
 namespace Plato.Cache
 {
     /// <summary>
-    /// GenericObjectPool class. V7.
+    /// GenericObjectPool class. V8.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="System.IDisposable"/>
