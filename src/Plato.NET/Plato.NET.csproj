@@ -40,65 +40,65 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\src\VersionInfo.cs">
+    <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\Plato.NET.licenseheader">
-      <Link>Plato.NET.licenseheader</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\src\Plato.Cache\Plato.Cache.csproj">
+    <ProjectReference Include="..\Plato.Cache\Plato.Cache.csproj">
       <Project>{96e1c168-23ca-4423-96f9-46e547561f3c}</Project>
       <Name>Plato.Cache</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.ClassFactory\Plato.ClassFactory.csproj">
+    <ProjectReference Include="..\Plato.ClassFactory\Plato.ClassFactory.csproj">
       <Project>{48da206a-f520-45d6-af51-5cec4eb505ec}</Project>
       <Name>Plato.ClassFactory</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.Configuration\Plato.Configuration.csproj">
+    <ProjectReference Include="..\Plato.Configuration\Plato.Configuration.csproj">
       <Project>{4e421333-54d9-48ce-ba71-a3ec80e9fa0f}</Project>
       <Name>Plato.Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.Dapper\Plato.Dapper.csproj">
+    <ProjectReference Include="..\Plato.Dapper\Plato.Dapper.csproj">
       <Project>{a4bcf57c-aa07-49de-adad-cfa263a4f1ea}</Project>
       <Name>Plato.Dapper</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.ExceptionManagement\Plato.ExceptionManagement.csproj">
+    <ProjectReference Include="..\Plato.ExceptionManagement\Plato.ExceptionManagement.csproj">
       <Project>{bfc32a00-9a3b-496f-a9c9-8bea6ee79c33}</Project>
       <Name>Plato.ExceptionManagement</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.Messaging\Plato.Messaging.csproj">
+    <ProjectReference Include="..\Plato.Messaging\Plato.Messaging.csproj">
       <Project>{aaa49797-2aff-4444-9da8-382644ee485e}</Project>
       <Name>Plato.Messaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.Security\Plato.Security.csproj">
+    <ProjectReference Include="..\Plato.Security\Plato.Security.csproj">
       <Project>{efb05004-b25b-4ad6-90ad-e634d34b2d6f}</Project>
       <Name>Plato.Security</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.Serializers\Plato.Serializers.csproj">
+    <ProjectReference Include="..\Plato.Serializers\Plato.Serializers.csproj">
       <Project>{3824e704-14aa-4714-9aab-5608e52666c3}</Project>
       <Name>Plato.Serializers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.SQL\Plato.SQL.csproj">
+    <ProjectReference Include="..\Plato.SQL\Plato.SQL.csproj">
       <Project>{7a2c8812-9947-44e3-a397-d79515e20743}</Project>
       <Name>Plato.SQL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.Threading\Plato.Threading.csproj">
+    <ProjectReference Include="..\Plato.Threading\Plato.Threading.csproj">
       <Project>{54328f32-1c58-4ba0-be59-57423bf5271c}</Project>
       <Name>Plato.Threading</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.Utils\Plato.Utils.csproj">
+    <ProjectReference Include="..\Plato.Utils\Plato.Utils.csproj">
       <Project>{fe8c4552-9ad9-4d4c-b6ec-64bf4fd0e3f4}</Project>
       <Name>Plato.Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\Plato.WinAPI\Plato.WinAPI.csproj">
+    <ProjectReference Include="..\Plato.WinAPI\Plato.WinAPI.csproj">
       <Project>{5a518f0a-7b62-4690-aea9-1c19cf35d386}</Project>
       <Name>Plato.WinAPI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Plato.NET.licenseheader">
+      <Link>Plato.NET.licenseheader</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

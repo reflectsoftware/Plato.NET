@@ -46,13 +46,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.Threading", "src\Plat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.ClassFactory", "src\Plato.ClassFactory\Plato.ClassFactory.csproj", "{48DA206A-F520-45D6-AF51-5CEC4EB505EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.NET", "src\Plato.NET\Plato.NET.csproj", "{83137E60-E628-4D10-850D-F9F0B3816080}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. SolutionItems", "01. SolutionItems", "{2E348269-C6DF-4688-9908-1DB4EF24F3FC}"
 	ProjectSection(SolutionItems) = preProject
 		src\Plato.NET.licenseheader = src\Plato.NET.licenseheader
 		src\VersionInfo.cs = src\VersionInfo.cs
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.NET", "Plato.NET\Plato.NET.csproj", "{83137E60-E628-4D10-850D-F9F0B3816080}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
