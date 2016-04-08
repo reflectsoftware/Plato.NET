@@ -76,8 +76,7 @@ namespace Plato.Threading.WorkManagement
             if (bIgnoreTracker || TimeEventTracker.CanEvent((int)StringHash.BKDRHash(ex.Message), eventTracker))
             {
                 // add additional information to the Exception Info.
-                var additionalInfo = new NameValueCollection();
-                additionalInfo.Add("TrackingId", Guid.NewGuid().ToString());
+                var additionalInfo = new NameValueCollection();                
                 additionalInfo.Add("Timestamp", DateTimeOffset.Now.ToString());
                 additionalInfo.Add("Application Source", WorkManagerConfig.ApplicationName);
 

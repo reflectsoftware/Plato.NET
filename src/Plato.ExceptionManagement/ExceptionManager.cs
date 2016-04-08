@@ -218,7 +218,7 @@ namespace Plato.ExceptionManagement
                 additionalParameters = new NameValueCollection();
             }
 
-            additionalParameters["Tracking Id"] = Guid.NewGuid().ToString();
+            additionalParameters["TrackingId"] = Guid.NewGuid().ToString();
 
             if (occurrences != 0)
             {
