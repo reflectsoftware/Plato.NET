@@ -2,6 +2,7 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Plato.Utils.Interfaces;
 using Plato.Utils.Locks;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,8 @@ using System.Threading;
 
 namespace Plato.Utils.Miscellaneous
 {
-    public class LogTextFileWriter : IDisposable
+
+    public class LogTextFileWriter : ILogTextFileWriter
     {
         protected ResourceLock _resourceLock;
 
