@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using System;
-using System.Collections.Generic;
 
 namespace Plato.Utils.Interfaces
 {
@@ -20,6 +19,7 @@ namespace Plato.Utils.Interfaces
         /// The log file path.
         /// </value>
         string LogFilePath { get; }
+       
         /// <summary>
         /// Gets a value indicating whether [create directory].
         /// </summary>
@@ -27,6 +27,7 @@ namespace Plato.Utils.Interfaces
         /// <c>true</c> if [create directory]; otherwise, <c>false</c>.
         /// </value>
         bool CreateDirectory { get; }
+        
         /// <summary>
         /// Gets the recycle number.
         /// </summary>
@@ -34,6 +35,7 @@ namespace Plato.Utils.Interfaces
         /// The recycle number.
         /// </value>
         int RecycleNumber { get; }
+        
         /// <summary>
         /// Gets a value indicating whether this <see cref="LogTextFileWriter"/> is disposed.
         /// </summary>
@@ -41,11 +43,12 @@ namespace Plato.Utils.Interfaces
         /// <c>true</c> if disposed; otherwise, <c>false</c>.
         /// </value>
         bool Disposed { get; }
+
         /// <summary>
-        /// Writes the specified MSG.
+        /// Writes the line.
         /// </summary>
         /// <param name="msg">The MSG.</param>
         /// <param name="args">The arguments.</param>
-        void Write(string msg, params object[] args);
+        void WriteLine(string msg, params object[] args);
     }
 }

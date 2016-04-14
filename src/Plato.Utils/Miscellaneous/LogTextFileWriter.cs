@@ -216,11 +216,11 @@ namespace Plato.Utils.Miscellaneous
         }
 
         /// <summary>
-        /// Writes the specified MSG.
+        /// Writes the line.
         /// </summary>
         /// <param name="msg">The MSG.</param>
         /// <param name="args">The arguments.</param>
-        public void Write(string msg, params object[] args)
+        public void WriteLine(string msg, params object[] args)
         {
             _resourceLock.EnterWriteLock();
             try

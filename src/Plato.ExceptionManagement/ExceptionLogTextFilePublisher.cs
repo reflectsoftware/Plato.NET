@@ -120,7 +120,7 @@ namespace Plato.ExceptionManagement
                     if (_logTextFileWriter != null)
                     {
                         var entry = ExceptionFormatter.ConstructMessage(exception, additionalParameters);
-                        _logTextFileWriter.Write("{1}{0}{2}{0}", Environment.NewLine, entry, _separator);
+                        _logTextFileWriter.WriteLine("{1}{0}{2}{0}", Environment.NewLine, entry, _separator);
                     }
                 }
             }
