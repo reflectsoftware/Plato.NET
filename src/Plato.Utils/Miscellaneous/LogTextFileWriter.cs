@@ -12,7 +12,10 @@ using System.Threading;
 
 namespace Plato.Utils.Miscellaneous
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Utils.Interfaces.ILogTextFileWriter" />
     public class LogTextFileWriter : ILogTextFileWriter
     {
         protected ResourceLock _resourceLock;

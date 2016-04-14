@@ -7,6 +7,10 @@ using System.Collections.Generic;
 
 namespace Plato.Utils.Interfaces
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
     public interface ILogTextFileWriter : IDisposable
     {
         /// <summary>
