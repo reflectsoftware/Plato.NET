@@ -119,8 +119,8 @@ namespace Plato.ExceptionManagement
                 {
                     if (_logTextFileWriter != null)
                     {
-                        var entry = ExceptionFormatter.ConstructMessage(exception, additionalParameters);
-                        _logTextFileWriter.WriteLine("{1}{0}{2}{0}", Environment.NewLine, entry, _separator);
+                        var entry = ExceptionFormatter.ConstructMessage(exception, additionalParameters);                        
+                        _logTextFileWriter.WriteLine($"{entry}{Environment.NewLine}{_separator}{Environment.NewLine}");
                     }
                 }
             }

@@ -216,11 +216,10 @@ namespace Plato.Utils.Miscellaneous
         }
 
         /// <summary>
-        /// Writes the line.
+        /// Writes the specified MSG.
         /// </summary>
         /// <param name="msg">The MSG.</param>
-        /// <param name="args">The arguments.</param>
-        public void WriteLine(string msg, params object[] args)
+        public void Write(string msg)
         {
             _resourceLock.EnterWriteLock();
             try
@@ -229,7 +228,29 @@ namespace Plato.Utils.Miscellaneous
 
                 using (var tw = OpenFileStream())
                 {
-                    tw.WriteLine(msg, args);
+                    tw.Write(msg);
+                }
+            }
+            finally
+            {
+                _resourceLock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
+        /// Writes the line.
+        /// </summary>
+        /// <param name="msg">The MSG.</param>
+        public void WriteLine(string msg)
+        {
+            _resourceLock.EnterWriteLock();
+            try
+            {
+                PerformAutoSaveIfNecessary();
+
+                using (var tw = OpenFileStream())
+                {
+                    tw.WriteLine(msg);
                 }
             }
             finally

@@ -45,10 +45,15 @@ namespace Plato.Utils.Interfaces
         bool Disposed { get; }
 
         /// <summary>
-        /// Writes the line.
+        /// Writes the specified MSG.
         /// </summary>
         /// <param name="msg">The MSG.</param>
-        /// <param name="args">The arguments.</param>
-        void WriteLine(string msg, params object[] args);
+        void Write(string msg);
+
+        /// <summary>
+        /// Writes the line.
+        /// </summary>
+        /// <param name="msg">The MSG.</param>        
+        void WriteLine(string msg); 
     }
 }
