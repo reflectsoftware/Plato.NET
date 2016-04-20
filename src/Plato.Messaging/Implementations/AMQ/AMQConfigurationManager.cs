@@ -59,7 +59,7 @@ namespace Plato.Messaging.Implementations.AMQ
                     childNode.Attributes["name"] = connection.Name;
                     childNode.Attributes["username"] = connection.Username;
                     childNode.Attributes["password"] = connection.Password;
-                    childNode.Attributes["uri"] = connection.Uri;
+                    childNode.Attributes["uri"] = connection.Uri;                    
                     childNode.Attributes["asyncSend"] = connection.AsyncSend ? "true" : "false";
 
                     _nodeAttributes.ChildAttributes.Add(childNode);
@@ -153,9 +153,9 @@ namespace Plato.Messaging.Implementations.AMQ
             return new AMQConnectionSettings()
             {
                 Name = StringHelper.IfNullOrEmptyUseDefault(attributes["name"], string.Empty),
-                Uri = StringHelper.IfNullOrEmptyUseDefault(attributes["uri"], string.Empty),
-                Username = StringHelper.IfNullOrEmptyUseDefault(attributes["username"], string.Empty),
-                Password = StringHelper.IfNullOrEmptyUseDefault(attributes["password"], string.Empty),
+                Uri =  StringHelper.FullTrim(StringHelper.IfNullOrEmptyUseDefault(attributes["uri"], string.Empty)),
+                Username = StringHelper.IfNullOrEmptyUseDefault(attributes["username"], "admin"),
+                Password = StringHelper.IfNullOrEmptyUseDefault(attributes["password"], "admin"),
                 AsyncSend = StringHelper.IfNullOrEmptyUseDefault(attributes["asyncSend"], "true") == "true"
             };
         }
@@ -171,7 +171,7 @@ namespace Plato.Messaging.Implementations.AMQ
 
             var destination = new AMQDestinationSettings(attributes["name"], attributes["path"])
             {
-                Path = StringHelper.IfNullOrEmptyUseDefault(attributes["path"], string.Empty),
+                Path = StringHelper.FullTrim(StringHelper.IfNullOrEmptyUseDefault(attributes["path"], string.Empty)),
                 Selector = StringHelper.IfNullOrEmptyUseDefault(attributes["selector"], null),
                 SubscriberId = StringHelper.IfNullOrEmptyUseDefault(attributes["subscriberId"], null),                
                 Durable = StringHelper.IfNullOrEmptyUseDefault(attributes["durable"], "false") == "true",

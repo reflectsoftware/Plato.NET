@@ -8,6 +8,7 @@ using Plato.Messaging.Enums;
 using Plato.Messaging.Exceptions;
 using Plato.Messaging.Implementations.AMQ.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace Plato.Messaging.Implementations.AMQ.Factories
 {
@@ -36,37 +37,48 @@ namespace Plato.Messaging.Implementations.AMQ.Factories
         /// <exception cref="MessageException">
         /// </exception>
         public IConnection CreateConnection(string name)
-        {
-            try
-            {
-                var connectionSettings = _configManager.GetConnectionSettings(name);
-                var connectionUri = new Uri(connectionSettings.Uri);
-                var connectionFactory = new ConnectionFactory(connectionUri)
-                {
-                    UserName = connectionSettings.Username,
-                    Password = connectionSettings.Password,
-                    AsyncSend = connectionSettings.AsyncSend,
-                };
+        {            
+            var connectionSettings = _configManager.GetConnectionSettings(name);
 
-                var connection = connectionFactory.CreateConnection();
-                return connection;
-            }
-            catch (NMSConnectionException ex)
+            if(string.IsNullOrWhiteSpace(connectionSettings.Uri))
             {
-                throw new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
+                throw new MessageException(MessageExceptionCode.UnhandledError, $"Missing or empty connection Uri for named connection settings: '{name}'.");
             }
-            catch (InvalidClientIDException ex)
+
+            foreach (var uri in connectionSettings.Uri.Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
-                throw new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
+                try
+                {
+                    var connectionUri = new Uri(uri);
+                    var connectionFactory = new ConnectionFactory(connectionUri)
+                    {
+                        UserName = connectionSettings.Username,
+                        Password = connectionSettings.Password,
+                        AsyncSend = connectionSettings.AsyncSend,
+                    };
+
+                    var connection = connectionFactory.CreateConnection();
+                    return connection;                    
+                }
+                catch (NMSConnectionException)
+                {
+                    // swallow
+                }
+                catch (InvalidClientIDException)
+                {
+                    // swallow
+                }
+                catch (NMSException)
+                {
+                    // swallow
+                }
+                catch (UriFormatException ex)
+                {
+                    throw new MessageException(MessageExceptionCode.UnhandledError, ex.Message, ex);
+                }
             }
-            catch (NMSException ex)
-            {
-                throw new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
-            }
-            catch (UriFormatException ex)
-            {
-                throw new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
-            }
+
+            throw new MessageException(MessageExceptionCode.LostConnection, $"Unable to connect to any ActiveMQ Broker using the following connection uri: {connectionSettings.Uri}, for named connection settings: '{name}'.");
         }
     }
 }
