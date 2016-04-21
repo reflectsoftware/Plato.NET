@@ -61,6 +61,7 @@ namespace Plato.Messaging.Implementations.AMQ
                     childNode.Attributes["password"] = connection.Password;
                     childNode.Attributes["uri"] = connection.Uri;                    
                     childNode.Attributes["asyncSend"] = connection.AsyncSend ? "true" : "false";
+                    childNode.Attributes["delayOnReconnect"] = connection.DelayOnReconnect.ToString();
 
                     _nodeAttributes.ChildAttributes.Add(childNode);
                 }
@@ -150,13 +151,18 @@ namespace Plato.Messaging.Implementations.AMQ
         {
             var attributes = GetAttributes("connectionSettings", name);
 
+            var delayOnReconnectValue = StringHelper.FullTrim(StringHelper.IfNullOrEmptyUseDefault(attributes["delayOnReconnect"], "0"));
+            var delayOnReconnect = 0;
+            int.TryParse(delayOnReconnectValue, out delayOnReconnect);
+
             return new AMQConnectionSettings()
             {
                 Name = StringHelper.IfNullOrEmptyUseDefault(attributes["name"], string.Empty),
-                Uri =  StringHelper.FullTrim(StringHelper.IfNullOrEmptyUseDefault(attributes["uri"], string.Empty)),
+                Uri = StringHelper.FullTrim(StringHelper.IfNullOrEmptyUseDefault(attributes["uri"], string.Empty)),
                 Username = StringHelper.IfNullOrEmptyUseDefault(attributes["username"], "admin"),
                 Password = StringHelper.IfNullOrEmptyUseDefault(attributes["password"], "admin"),
-                AsyncSend = StringHelper.IfNullOrEmptyUseDefault(attributes["asyncSend"], "true") == "true"
+                AsyncSend = StringHelper.IfNullOrEmptyUseDefault(attributes["asyncSend"], "true") == "true",
+                DelayOnReconnect = delayOnReconnect,
             };
         }
 

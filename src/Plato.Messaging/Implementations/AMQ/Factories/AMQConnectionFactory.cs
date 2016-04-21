@@ -9,6 +9,7 @@ using Plato.Messaging.Exceptions;
 using Plato.Messaging.Implementations.AMQ.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Plato.Messaging.Implementations.AMQ.Factories
 {
@@ -78,6 +79,8 @@ namespace Plato.Messaging.Implementations.AMQ.Factories
                     {
                         exceptionList.Add(ex);
                     }
+
+                    Thread.Sleep(connectionSettings.DelayOnReconnect);
                 }
             }
 
