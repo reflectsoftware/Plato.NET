@@ -153,7 +153,10 @@ namespace Plato.Messaging.Implementations.AMQ
 
             var delayOnReconnectValue = StringHelper.FullTrim(StringHelper.IfNullOrEmptyUseDefault(attributes["delayOnReconnect"], "0"));
             var delayOnReconnect = 0;
-            int.TryParse(delayOnReconnectValue, out delayOnReconnect);
+            if(!int.TryParse(delayOnReconnectValue, out delayOnReconnect) || delayOnReconnect < 0)
+            {
+                delayOnReconnect = 0;
+            }
 
             return new AMQConnectionSettings()
             {
