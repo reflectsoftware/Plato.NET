@@ -111,10 +111,7 @@ namespace Plato.Utils.Miscellaneous
         {
             lock (this)
             {
-                if (_onDelayEventBeginHandler != null)
-                {
-                    _onDelayEventBeginHandler();
-                }
+                _onDelayEventBeginHandler?.Invoke();
             }
         }
 
@@ -125,11 +122,7 @@ namespace Plato.Utils.Miscellaneous
         {
             lock (this)
             {
-                if (_onDelayEventEndHandler != null)
-                {
-                    _onDelayEventEndHandler();
-                }
-
+                _onDelayEventEndHandler?.Invoke();
                 _autoEventEnd.Reset();
                 _hasBegun = false;
             }

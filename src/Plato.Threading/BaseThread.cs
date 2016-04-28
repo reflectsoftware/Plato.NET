@@ -6,10 +6,12 @@ using Plato.Threading.Enums;
 using Plato.Threading.Exceptions;
 using Plato.Threading.Interfaces;
 using Plato.Utils.Logging;
+using Plato.Utils.Logging.Enums;
 using Plato.Utils.Logging.Interfaces;
 using Plato.Utils.Miscellaneous;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Plato.Threading
 {
@@ -165,6 +167,34 @@ namespace Plato.Threading
         }
 
         /// <summary>
+        /// Brute forces final actions.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="waitmsec">The waitmsec.</param>
+        /// <returns></returns>
+        protected bool BruteForceFinalAction(Action action, int waitmsec)
+        {
+            if (action == null)
+            {
+                return true;
+            }
+
+            return Task.Run(() =>
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    var eMsg = string.Format("Thread Execution: An unhandled exception was detected in thread '{0}' -> {1} during a BruteForceFinalAction() call.", Name, ex.Message);
+                    Notification.SendException(new ThreadWorkException(eMsg, ex), false);
+                }
+
+            }).Wait(waitmsec);
+        }
+        
+        /// <summary>
         /// Threads the begin sequence.
         /// </summary>
         private void ThreadBeginSequence()
@@ -227,7 +257,7 @@ namespace Plato.Threading
                     }
                     catch (ThreadAbortException)
                     {
-                        Notification.SendMessage(string.Format("The following thread '{0}' was aborted.", Name), Plato.Utils.Logging.Enums.NotificationType.Fatal);
+                        Notification.SendMessage(string.Format("The following thread '{0}' was aborted.", Name), NotificationType.Fatal);
                         _terminated = true;
                         break;
                     }
@@ -246,7 +276,7 @@ namespace Plato.Threading
 
                         if (action == HandleExceptionType.DefaultAndAbort)
                         {
-                            Notification.SendMessage(string.Format("The following thread '{0}' will be aborted.", Name), Plato.Utils.Logging.Enums.NotificationType.Fatal);
+                            Notification.SendMessage(string.Format("The following thread '{0}' will be aborted.", Name), NotificationType.Fatal);
                             _terminated = true;
                         }
                     }
