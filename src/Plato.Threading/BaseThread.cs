@@ -165,34 +165,6 @@ namespace Plato.Threading
         {
             Dispose(true);
         }
-
-        /// <summary>
-        /// Brute forces final actions.
-        /// </summary>
-        /// <param name="action">The action.</param>
-        /// <param name="waitmsec">The waitmsec.</param>
-        /// <returns></returns>
-        protected bool BruteForceFinalAction(Action action, int waitmsec)
-        {
-            if (action == null)
-            {
-                return true;
-            }
-
-            return Task.Run(() =>
-            {
-                try
-                {
-                    action();
-                }
-                catch (Exception ex)
-                {
-                    var eMsg = string.Format("Thread Execution: An unhandled exception was detected in thread '{0}' -> {1} during a BruteForceFinalAction() call.", Name, ex.Message);
-                    Notification.SendException(new ThreadWorkException(eMsg, ex), false);
-                }
-
-            }).Wait(waitmsec);
-        }
         
         /// <summary>
         /// Threads the begin sequence.
