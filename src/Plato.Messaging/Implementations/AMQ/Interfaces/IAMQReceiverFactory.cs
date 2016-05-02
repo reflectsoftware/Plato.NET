@@ -15,7 +15,8 @@ namespace Plato.Messaging.Implementations.AMQ.Interfaces
         /// Creates the specified settings.
         /// </summary>
         /// <param name="settings">The settings.</param>
+        /// <param name="connectionName">Name of the connection.</param>
         /// <returns></returns>
-        IAMQReceiver Create(AMQDestinationSettings settings);
+        IAMQReceiver Create(AMQDestinationSettings settings, string connectionName);
     }
 }

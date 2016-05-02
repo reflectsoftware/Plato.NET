@@ -11,7 +11,6 @@ using Plato.Utils.Logging.Interfaces;
 using Plato.Utils.Miscellaneous;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Plato.Threading
 {
