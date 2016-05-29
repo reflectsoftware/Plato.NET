@@ -42,5 +42,13 @@ namespace Plato.Messaging.Implementations.AMQ.Settings
         /// The password.
         /// </value>
         public string Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets the delay on reconnect.
+        /// </summary>
+        /// <value>
+        /// The delay on reconnect.
+        /// </value>
+        public int DelayOnReconnect { get; set; }
     } 
 }

@@ -22,6 +22,11 @@ namespace Plato.Messaging.Enums
         /// <summary>
         /// The poison message
         /// </summary>
-        PoisonMessage = 2
+        PoisonMessage = 2,
+
+        /// <summary>
+        /// The unhandled error
+        /// </summary>
+        UnhandledError = 1000,
     }
 }

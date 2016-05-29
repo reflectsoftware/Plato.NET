@@ -6,6 +6,7 @@ using Plato.Threading.Enums;
 using Plato.Threading.Exceptions;
 using Plato.Threading.Interfaces;
 using Plato.Utils.Logging;
+using Plato.Utils.Logging.Enums;
 using Plato.Utils.Logging.Interfaces;
 using Plato.Utils.Miscellaneous;
 using System;
@@ -163,7 +164,7 @@ namespace Plato.Threading
         {
             Dispose(true);
         }
-
+        
         /// <summary>
         /// Threads the begin sequence.
         /// </summary>
@@ -227,7 +228,7 @@ namespace Plato.Threading
                     }
                     catch (ThreadAbortException)
                     {
-                        Notification.SendMessage(string.Format("The following thread '{0}' was aborted.", Name), Plato.Utils.Logging.Enums.NotificationType.Fatal);
+                        Notification.SendMessage(string.Format("The following thread '{0}' was aborted.", Name), NotificationType.Fatal);
                         _terminated = true;
                         break;
                     }
@@ -246,7 +247,7 @@ namespace Plato.Threading
 
                         if (action == HandleExceptionType.DefaultAndAbort)
                         {
-                            Notification.SendMessage(string.Format("The following thread '{0}' will be aborted.", Name), Plato.Utils.Logging.Enums.NotificationType.Fatal);
+                            Notification.SendMessage(string.Format("The following thread '{0}' will be aborted.", Name), NotificationType.Fatal);
                             _terminated = true;
                         }
                     }

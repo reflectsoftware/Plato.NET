@@ -68,6 +68,8 @@
     <Compile Include="Dates\DateHelper.cs" />
     <Compile Include="Enums\EnumMapAttribute.cs" />
     <Compile Include="Enums\EnumMapHelper.cs" />
+    <Compile Include="Interfaces\ILogTextFileWriter.cs" />
+    <Compile Include="Interfaces\ILogTextFileWriterFactory.cs" />
     <Compile Include="Locks\Enums\MutexResourceLockType.cs" />
     <Compile Include="Locks\Interfaces\IMutexResourceLock.cs" />
     <Compile Include="Locks\Interfaces\IQuickMutexResourceLock.cs" />
@@ -81,6 +83,7 @@
     <Compile Include="Miscellaneous\ArrayConverter.cs" />
     <Compile Include="Miscellaneous\DelayEvent.cs" />
     <Compile Include="Miscellaneous\LogTextFileWriter.cs" />
+    <Compile Include="Miscellaneous\LogTextFileWriterFactory.cs" />
     <Compile Include="Miscellaneous\MiscHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Miscellaneous\TimeEventTracker.cs" />

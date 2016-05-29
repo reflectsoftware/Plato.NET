@@ -5,6 +5,7 @@
 using Plato.Threading.Enums;
 using Plato.Threading.Exceptions;
 using Plato.Threading.Interfaces;
+using Plato.Utils.Logging.Enums;
 using Plato.Utils.Miscellaneous;
 using System;
 using System.Collections.Generic;
@@ -186,7 +187,7 @@ namespace Plato.Threading.WorkManagement
                         {
                             BeginEvent = () =>
                             {
-                                Notification.SendMessage(string.Format("Restarting worker: {0}", worker.WorkPackage.NameInstance), Plato.Utils.Logging.Enums.NotificationType.Information);
+                                Notification.SendMessage(string.Format("Restarting worker: {0}", worker.WorkPackage.NameInstance), NotificationType.Information);
                             }
                         };
 
@@ -368,7 +369,7 @@ namespace Plato.Threading.WorkManagement
 
                     if (messages.Count == 0)
                     {
-                        Notification.SendMessage("No Workers have been loaded.", Plato.Utils.Logging.Enums.NotificationType.Warning);
+                        Notification.SendMessage("No Workers have been loaded.", NotificationType.Warning);
                     }
                 }
                 catch (Exception)
@@ -452,6 +453,7 @@ namespace Plato.Threading.WorkManagement
         {
             lock (this)
             {
+                Notification.SendMessage("WorkingManager initiated startup sequence...", NotificationType.Information);
                 try
                 {
                     ManagerRuntimeState = ManagerRuntimeStates.Starting;
@@ -473,6 +475,10 @@ namespace Plato.Threading.WorkManagement
 
                     throw;
                 }
+                finally
+                {
+                    Notification.SendMessage("WorkingManager startup sequence completed.", NotificationType.Information);
+                }
             }
         }
 
@@ -483,6 +489,7 @@ namespace Plato.Threading.WorkManagement
         {
             lock (this)
             {
+                Notification.SendMessage("WorkingManager initiated shutdown sequence...", NotificationType.Information);
                 try
                 {
                     ManagerRuntimeState = ManagerRuntimeStates.Stopping;
@@ -508,6 +515,7 @@ namespace Plato.Threading.WorkManagement
                 finally
                 {
                     ManagerRuntimeState = ManagerRuntimeStates.Stopped;
+                    Notification.SendMessage("WorkingManager shutdown sequence completed.", NotificationType.Information);
                 }
             }
         }

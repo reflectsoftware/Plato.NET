@@ -2,6 +2,7 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Plato.Utils.Interfaces;
 using Plato.Utils.Locks;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,11 @@ using System.Threading;
 
 namespace Plato.Utils.Miscellaneous
 {
-    public class LogTextFileWriter : IDisposable
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Utils.Interfaces.ILogTextFileWriter" />
+    public class LogTextFileWriter : ILogTextFileWriter
     {
         protected ResourceLock _resourceLock;
 
@@ -214,8 +219,7 @@ namespace Plato.Utils.Miscellaneous
         /// Writes the specified MSG.
         /// </summary>
         /// <param name="msg">The MSG.</param>
-        /// <param name="args">The arguments.</param>
-        public void Write(string msg, params object[] args)
+        public void Write(string msg)
         {
             _resourceLock.EnterWriteLock();
             try
@@ -224,7 +228,29 @@ namespace Plato.Utils.Miscellaneous
 
                 using (var tw = OpenFileStream())
                 {
-                    tw.WriteLine(msg, args);
+                    tw.Write(msg);
+                }
+            }
+            finally
+            {
+                _resourceLock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
+        /// Writes the line.
+        /// </summary>
+        /// <param name="msg">The MSG.</param>
+        public void WriteLine(string msg)
+        {
+            _resourceLock.EnterWriteLock();
+            try
+            {
+                PerformAutoSaveIfNecessary();
+
+                using (var tw = OpenFileStream())
+                {
+                    tw.WriteLine(msg);
                 }
             }
             finally

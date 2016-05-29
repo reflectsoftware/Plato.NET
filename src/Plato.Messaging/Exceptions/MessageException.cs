@@ -23,6 +23,16 @@ namespace Plato.Messaging.Exceptions
         /// The exception code.
         /// </value>
         public MessageExceptionCode ExceptionCode { get; private set; }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageException"/> class.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <param name="message">The message.</param>
+        public MessageException(MessageExceptionCode code, string message) : base(message)
+        {
+            ExceptionCode = code;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageException"/> class.

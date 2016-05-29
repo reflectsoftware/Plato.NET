@@ -23,11 +23,13 @@ namespace Plato.Messaging.Implementations.AMQ
         /// <returns></returns>
         public static Exception ExceptionHandler(IConnection connection, Exception ex)
         {
+            var eMsg = $"Unable to connect, or the connection to the ActiveMQ Broker is no longer available for the following reason: '{ex.Message}'";
+
             if (ex is NullReferenceException)
             {
                 if (connection == null)
                 {
-                    return new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
+                    return new MessageException(MessageExceptionCode.LostConnection, eMsg, ex);
                 }
             }
 
@@ -39,7 +41,7 @@ namespace Plato.Messaging.Implementations.AMQ
             || ex is InvalidClientIDException
             || ex is NMSException)
             {
-                return new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
+                return new MessageException(MessageExceptionCode.LostConnection, eMsg, ex);
             }
 
             return null;

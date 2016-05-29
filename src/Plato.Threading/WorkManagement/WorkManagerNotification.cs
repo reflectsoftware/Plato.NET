@@ -6,6 +6,7 @@ using Plato.ExceptionManagement;
 using Plato.Utils.Miscellaneous;
 using Plato.Utils.Strings;
 using System;
+using System.Collections.Specialized;
 
 namespace Plato.Threading.WorkManagement
 {
@@ -74,7 +75,12 @@ namespace Plato.Threading.WorkManagement
 
             if (bIgnoreTracker || TimeEventTracker.CanEvent((int)StringHash.BKDRHash(ex.Message), eventTracker))
             {
-                ExceptionManagerContainer.Publish(ex);
+                // add additional information to the Exception Info.
+                var additionalInfo = new NameValueCollection();                
+                additionalInfo.Add("Timestamp", DateTimeOffset.Now.ToString());
+                additionalInfo.Add("Application Source", WorkManagerConfig.ApplicationName);
+
+                ExceptionManagerContainer.Publish(ex, additionalInfo);
             }
         }
     }

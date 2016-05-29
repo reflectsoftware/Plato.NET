@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Plato.ExceptionManagement.Interfaces;
+using Plato.Utils.Interfaces;
 using Plato.Utils.Miscellaneous;
 using Plato.Utils.Strings;
 using System;
@@ -31,7 +32,7 @@ namespace Plato.ExceptionManagement
 
         private string _filePath;
         private int _recycle;
-        private LogTextFileWriter _logTextFileWriter;
+        private ILogTextFileWriter _logTextFileWriter;
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="ExceptionLogTextFilePublisher"/> is disposed.
@@ -118,8 +119,8 @@ namespace Plato.ExceptionManagement
                 {
                     if (_logTextFileWriter != null)
                     {
-                        var entry = ExceptionFormatter.ConstructMessage(exception, additionalParameters);
-                        _logTextFileWriter.Write("{1}{0}{2}{0}", Environment.NewLine, entry, _separator);
+                        var entry = ExceptionFormatter.ConstructMessage(exception, additionalParameters);                        
+                        _logTextFileWriter.WriteLine($"{entry}{Environment.NewLine}{_separator}{Environment.NewLine}");
                     }
                 }
             }
