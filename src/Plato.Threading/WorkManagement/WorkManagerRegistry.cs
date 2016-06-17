@@ -73,7 +73,7 @@ namespace Plato.Threading.WorkManagement
         /// <returns></returns>
         /// <exception cref="WorkManagerException"></exception>
         /// <exception cref="System.NullReferenceException">Must supply a valid WorkManagerDependencyResolver.</exception>
-        internal IBaseWorker Resolve(string name, WorkPackage workPackage)
+        internal T Resolve<T>(string name, WorkPackage workPackage)
         {
             var regPackage = _workers.ContainsKey(name) ? _workers[name] : null;
             if (regPackage == null)
@@ -86,7 +86,7 @@ namespace Plato.Threading.WorkManagement
                 throw new NullReferenceException("Must supply a valid WorkManagerDependencyResolver.");
             }
 
-            return DependencyResolver.Resolve(name, regPackage.Type, workPackage);
+            return DependencyResolver.Resolve<T>(name, regPackage.Type, workPackage);
         }
     }
 }

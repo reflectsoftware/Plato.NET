@@ -18,6 +18,6 @@ namespace Plato.Threading.Interfaces
         /// <param name="type">The type.</param>
         /// <param name="package">The package.</param>
         /// <returns></returns>
-        IBaseWorker Resolve(string name, Type type, IWorkPackage package);
+        T Resolve<T>(string name, Type type, IWorkPackage package);
     }
 }

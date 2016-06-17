@@ -248,7 +248,7 @@ namespace Plato.Threading.WorkManagement
                 return null;
             }
 
-            return _workManagerRegistry.Resolve(name, new WorkPackage(name, nameInstance, this, _threadWatcher, package.GetParameters(), data));
+            return _workManagerRegistry.Resolve<IBaseWorker>(name, new WorkPackage(name, nameInstance, this, _threadWatcher, package.GetParameters(), data));
         }
 
         /// <summary>
