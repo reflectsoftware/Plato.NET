@@ -213,15 +213,11 @@ namespace Plato.ExceptionManagement
                 return;
             }
 
-            if (additionalParameters == null)
-            {
-                additionalParameters = new NameValueCollection();
-            }
-
-            additionalParameters["TrackingId"] = Guid.NewGuid().ToString();
+            additionalParameters = additionalParameters ?? new NameValueCollection();
 
             if (occurrences != 0)
             {
+                additionalParameters = additionalParameters ?? new NameValueCollection();
                 additionalParameters["Occurrences"] = occurrences.ToString("N0");
             }
 
@@ -272,6 +268,7 @@ namespace Plato.ExceptionManagement
                 }
                 catch (Exception)
                 {
+                    // not much we can do here.
                 }
             }
         }

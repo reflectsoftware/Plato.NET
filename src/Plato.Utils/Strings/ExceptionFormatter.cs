@@ -31,6 +31,11 @@ namespace Plato.Utils.Strings
         /// <returns></returns>
         public static string ConstructIndentedMessage(Exception exception, NameValueCollection additionalInfo = null)
         {
+            additionalInfo = additionalInfo ?? new NameValueCollection();
+            additionalInfo["TrackingId"] = Guid.NewGuid().ToString();
+            additionalInfo["MachineName"] = Environment.MachineName;
+            additionalInfo["UTC"] = DateTime.UtcNow.ToString();
+
             var body = new StringBuilder();
             body.AppendFormat("\tThe following exception occurred:{0}", Environment.NewLine);
             
