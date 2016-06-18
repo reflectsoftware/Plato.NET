@@ -23,13 +23,61 @@ namespace Plato.Utils.Strings
             Line = string.Format("{0,40}", string.Empty).Replace(" ", "-");
         }
 
+        private static void AddException(StringBuilder body, Exception exception, int agexCount, string tabs = "")
+        {
+            var count = 1;
+            var currentException = exception;
+            do
+            {
+                var countString = count.ToString();
+                if (agexCount > 0)
+                {
+                    countString = string.Format("{0}.{1}", agexCount, count);
+                }
+
+                var currentExceptionType = currentException.GetType();
+                body.AppendFormat("{0}{0}{1}{2}) Exception Information{0}", Environment.NewLine, tabs, countString);
+                body.AppendFormat("{0}{1}", tabs, Line);
+                body.AppendFormat("{0}{1}Exception Type: {2}", Environment.NewLine, tabs, currentExceptionType.FullName);
+
+                var aryPublicProperties = currentExceptionType.GetProperties();
+                foreach (var p in aryPublicProperties)
+                {
+                    if (p.Name != "InnerException" && p.Name != "StackTrace")
+                    {
+                        var exceptionValue = p.GetValue(currentException, null);
+                        if (exceptionValue == null)
+                        {
+                            body.AppendFormat("{0}{1}{2}: NULL", Environment.NewLine, tabs, p.Name);
+                        }
+                        else
+                        {
+                            body.AppendFormat("{0}{1}{2}: {3}", Environment.NewLine, tabs, p.Name, exceptionValue.ToString().Replace(Environment.NewLine, " "));
+                        }
+                    }
+                }
+
+                var stackTrace = currentException.StackTrace;
+                if (stackTrace != null)
+                {
+                    body.AppendFormat("{0}{0}{1}StackTrace Information{0}", Environment.NewLine, tabs);
+                    body.AppendFormat("{0}{1}", tabs, Line);
+                    body.AppendFormat("{0}{1}{2}", Environment.NewLine, tabs, stackTrace);
+                }
+
+                currentException = currentException.InnerException;
+                count++;
+            }
+            while (currentException != null);
+        }
+
         /// <summary>
         /// Constructs the indented message.
         /// </summary>
         /// <param name="exception">The exception.</param>
         /// <param name="additionalInfo">The additional information.</param>
         /// <returns></returns>
-        public static string ConstructIndentedMessage(Exception exception, NameValueCollection additionalInfo = null)
+        public static string ConstructMessage(Exception exception, NameValueCollection additionalInfo = null)
         {
             additionalInfo = additionalInfo ?? new NameValueCollection();
             additionalInfo["TrackingId"] = Guid.NewGuid().ToString();
@@ -37,65 +85,43 @@ namespace Plato.Utils.Strings
             additionalInfo["UTC"] = DateTime.UtcNow.ToString();
 
             var body = new StringBuilder();
-            body.AppendFormat("\tThe following exception occurred:{0}", Environment.NewLine);
-            
+            body.AppendFormat("The following exception occurred:{0}", Environment.NewLine);
+
             if (additionalInfo != null && additionalInfo.Count > 0)
             {
-                body.AppendFormat("{0}\tGeneral Information", Environment.NewLine);
-                body.AppendFormat("{0}\t{1}", Environment.NewLine, Line);
-                body.AppendFormat("{0}\tAdditional Info:", Environment.NewLine);
+                body.AppendFormat("{0}General Information", Environment.NewLine);
+                body.AppendFormat("{0}{1}", Environment.NewLine, Line);
+                body.AppendFormat("{0}Additional Info:", Environment.NewLine);
 
                 foreach (string key in additionalInfo)
                 {
                     var sb = new StringBuilder(additionalInfo.Get(key));
                     sb.Replace("\n", string.Empty);
 
-                    body.AppendFormat("{0}\t\t{1}: {2}", Environment.NewLine, key, sb);
+                    body.AppendFormat("{0}\t{1}: {2}", Environment.NewLine, key, sb);
                 }
             }
 
-            if ( exception == null )
+            if (exception == null)
             {
-                body.AppendFormat("{0}{0}\tNo Exception object has been provided.{0}", Environment.NewLine);
+                body.AppendFormat("{0}{0}No Exception object has been provided.{0}", Environment.NewLine);
             }
             else
             {
-                var currentException = exception;
-                var intExceptionCount = 1;
-                do
+                if (exception is AggregateException)
                 {
-                    var currentExceptionType = currentException.GetType();
-                    body.AppendFormat("{0}{0}\t{1}) Exception Information{0}\t{2}", Environment.NewLine, intExceptionCount, Line);
-                    body.AppendFormat("{0}\tException Type: {1}", Environment.NewLine, currentExceptionType.FullName);
-                    
-                    var aryPublicProperties = currentExceptionType.GetProperties();
-                    foreach (var p in aryPublicProperties)
+                    var agexCount = 1;
+                    foreach (var agex in (exception as AggregateException).InnerExceptions)
                     {
-                        if (p.Name != "InnerException" && p.Name != "StackTrace")
-                        {
-                            var exceptionValue = p.GetValue(currentException, null);
-                            if (exceptionValue == null)
-                            {
-                                body.AppendFormat("{0}\t{1}: NULL", Environment.NewLine, p.Name);
-                            }
-                            else
-                            {
-                                body.AppendFormat("{0}\t{1}: {2}", Environment.NewLine, p.Name, exceptionValue.ToString().Replace(Environment.NewLine, " "));
-                            }
-                        }
+                        body.AppendFormat("{0}{0}{1}) AggregateException Item {0}", Environment.NewLine, agexCount);
+                        AddException(body, agex, agexCount, "\t");
+                        agexCount++;
                     }
-
-                    var stackTrace = currentException.StackTrace;
-                    if (stackTrace != null )
-                    {
-                        body.AppendFormat("{0}{0}\tStackTrace Information{0}\t{1}", Environment.NewLine, Line);
-                        body.AppendFormat("{0}\t{1}", Environment.NewLine, stackTrace);
-                    }
-
-                    currentException = currentException.InnerException;
-                    intExceptionCount++;
                 }
-                while (currentException != null);
+                else
+                {
+                    AddException(body, exception, -1);
+                }
             }
 
             return body.ToString();
@@ -107,11 +133,20 @@ namespace Plato.Utils.Strings
         /// <param name="exception">The exception.</param>
         /// <param name="additionalInfo">The additional information.</param>
         /// <returns></returns>
-        public static string ConstructMessage(Exception exception, NameValueCollection additionalInfo = null)
+        public static string ConstructIndentedMessage(Exception exception, NameValueCollection additionalInfo = null)
         {
-            return ConstructIndentedMessage(exception, additionalInfo).Replace("\t", string.Empty);
+            var nonIdentedMessage = ConstructMessage(exception, additionalInfo);
+            var lines = nonIdentedMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            var message = new StringBuilder();
+            foreach (var line in lines)
+            {
+                message.AppendFormat("\t{0}{1}", line, Environment.NewLine);
+            }
+
+            return message.ToString();
         }
     }
+
 }
 
 
