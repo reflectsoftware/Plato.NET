@@ -857,8 +857,7 @@ namespace Plato.Security.Cryptography
                     }
                 }
             }
-
-
+            
             if (issuedCerts.Count > 0)
             {
                 if (bRootWasFirst)
@@ -870,14 +869,12 @@ namespace Plato.Security.Cryptography
                     mainCertThumbprint = GetCertThumbprint(issuedCerts[0]);
                 }
             }
-
-
+            
             foreach (X509Certificate2 cert in rootCerts)
             {
                 ImportCert(StoreName.Root, StoreLocation.LocalMachine, cert);
             }
-
-
+            
             foreach (X509Certificate2 cert in issuedCerts)
             {
                 ImportCert(storeName, storeLoc, cert);
@@ -901,6 +898,11 @@ namespace Plato.Security.Cryptography
             loc.Open(OpenFlags.ReadOnly | OpenFlags.IncludeArchived);
             try
             {
+                if(fType == X509FindType.FindByThumbprint && findValue.GetType() == typeof(string))
+                {
+                    findValue = FormatThumbprint(findValue as string);
+                }
+
                 var col = loc.Certificates.Find(fType, findValue, bValidOnly);
                 if (col == null || col.Count == 0)
                 {
@@ -1012,6 +1014,23 @@ namespace Plato.Security.Cryptography
             }
 
             return GetCert(storeName, sLoc, findType, findValue, false);
+        }
+
+        /// <summary>
+        /// Gets the PFX cert.
+        /// </summary>
+        /// <param name="sLoc">The s loc.</param>
+        /// <param name="fType">Type of the f.</param>
+        /// <param name="findValue">The find value.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="keyStorage">The key storage.</param>
+        /// <param name="bValidOnly">if set to <c>true</c> [b valid only].</param>
+        /// <returns></returns>
+        public static X509Certificate2 GetPfxCert(StoreLocation sLoc, X509FindType fType, object findValue, string password, X509KeyStorageFlags keyStorage, bool bValidOnly)
+        {
+            var cert = GetCert(sLoc, fType, findValue, bValidOnly);
+            var raw = cert.Export(X509ContentType.Pfx, password);
+            return new X509Certificate2(raw, password, keyStorage);
         }
     }
 }
