@@ -1029,6 +1029,11 @@ namespace Plato.Security.Cryptography
         public static X509Certificate2 GetPfxCert(StoreLocation sLoc, X509FindType fType, object findValue, string password, X509KeyStorageFlags keyStorage, bool bValidOnly)
         {
             var cert = GetCert(sLoc, fType, findValue, bValidOnly);
+            if(cert == null)
+            {
+                return null; //not found
+            }
+
             var raw = cert.Export(X509ContentType.Pfx, password);
             return new X509Certificate2(raw, password, keyStorage);
         }
