@@ -14,7 +14,7 @@ namespace Plato.Configuration
     /// </summary>
     public class SimpleConfigurationSectionManager
     {
-        private readonly NodeChildAttributes _nodeAttributes;
+        protected NodeChildAttributes _nodeAttributes;
        
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleConfigurationSectionManager"/> class.

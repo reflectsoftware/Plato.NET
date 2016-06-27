@@ -20,8 +20,6 @@ namespace Plato.Messaging.Implementations.AMQ
     /// <seealso cref="Plato.Messaging.AMQ.Interfaces.IAMQConfigurationManager" />
     public class AMQConfigurationManager : SimpleConfigurationSectionManager, IAMQConfigurationManager
     {
-        private readonly NodeChildAttributes _nodeAttributes;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AMQConfigurationManager"/> class.
         /// </summary>
