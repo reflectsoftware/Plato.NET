@@ -10,38 +10,30 @@ using Plato.Utils.Strings;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Configuration;
 using System.Linq;
-using System.Xml;
 
 namespace Plato.Messaging.Implementations.AMQ
-{    
+{
     /// <summary>
     /// 
     /// </summary>
     /// <seealso cref="Plato.Messaging.AMQ.Interfaces.IAMQConfigurationManager" />
-    public class AMQConfigurationManager : IAMQConfigurationManager
+    public class AMQConfigurationManager : SimpleConfigurationSectionManager, IAMQConfigurationManager
     {
         private readonly NodeChildAttributes _nodeAttributes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AMQConfigurationManager"/> class.
         /// </summary>
-        public AMQConfigurationManager()
+        public AMQConfigurationManager() : base("amqSettings")
         {
-            var xmlConfigSection = (XmlNode)ConfigurationManager.GetSection("amqSettings");
-            if (xmlConfigSection != null)
-            {
-                var cc = new ConfigNode(xmlConfigSection);
-                _nodeAttributes = ConfigHelper.GetNodeChildAttributes(cc, ".");
-            }
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AMQConfigurationManager"/> class.
         /// </summary>
         /// <param name="attributes">The attributes.</param>
-        public AMQConfigurationManager(IEnumerable<AMQConnectionSettings> connections, IEnumerable<AMQDestinationSettings> destinations = null)
+        public AMQConfigurationManager(IEnumerable<AMQConnectionSettings> connections, IEnumerable<AMQDestinationSettings> destinations = null) : base()
         {
             _nodeAttributes = new NodeChildAttributes();
             _nodeAttributes.ParentAttributes.NodeName = "amqSettings";
@@ -89,7 +81,7 @@ namespace Plato.Messaging.Implementations.AMQ
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets the attributes collection for all nodes.
         /// </summary>
@@ -105,41 +97,6 @@ namespace Plato.Messaging.Implementations.AMQ
             }
 
             return collections ?? new List<NameValueCollection>();
-        }
-
-        /// <summary>
-        /// Gets the attributes.
-        /// </summary>
-        /// <param name="nodeName">Name of the node.</param>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        public NameValueCollection GetAttributes(string nodeName, string name)
-        {
-            NameValueCollection attributes = null;
-            if (_nodeAttributes != null)
-            {
-                var nodeAttributes = _nodeAttributes.ChildAttributes.FirstOrDefault(x => x.NodeName == nodeName && x.Attributes["name"] == name);
-                if (nodeAttributes != null)
-                {
-                    attributes = new NameValueCollection(nodeAttributes.Attributes);
-                }
-            }
-
-            return attributes ?? new NameValueCollection();
-        }
-
-        /// <summary>
-        /// Gets the attribute.
-        /// </summary>
-        /// <param name="nodeName">Name of the node.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="attribute">The attribute.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns></returns>
-        public string GetAttribute(string nodeName, string name, string attribute, string defaultValue = null)
-        {
-            var attributes = GetAttributes(nodeName, name);
-            return attributes[attribute] ?? defaultValue;
         }
 
         /// <summary>
