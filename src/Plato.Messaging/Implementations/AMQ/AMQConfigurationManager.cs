@@ -33,7 +33,7 @@ namespace Plato.Messaging.Implementations.AMQ
         /// Initializes a new instance of the <see cref="AMQConfigurationManager"/> class.
         /// </summary>
         /// <param name="attributes">The attributes.</param>
-        public AMQConfigurationManager(IEnumerable<AMQConnectionSettings> connections, IEnumerable<AMQDestinationSettings> destinations = null) : base()
+        public AMQConfigurationManager(IEnumerable<AMQConnectionSettings> connections, IEnumerable<AMQDestinationSettings> destinations = null)
         {
             _nodeAttributes = new NodeChildAttributes();
             _nodeAttributes.ParentAttributes.NodeName = "amqSettings";

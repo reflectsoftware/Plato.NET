@@ -15,24 +15,20 @@ namespace Plato.Configuration
     public class SimpleConfigurationSectionManager
     {
         private readonly NodeChildAttributes _nodeAttributes;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleConfigurationSectionManager"/> class.
-        /// </summary>
-        public SimpleConfigurationSectionManager()
-        {
-        }
        
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleConfigurationSectionManager"/> class.
         /// </summary>
-        public SimpleConfigurationSectionManager(string settings)
+        public SimpleConfigurationSectionManager(string settings = null)
         {
-            var xmlConfigSection = (XmlNode)ConfigurationManager.GetSection(settings);
-            if (xmlConfigSection != null)
+            if (settings != null)
             {
-                var cc = new ConfigNode(xmlConfigSection);
-                _nodeAttributes = ConfigHelper.GetNodeChildAttributes(cc, ".");
+                var xmlConfigSection = (XmlNode)ConfigurationManager.GetSection(settings);
+                if (xmlConfigSection != null)
+                {
+                    var cc = new ConfigNode(xmlConfigSection);
+                    _nodeAttributes = ConfigHelper.GetNodeChildAttributes(cc, ".");
+                }
             }
         }
 
