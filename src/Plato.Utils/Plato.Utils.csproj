@@ -88,6 +88,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Miscellaneous\TimeEventTracker.cs" />
     <Compile Include="Strings\ExceptionFormatter.cs" />
+    <Compile Include="Strings\ExceptionFormatterExtension.cs" />
     <Compile Include="Strings\StringHash.cs" />
     <Compile Include="Strings\StringHelper.cs" />
   </ItemGroup>

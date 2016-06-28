@@ -3,13 +3,14 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 
 namespace Plato.Utils.Strings
 {
     /// <summary>
-    ///
+    /// 
     /// </summary>
     public static class ExceptionFormatter
     {
@@ -23,7 +24,15 @@ namespace Plato.Utils.Strings
             Line = string.Format("{0,40}", string.Empty).Replace(" ", "-");
         }
 
-        private static void AddException(StringBuilder body, Exception exception, int agexCount, string tabs = "")
+        /// <summary>
+        /// Adds the exception.
+        /// </summary>
+        /// <param name="body">The body.</param>
+        /// <param name="exception">The exception.</param>
+        /// <param name="agexCount">The agex count.</param>
+        /// <param name="tabs">The tabs.</param>
+        /// <param name="extension">The extension.</param>
+        private static void AddException(StringBuilder body, Exception exception, int agexCount, string tabs, Func<Exception, IEnumerable<ExceptionFormatterExtension>> extension)
         {
             var count = 1;
             var currentException = exception;
@@ -57,6 +66,23 @@ namespace Plato.Utils.Strings
                     }
                 }
 
+                // allow the application to extend the message for exceptions they wish
+                // to drill down for further errors/information to be displayed
+                if (extension != null)
+                {
+                    var extendedProperties = extension(currentException);
+                    foreach (var extended in extendedProperties)
+                    {
+                        body.AppendFormat("{0}{0}{1}{2}{0}", Environment.NewLine, tabs, extended.Caption);
+                        body.AppendFormat("{0}{1}{2}", tabs, Line, Environment.NewLine);
+
+                        foreach (var key in extended.Properties.AllKeys)
+                        {
+                            body.AppendFormat("{0}{1}: {2}", tabs, key, extended.Properties[key]);
+                        }
+                    }
+                }
+
                 var stackTrace = currentException.StackTrace;
                 if (stackTrace != null)
                 {
@@ -77,7 +103,7 @@ namespace Plato.Utils.Strings
         /// <param name="exception">The exception.</param>
         /// <param name="additionalInfo">The additional information.</param>
         /// <returns></returns>
-        public static string ConstructMessage(Exception exception, NameValueCollection additionalInfo = null)
+        public static string ConstructMessage(Exception exception, NameValueCollection additionalInfo = null, Func<Exception, IEnumerable<ExceptionFormatterExtension>> extension = null)
         {
             additionalInfo = additionalInfo ?? new NameValueCollection();
             additionalInfo["TrackingId"] = Guid.NewGuid().ToString();
@@ -114,13 +140,13 @@ namespace Plato.Utils.Strings
                     foreach (var agex in (exception as AggregateException).InnerExceptions)
                     {
                         body.AppendFormat("{0}{0}{1}) AggregateException Item {0}", Environment.NewLine, agexCount);
-                        AddException(body, agex, agexCount, "\t");
+                        AddException(body, agex, agexCount, "\t", extension);
                         agexCount++;
                     }
                 }
                 else
                 {
-                    AddException(body, exception, -1);
+                    AddException(body, exception, -1, string.Empty, extension);
                 }
             }
 
@@ -133,9 +159,9 @@ namespace Plato.Utils.Strings
         /// <param name="exception">The exception.</param>
         /// <param name="additionalInfo">The additional information.</param>
         /// <returns></returns>
-        public static string ConstructIndentedMessage(Exception exception, NameValueCollection additionalInfo = null)
+        public static string ConstructIndentedMessage(Exception exception, NameValueCollection additionalInfo = null, Func<Exception, IEnumerable<ExceptionFormatterExtension>> extension = null)
         {
-            var nonIdentedMessage = ConstructMessage(exception, additionalInfo);
+            var nonIdentedMessage = ConstructMessage(exception, additionalInfo, extension);
             var lines = nonIdentedMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             var message = new StringBuilder();
             foreach (var line in lines)
@@ -146,9 +172,4 @@ namespace Plato.Utils.Strings
             return message.ToString();
         }
     }
-
 }
-
-
-
-
