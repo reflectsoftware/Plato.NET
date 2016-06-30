@@ -6,7 +6,7 @@ using Plato.Messaging.Interfaces;
 
 namespace Plato.Messaging.Implementations.AMQ.Interfaces
 {
-    public interface IAMQSender : IMessageReceiverSender, IMessageSender<string>
+    public interface IAMQSender<TData> : IMessageReceiverSender, IMessageSender<TData>
     {
     }
 }

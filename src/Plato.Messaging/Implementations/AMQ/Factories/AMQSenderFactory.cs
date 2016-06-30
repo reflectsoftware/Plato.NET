@@ -26,12 +26,13 @@ namespace Plato.Messaging.Implementations.AMQ.Factories
         /// <summary>
         /// Creates the specified settings.
         /// </summary>
+        /// <typeparam name="TData">The type of the data.</typeparam>
         /// <param name="settings">The settings.</param>
         /// <param name="connectionName">Name of the connection.</param>
         /// <returns></returns>
-        public IAMQSender Create(AMQDestinationSettings settings, string connectionName)
+        public IAMQSender<TData> Create<TData>(AMQDestinationSettings settings, string connectionName)
         {
-            return new AMQSender(_connectionFactory, connectionName, settings);
+            return new AMQSender<TData>(_connectionFactory, connectionName, settings);
         }
     }
 }

@@ -8,6 +8,7 @@ using Plato.Messaging.Implementations.AMQ.Interfaces;
 using Plato.Messaging.Implementations.AMQ.Settings;
 using Plato.Messaging.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 
 namespace Plato.Messaging.Implementations.AMQ
@@ -17,7 +18,7 @@ namespace Plato.Messaging.Implementations.AMQ
     /// </summary>
     /// <seealso cref="Plato.Messaging.Implementations.AMQ.AMQReceiverSender" />
     /// <seealso cref="Plato.Messaging.Interfaces.IMessageSender{System.String}" />
-    public class AMQSender : AMQReceiverSender, IAMQSender
+    public class AMQSender<TData> : AMQReceiverSender, IAMQSender<TData>
     {
         private readonly AMQDestinationSettings _destination;
         private IMessageProducer _producer;
@@ -50,12 +51,49 @@ namespace Plato.Messaging.Implementations.AMQ
         }
 
         /// <summary>
+        /// Creates the message.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <returns></returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        private IMessage CreateMessage(TData data)
+        {
+            IMessage message = null;
+            if (data is string)
+            {
+                message = _session.CreateTextMessage(data as string);
+            }
+            else if (data is byte[])
+            {
+                message = _session.CreateBytesMessage(data as byte[]);
+            }
+            else if (data is IDictionary<string, string>)
+            {
+                var map = (data as IDictionary<string, string>);
+                var messageMap = _session.CreateMapMessage();
+                foreach (var key in map.Keys)
+                {
+                    messageMap.Body.SetString(key, map[key]);
+                }
+
+                message = messageMap;
+            }
+            else
+            {
+                throw new NotImplementedException($"Send data type not support for AMQSender: '{data.GetType().FullName}'");
+            }
+
+            return message;
+        }
+
+        /// <summary>
         /// Sends the specified data.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <param name="action">The action.</param>
-        public void Send(string data, Action<ISenderProperties> action = null)
-        {            
+        /// <exception cref="System.NotImplementedException"></exception>
+        public void Send(TData data, Action<ISenderProperties> action = null)
+        {
             try
             {
                 Open();
@@ -65,9 +103,9 @@ namespace Plato.Messaging.Implementations.AMQ
                     var destination = SessionUtil.GetDestination(_session, _destination.Path);
                     _producer = _session.CreateProducer(destination);
                 }
-                
+
                 var senderProperties = new AMQSenderProperties()
-                {                    
+                {
                     Properties = new NameValueCollection()
                 };
 
@@ -76,7 +114,7 @@ namespace Plato.Messaging.Implementations.AMQ
                     action(senderProperties);
                 }
 
-                var request = _session.CreateTextMessage(data);
+                var request = CreateMessage(data);
                 request.NMSCorrelationID = senderProperties.CorrelationId;
                 request.NMSTimeToLive = senderProperties.TTL;
 
