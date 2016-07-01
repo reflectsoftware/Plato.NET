@@ -59,6 +59,13 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Enums\MessageExceptionCode.cs" />
+    <Compile Include="Implementations\AMQ\AMQReceiverBytes.cs" />
+    <Compile Include="Implementations\AMQ\AMQReceiverBytesResult.cs" />
+    <Compile Include="Implementations\AMQ\AMQReceiverTextResult.cs" />
+    <Compile Include="Implementations\AMQ\AMQReceiverText.cs" />
+    <Compile Include="Implementations\AMQ\AMQReceiver.cs" />
+    <Compile Include="Implementations\AMQ\AMQSender.cs" />
+    <Compile Include="Implementations\AMQ\AMQSenderBytes.cs" />
     <Compile Include="Implementations\AMQ\Factories\AMQConnectionFactory.cs" />
     <Compile Include="Implementations\AMQ\Factories\AMQSenderFactory.cs" />
     <Compile Include="Implementations\AMQ\Factories\AMQReceiverFactory.cs" />
@@ -66,14 +73,17 @@
     <Compile Include="Implementations\AMQ\AMQConfigurationManager.cs" />
     <Compile Include="Implementations\AMQ\AMQReceiverSender.cs" />
     <Compile Include="Implementations\AMQ\AMQExceptionHandler.cs" />
-    <Compile Include="Implementations\AMQ\AMQSender.cs" />
+    <Compile Include="Implementations\AMQ\AMQSenderText.cs" />
     <Compile Include="Implementations\AMQ\AMQSenderProperties.cs" />
-    <Compile Include="Implementations\AMQ\AMQReceiver.cs" />
     <Compile Include="Implementations\AMQ\AMQReceiverResult.cs" />
     <Compile Include="Implementations\AMQ\Interfaces\IAMQConnectionFactory.cs" />
+    <Compile Include="Implementations\AMQ\Interfaces\IAMQReceiverBytes.cs" />
+    <Compile Include="Implementations\AMQ\Interfaces\IAMQReceiverText.cs" />
     <Compile Include="Implementations\AMQ\Interfaces\IAMQReceiver.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQSenderFactory.cs" />
     <Compile Include="Implementations\AMQ\Interfaces\IAMQSender.cs" />
+    <Compile Include="Implementations\AMQ\Interfaces\IAMQSenderFactory.cs" />
+    <Compile Include="Implementations\AMQ\Interfaces\IAMQSenderBytes.cs" />
+    <Compile Include="Implementations\AMQ\Interfaces\IAMQSenderText.cs" />
     <Compile Include="Implementations\AMQ\Interfaces\IAMQReceiverFactory.cs" />
     <Compile Include="Implementations\AMQ\Settings\AMQConnectionSettings.cs" />
     <Compile Include="Implementations\AMQ\Settings\AMQDestinationSettings.cs" />

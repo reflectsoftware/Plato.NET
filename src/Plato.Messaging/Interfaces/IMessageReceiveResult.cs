@@ -6,7 +6,10 @@ using System.Collections.Generic;
 
 namespace Plato.Messaging.Interfaces
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TData">The type of the data.</typeparam>
     public interface IMessageReceiveResult<TData>
     {
         /// <summary>

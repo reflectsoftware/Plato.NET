@@ -18,5 +18,21 @@ namespace Plato.Messaging.Implementations.AMQ.Interfaces
         /// <param name="connectionName">Name of the connection.</param>
         /// <returns></returns>
         IAMQReceiver Create(AMQDestinationSettings settings, string connectionName);
+
+        /// <summary>
+        /// Creates the text.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <returns></returns>
+        IAMQReceiverText CreateText(AMQDestinationSettings settings, string connectionName);
+
+        /// <summary>
+        /// Creates the bytes.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <returns></returns>
+        IAMQReceiverBytes CreateBytes(AMQDestinationSettings settings, string connectionName);
     }
 }

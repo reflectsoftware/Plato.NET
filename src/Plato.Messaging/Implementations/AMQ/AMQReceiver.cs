@@ -6,7 +6,6 @@ using Apache.NMS;
 using Apache.NMS.Util;
 using Plato.Messaging.Implementations.AMQ.Interfaces;
 using Plato.Messaging.Implementations.AMQ.Settings;
-using Plato.Messaging.Interfaces;
 using System;
 using System.Threading;
 
@@ -15,9 +14,9 @@ namespace Plato.Messaging.Implementations.AMQ
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Plato.Messaging.AMQ.AMQReceiverSender" />
-    /// <seealso cref="Plato.Messaging.Interfaces.IMessageReceiver" />
-    public class AMQReceiver : AMQReceiverSender, IAMQReceiver
+    /// <seealso cref="Plato.Messaging.Implementations.AMQ.AMQReceiverSender" />
+    /// <seealso cref="Plato.Messaging.Implementations.AMQ.Interfaces.IAMQReceiver" />
+    public class AMQReceiver: AMQReceiverSender, IAMQReceiver
     {
         private readonly TimeoutException _timeoutException;
         private readonly AMQDestinationSettings _destination;
@@ -89,11 +88,11 @@ namespace Plato.Messaging.Implementations.AMQ
         }
 
         /// <summary>
-        /// Reads the specified msec timeout.
+        /// Receives the message.
         /// </summary>
         /// <param name="msecTimeout">The msec timeout.</param>
         /// <returns></returns>
-        public IMessageReceiveResult<string> Receive(int msecTimeout = Timeout.Infinite)
+        public IMessage ReceiveMessage(int msecTimeout = Timeout.Infinite)
         {
             try
             {
@@ -112,14 +111,14 @@ namespace Plato.Messaging.Implementations.AMQ
                     }
                 }
 
-                ITextMessage message;
+                IMessage message;
                 if (msecTimeout != Timeout.Infinite)
                 {
-                    message = (ITextMessage)_consumer.Receive(TimeSpan.FromMilliseconds(msecTimeout));
+                    message = _consumer.Receive(TimeSpan.FromMilliseconds(msecTimeout));
                 }
                 else
                 {
-                    message = (ITextMessage)_consumer.Receive();
+                    message = _consumer.Receive();
                 }
 
                 if (message == null)
@@ -127,7 +126,7 @@ namespace Plato.Messaging.Implementations.AMQ
                     throw _timeoutException;
                 }
 
-                return new AMQReceiverResult(message);
+                return message;
             }
             catch (TimeoutException)
             {
@@ -145,6 +144,16 @@ namespace Plato.Messaging.Implementations.AMQ
 
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Receives the result.
+        /// </summary>
+        /// <param name="msecTimeout">The msec timeout.</param>
+        /// <returns></returns>
+        public AMQReceiverResult ReceiveResult(int msecTimeout = Timeout.Infinite)
+        {
+            return new AMQReceiverResult(ReceiveMessage(msecTimeout));
         }
     }
 }

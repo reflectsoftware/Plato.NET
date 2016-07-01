@@ -33,5 +33,27 @@ namespace Plato.Messaging.Implementations.AMQ.Factories
         {
             return new AMQReceiver(_connectionFactory, connectionName, settings);
         }
+
+        /// <summary>
+        /// Creates the text.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <returns></returns>
+        public IAMQReceiverText CreateText(AMQDestinationSettings settings, string connectionName)
+        {
+            return new AMQReceiverText(_connectionFactory, connectionName, settings);
+        }
+
+        /// <summary>
+        /// Creates the bytes.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <returns></returns>
+        public IAMQReceiverBytes CreateBytes(AMQDestinationSettings settings, string connectionName)
+        {
+            return new AMQReceiverBytes(_connectionFactory, connectionName, settings);
+        }
     }
 }

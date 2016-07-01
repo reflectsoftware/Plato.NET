@@ -3,19 +3,20 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Apache.NMS;
-using Plato.Messaging.Interfaces;
 using System;
 using System.Collections.Generic;
 
 namespace Plato.Messaging.Implementations.AMQ
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Plato.Messaging.Interfaces.IMessageReceiveResult" />
-    public class AMQReceiverResult : IMessageReceiveResult<string>
+    public class AMQReceiverResult
     {
-        private readonly ITextMessage _message;
+        /// <summary>
+        /// Gets the message.
+        /// </summary>
+        /// <value>
+        /// The message.
+        /// </value>
+        public IMessage Message { get; private set; }
 
         /// <summary>
         /// Gets the headers.
@@ -37,16 +38,15 @@ namespace Plato.Messaging.Implementations.AMQ
         /// Initializes a new instance of the <see cref="AMQReceiverResult"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        internal AMQReceiverResult(ITextMessage message)
+        internal AMQReceiverResult(IMessage message)
         {
-            _message = message;
-
+            Message = message;
             HasAcknowledged = false;            
             Headers = new Dictionary<string, object>();
 
-            foreach(string key in _message.Properties.Keys)
+            foreach(string key in Message.Properties.Keys)
             {
-                Headers[key] = _message.Properties[key];
+                Headers[key] = Message.Properties[key];
             }
         }
              
@@ -72,21 +72,7 @@ namespace Plato.Messaging.Implementations.AMQ
         {
             get
             {
-                return _message.NMSMessageId;
-            }
-        }
-
-        /// <summary>
-        /// Gets the data.
-        /// </summary>
-        /// <value>
-        /// The data.
-        /// </value>
-        public string Data
-        {
-            get
-            {
-                return _message.Text;
+                return Message.NMSMessageId;
             }
         }
 
@@ -97,7 +83,7 @@ namespace Plato.Messaging.Implementations.AMQ
         {
             if (!HasAcknowledged)
             {
-                _message.Acknowledge();
+                Message.Acknowledge();
                 HasAcknowledged = true;
             }
         }
