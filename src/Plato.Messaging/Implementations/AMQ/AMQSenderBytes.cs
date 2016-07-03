@@ -35,7 +35,7 @@ namespace Plato.Messaging.Implementations.AMQ
         {
             Send(action, (session) =>
             {
-                return session.CreateBytesMessage (data);
+                return session.CreateBytesMessage(data);
             });
         }
     }
