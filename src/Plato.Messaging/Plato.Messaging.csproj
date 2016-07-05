@@ -87,6 +87,7 @@
     <Compile Include="Implementations\AMQ\Interfaces\IAMQReceiverFactory.cs" />
     <Compile Include="Implementations\AMQ\Settings\AMQConnectionSettings.cs" />
     <Compile Include="Implementations\AMQ\Settings\AMQDestinationSettings.cs" />
+    <Compile Include="Implementations\RMQ\RMQBasicConsumer.cs" />
     <Compile Include="Implementations\RMQ\RMQExceptionHandler.cs" />
     <Compile Include="Interfaces\IMessageConnectionFactory.cs" />
     <Compile Include="Interfaces\IMessageReceiver.cs" />

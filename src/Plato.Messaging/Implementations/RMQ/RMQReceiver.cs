@@ -4,7 +4,6 @@
 
 using Plato.Messaging.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
-using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
@@ -20,7 +19,7 @@ namespace Plato.Messaging.Implementations.RMQ
     public class RMQReceiver : RMQReceiverSender, IMessageReceiver<byte[]>
     {
         private readonly List<string> _routingKeys;
-        protected QueueingBasicConsumer _queueingConsumer;
+        protected RMQBasicConsumer _queueingConsumer;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQReceiver"/> class.
@@ -86,7 +85,7 @@ namespace Plato.Messaging.Implementations.RMQ
 
                 try
                 {
-                    _queueingConsumer = new QueueingBasicConsumer(_channel);
+                    _queueingConsumer = new RMQBasicConsumer(_channel);
                     _channel.BasicConsume(_settings.QueueSettings.Name,
                         _settings.QueueSettings.ConsumerSettings.NoAck,
                         _settings.QueueSettings.ConsumerSettings.Tag,

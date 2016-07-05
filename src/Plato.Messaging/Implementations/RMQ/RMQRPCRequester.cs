@@ -2,9 +2,8 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using Plato.Messaging.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
-using RabbitMQ.Client;
+using Plato.Messaging.Interfaces;
 using RabbitMQ.Client.Events;
 using System;
 using System.Threading;
@@ -18,7 +17,7 @@ namespace Plato.Messaging.Implementations.RMQ
     /// <seealso cref="Plato.Messaging.Interfaces.IMessageRPCRequester" />
     public class RMQRPCRequester : RMQReceiverSender, IMessageRPCRequester<byte[]>
     {
-        protected QueueingBasicConsumer _replyQueueingConsumer;
+        protected RMQBasicConsumer _replyQueueingConsumer;
         protected string _replyQueueName;
 
         /// <summary>
@@ -55,7 +54,7 @@ namespace Plato.Messaging.Implementations.RMQ
 
                 try
                 {
-                    _replyQueueingConsumer = new QueueingBasicConsumer(_channel);
+                    _replyQueueingConsumer = new RMQBasicConsumer(_channel);
                     _channel.BasicConsume(_replyQueueName, true, _replyQueueingConsumer);
                 }
                 catch (Exception)

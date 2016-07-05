@@ -53,7 +53,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MsgPack, Version=0.7.0.0, Culture=neutral, PublicKeyToken=a2625990d5dc0167, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MsgPack.Cli.0.7.0-alpha2\lib\net461\MsgPack.dll</HintPath>
+      <HintPath>..\..\packages\MsgPack.Cli.0.7.0\lib\net461\MsgPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
