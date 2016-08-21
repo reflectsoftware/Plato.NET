@@ -68,6 +68,7 @@
     <Compile Include="Dates\DateHelper.cs" />
     <Compile Include="Enums\EnumMapAttribute.cs" />
     <Compile Include="Enums\EnumMapHelper.cs" />
+    <Compile Include="Miscellaneous\Guard.cs" />
     <Compile Include="Interfaces\ILogTextFileWriter.cs" />
     <Compile Include="Interfaces\ILogTextFileWriterFactory.cs" />
     <Compile Include="Locks\Enums\MutexResourceLockType.cs" />
