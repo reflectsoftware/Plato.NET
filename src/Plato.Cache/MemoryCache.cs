@@ -266,7 +266,8 @@ namespace Plato.Cache
         /// <returns></returns>
         private CacheNode GetNode(string name)
         {
-            return CacheContainer[PrepareObjectName(name)];
+            var key = PrepareObjectName(name);
+            return CacheContainer.ContainsKey(key) ? CacheContainer[key] : null;
         }
 
         /// <summary>
