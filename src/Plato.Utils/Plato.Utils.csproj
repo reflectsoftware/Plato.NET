@@ -68,6 +68,7 @@
     <Compile Include="Dates\DateHelper.cs" />
     <Compile Include="Enums\EnumMapAttribute.cs" />
     <Compile Include="Enums\EnumMapHelper.cs" />
+    <Compile Include="Miscellaneous\Disposables.cs" />
     <Compile Include="Miscellaneous\Guard.cs" />
     <Compile Include="Interfaces\ILogTextFileWriter.cs" />
     <Compile Include="Interfaces\ILogTextFileWriterFactory.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Logging\LogNotification.cs" />
     <Compile Include="Miscellaneous\ArrayConverter.cs" />
     <Compile Include="Miscellaneous\DelayEvent.cs" />
+    <Compile Include="Interfaces\IDisposables.cs" />
     <Compile Include="Miscellaneous\LogTextFileWriter.cs" />
     <Compile Include="Miscellaneous\LogTextFileWriterFactory.cs" />
     <Compile Include="Miscellaneous\MiscHelper.cs" />
