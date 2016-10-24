@@ -158,8 +158,12 @@ namespace Plato.Utils.Strings
 
                 if (maxSize < remaining && nextText[nextText.Length - 1] != space)
                 {
-                    maxSize = nextText.LastIndexOf(space) + 1;
-                    nextText = phrase.Substring(next, maxSize);
+                    var testMaxSize = nextText.LastIndexOf(space) + 1;
+                    if (testMaxSize > 0)
+                    {
+                        nextText = phrase.Substring(next, testMaxSize);
+                        maxSize = testMaxSize;
+                    }
                 }
 
                 phrases.Add(nextText);
