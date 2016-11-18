@@ -2,6 +2,7 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Plato.Configuration.Interfaces;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Plato.Configuration
     /// <summary>
     /// 
     /// </summary>
-    public class SimpleConfigurationSectionManager
+    public class SimpleConfigurationSectionManager : ISimpleConfigurationSectionManager
     {
         protected NodeChildAttributes _nodeAttributes;
        

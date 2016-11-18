@@ -81,6 +81,7 @@
     <Compile Include="Interfaces\IConfigNode.cs" />
     <Compile Include="Interfaces\IConfigSettings.cs" />
     <Compile Include="Interfaces\ISectionContentContainer.cs" />
+    <Compile Include="Interfaces\ISimpleConfigurationSectionManager.cs" />
     <Compile Include="LocalStates.cs" />
     <Compile Include="LocalStatesManager.cs" />
     <Compile Include="NodeAttributes.cs" />
