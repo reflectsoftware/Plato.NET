@@ -46,7 +46,7 @@ namespace Plato.Messaging.Implementations.RMQ
         /// </summary>
         ~RMQReceiverSender()
         {
-            Dispose(true);
+            Dispose(false);
         }
 
         /// <summary>
