@@ -60,6 +60,7 @@ namespace Plato.Messaging.Implementations.RMQ
                 {
                     return;
                 }
+
                 try
                 {
                     OpenConnection();

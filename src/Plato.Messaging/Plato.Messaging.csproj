@@ -91,6 +91,7 @@
     <Compile Include="Implementations\RMQ\Factories\RMQReceiverFactory.cs" />
     <Compile Include="Implementations\RMQ\Factories\RMQSenderFactory.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQConnectionFactory.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQConnectionManager.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQReceiver.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQReceiverFactory.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQReceiverText.cs" />

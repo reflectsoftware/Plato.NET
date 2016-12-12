@@ -2,8 +2,8 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Plato.Messaging.Implementations.RMQ.Interfaces;
 using Plato.Messaging.Interfaces;
-using RabbitMQ.Client;
 
 namespace Plato.Messaging.Implementations.RMQ.Settings
 {
@@ -27,7 +27,7 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// <value>
         /// The connection factory.
         /// </value>
-        public IMessageConnectionManager<IConnection> ConnectionFactory { get; set; }
+        public IRMQConnectionFactory ConnectionFactory { get; set; }
 
         /// <summary>
         /// Gets or sets the exchange settings.

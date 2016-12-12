@@ -14,13 +14,13 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
     /// <seealso cref="Plato.Messaging.Implementations.AMQ.Interfaces.IRMQConnectionFactory" />
     public class RMQConnectionFactory : IRMQConnectionFactory
     {
-        private readonly IMessageConnectionManager<IConnection> _connectionManager;
+        private readonly IRMQConnectionManager _connectionManager;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RMQConnectionFactory"/> class.
+        /// Initializes a new instance of the <see cref="RMQConnectionFactory" /> class.
         /// </summary>
         /// <param name="connectionManager">The connection manager.</param>
-        public RMQConnectionFactory(IMessageConnectionManager<IConnection> connectionManager)
+        public RMQConnectionFactory(IRMQConnectionManager connectionManager)
         {
             _connectionManager = connectionManager;
         }
@@ -35,6 +35,15 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
         public IConnection CreateConnection(string name)
         {
             return _connectionManager.DeclareConnection(name);
+        }
+
+        /// <summary>
+        /// Removes the connection.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        public void RemoveConnection(string name)
+        {
+            _connectionManager.RemoveConnection(name);
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Plato.Messaging.Implementations.RMQ
         {
             if (_connection == null || !_connection.IsOpen)
             {
-                _connection = _settings.ConnectionFactory.DeclareConnection(_settings.ConnectionName);
+                _connection = _settings.ConnectionFactory.CreateConnection(_settings.ConnectionName);
             }
         }
 

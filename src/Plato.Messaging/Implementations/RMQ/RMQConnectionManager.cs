@@ -19,8 +19,8 @@ namespace Plato.Messaging.Implementations.RMQ
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Plato.Messaging.Interfaces.IMessageConnectionManager{RabbitMQ.Client.IConnection}" />
-    public class RMQConnectionManager : IMessageConnectionManager<IConnection>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQConnectionManager" />
+    public class RMQConnectionManager : IRMQConnectionManager
     {
         private class NamedConnection : IDisposable
         {
