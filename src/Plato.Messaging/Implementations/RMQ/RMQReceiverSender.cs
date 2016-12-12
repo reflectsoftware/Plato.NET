@@ -128,11 +128,12 @@ namespace Plato.Messaging.Implementations.RMQ
             {
                 return;
             }
+
             try
             {
                 if (_channel.IsOpen)
                 {
-                    _channel.Close();
+                    _channel.Close();                    
                 }
             }
             catch (Exception)
@@ -140,7 +141,7 @@ namespace Plato.Messaging.Implementations.RMQ
             }
             finally
             {
-                _channel.Dispose();
+                _channel?.Dispose();
                 _channel = null;
             }
         }

@@ -14,7 +14,7 @@ namespace Plato.Messaging.Implementations.RMQ
     /// 
     /// </summary>
     /// <seealso cref="Plato.Messaging.Interfaces.IMessageReceiveResult" />
-    public class RMQReceiverResult : IMessageReceiveResult<byte[]>
+    public abstract class RMQReceiverResult<TData> : IMessageReceiveResult<TData>
     {
         /// <summary>
         /// Gets the channel.
@@ -141,20 +141,6 @@ namespace Plato.Messaging.Implementations.RMQ
         }
 
         /// <summary>
-        /// Gets the data.
-        /// </summary>
-        /// <value>
-        /// The data.
-        /// </value>
-        public byte[] Data
-        {
-            get
-            {
-                return DeliverEventArgs.Body;
-            }
-        }
-
-        /// <summary>
         /// Acknowledges this instance.
         /// </summary>
         public void Acknowledge()
@@ -204,5 +190,13 @@ namespace Plato.Messaging.Implementations.RMQ
                 throw;
             }
         }
+
+        /// <summary>
+        /// Gets the data.
+        /// </summary>
+        /// <value>
+        /// The data.
+        /// </value>
+        public abstract TData Data { get; }
     }
 }

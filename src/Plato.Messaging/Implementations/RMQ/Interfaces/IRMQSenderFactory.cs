@@ -3,23 +3,22 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Plato.Messaging.Interfaces;
-using Plato.Messaging.Implementations.RMQ.Settings;
 
-/// <summary>
-/// 
-/// </summary>
-namespace Plato.Messaging.Implementations.RMQ.Factories
+namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
-    public class RMQRPCResponderFactory : IMessageRPCResponderFactory<byte[]>
+    public interface IRMQSenderFactory
     {
         /// <summary>
         /// Creates the specified settings.
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <returns></returns>
-        public IMessageRPCResponder<byte[]> Create(IMessageSettings settings)
-        {
-            return new RMQRPCResponder((settings as RMQSettings));
-        }
+        IMessageSender<byte[]> Create(IMessageSettings settings);
+        /// <summary>
+        /// Creates the text.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
+        /// <returns></returns>
+        IMessageSender<string> CreateText(IMessageSettings settings);
     }
 }
