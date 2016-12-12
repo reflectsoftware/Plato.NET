@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.Cache", "src\Plato.Cache\Plato.Cache.csproj", "{96E1C168-23CA-4423-96F9-46E547561F3C}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -53,6 +53,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. SolutionItems", "01. So
 		src\Plato.NET.licenseheader = src\Plato.NET.licenseheader
 		src\VersionInfo.cs = src\VersionInfo.cs
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{30CF15FE-1ED2-458E-BB84-3AAE854BB4F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Producer", "Producer\Producer.csproj", "{B6924293-40DB-457D-88CA-43B05E30AED5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -112,6 +116,10 @@ Global
 		{83137E60-E628-4D10-850D-F9F0B3816080}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83137E60-E628-4D10-850D-F9F0B3816080}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83137E60-E628-4D10-850D-F9F0B3816080}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6924293-40DB-457D-88CA-43B05E30AED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6924293-40DB-457D-88CA-43B05E30AED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6924293-40DB-457D-88CA-43B05E30AED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6924293-40DB-457D-88CA-43B05E30AED5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,5 +138,6 @@ Global
 		{54328F32-1C58-4BA0-BE59-57423BF5271C} = {28D2CB15-FCC1-44A6-B2CC-E78887774870}
 		{48DA206A-F520-45D6-AF51-5CEC4EB505EC} = {28D2CB15-FCC1-44A6-B2CC-E78887774870}
 		{83137E60-E628-4D10-850D-F9F0B3816080} = {28D2CB15-FCC1-44A6-B2CC-E78887774870}
+		{B6924293-40DB-457D-88CA-43B05E30AED5} = {30CF15FE-1ED2-458E-BB84-3AAE854BB4F4}
 	EndGlobalSection
 EndGlobal
