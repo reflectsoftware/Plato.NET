@@ -17,43 +17,46 @@ namespace Producer
         static void Main(string[] args)
         {
             IRMQConfigurationManager _configurationManager = new RMQConfigurationManager();
-            IRMQConnectionManager _connectionManager = new RMQConnectionManager(_configurationManager);
-            IRMQConnectionFactory _connectionFactory = new RMQConnectionFactory(_connectionManager);
-            
-            var esettings = _configurationManager.GetQueueSettings("SomeName1");
+            IRMQConnectionFactory _connectionManager = new RMQConnectionFactory(_configurationManager);
 
-            return;
-
-            var rmqSettings = new RMQSettings()
+            using (var connection = _connectionManager.CreateConnection("defaultConnection"))
             {
-                ConnectionName = "defaultConnection",
-                ConnectionFactory = _connectionFactory,
-                ExchangeSettings  = _configurationManager.GetExchangeSettings("test")
-            };
+            }
+            
+            //var esettings = _configurationManager.GetQueueSettings("SomeName1");
+
+            //return;
+
+            //var rmqSettings = new RMQSettings()
+            //{
+            //    ConnectionName = "defaultConnection",
+            //    ConnectionFactory = _connectionFactory,
+            //    ExchangeSettings  = _configurationManager.GetExchangeSettings("test")
+            //};
                        
 
-            var senderFactory = new RMQSenderFactory();
-            var sender = senderFactory.CreateText(rmqSettings);
+            //var senderFactory = new RMQSenderFactory();
+            //var sender = senderFactory.CreateText(rmqSettings);
 
-            var sample =  new
-            {
-                Name = "Ross",
-                Location = "Toronto"
-            };
-
-            sender.Send( JsonConvert.SerializeObject(sample));
-
-            //while (true)
+            //var sample =  new
             //{
-            //    var key = Console.ReadKey();
-            //    if(key.KeyChar == 'q')
-            //    {
-            //        break;
-            //    }
-            //}
+            //    Name = "Ross",
+            //    Location = "Toronto"
+            //};
 
-            sender.Dispose();
-            _connectionManager.Dispose();
+            //sender.Send( JsonConvert.SerializeObject(sample));
+
+            ////while (true)
+            ////{
+            ////    var key = Console.ReadKey();
+            ////    if(key.KeyChar == 'q')
+            ////    {
+            ////        break;
+            ////    }
+            ////}
+
+            //sender.Dispose();
+            //_connectionManager.Dispose();
         }
     }
 }

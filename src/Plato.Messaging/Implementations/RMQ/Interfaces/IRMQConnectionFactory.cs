@@ -8,7 +8,6 @@ using RabbitMQ.Client;
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
     public interface IRMQConnectionFactory : IMessageConnectionFactory<IConnection>
-    {
-        void RemoveConnection(string name);
+    {        
     }
 }

@@ -1,0 +1,115 @@
+﻿// Plato.NET
+// Copyright (c) 2016 ReflectSoftware Inc.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
+
+using Plato.Messaging.Implementations.RMQ.Interfaces;
+using Plato.Messaging.Implementations.RMQ.Settings;
+using RabbitMQ.Client.Events;
+using System;
+using System.Threading;
+
+namespace Plato.Messaging.Implementations.RMQ
+{
+    public abstract class RMQConsumer : RMQQueue
+    {
+        protected RMQBasicConsumer _queueingConsumer;
+
+        public RMQConsumer(IRMQConnectionFactory connctionFactory, string connectionName, RMQQueueSettings settings) : base(connctionFactory, connectionName, settings)
+        {
+        }
+
+        private void OnCancelConsumer(object sender, ConsumerEventArgs args)
+        {
+            _queueingConsumer = null;
+        }
+
+        public override void Open()
+        {
+            try
+            {
+                if (IsOpen() && _queueingConsumer != null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    _queueingConsumer = new RMQBasicConsumer(_channel);
+
+                    _channel.BasicConsume(_settings.QueueName,
+                        _settings.ConsumerSettings.NoAck,
+                        _settings.ConsumerSettings.Tag,
+                        _settings.ConsumerSettings.NoLocal,
+                        _settings.ConsumerSettings.Exclusive,
+                        _settings.ConsumerSettings.Arguments,
+                        _queueingConsumer);
+
+                    _queueingConsumer.ConsumerCancelled += OnCancelConsumer;
+                }
+                catch (Exception)
+                {
+                    _queueingConsumer = null;
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
+                if (newException != null)
+                {
+                    throw newException;
+                }
+
+                throw;
+            }
+        }
+
+        public void ClearCacheBuffer()
+        {
+            try
+            {
+                if (IsOpen())
+                {
+                    CloseChannel();
+                }
+            }
+            catch (Exception ex)
+            {
+                var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
+                if (newException != null)
+                {
+                    throw newException;
+                }
+
+                throw;
+            }
+        }
+
+        protected BasicDeliverEventArgs _Receive(int msecTimeout = Timeout.Infinite)
+        {
+            try
+            {
+                Open();
+
+                var deliverArgs = (BasicDeliverEventArgs)null;
+                var status = _queueingConsumer.Queue.Dequeue(msecTimeout, out deliverArgs);
+                if (status)
+                {
+                    return deliverArgs; 
+                }
+
+                throw _TimeoutException;
+            }
+            catch (Exception ex)
+            {
+                var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
+                if (newException != null)
+                {
+                    throw newException;
+                }
+
+                throw;
+            }
+        }
+    }
+}
