@@ -66,7 +66,7 @@ namespace Plato.Messaging.Implementations.RMQ
                     OpenConnection();
                     OpenChannel();
 
-                    _channel.QueueDeclare(_settings.QueueSettings.Name,
+                    _channel.QueueDeclare(_settings.QueueSettings.QueueName,
                         _settings.QueueSettings.Durable,
                         _settings.QueueSettings.Exclusive,
                         _settings.QueueSettings.AutoDelete,
@@ -74,7 +74,7 @@ namespace Plato.Messaging.Implementations.RMQ
 
                     foreach (var routingKey in _routingKeys)
                     {
-                        _channel.QueueBind(_settings.QueueSettings.Name, _settings.ExchangeSettings.Name, routingKey, null);
+                        _channel.QueueBind(_settings.QueueSettings.QueueName, _settings.ExchangeSettings.ExchangeName, routingKey, null);
                     }
                 }
                 catch (Exception)
@@ -86,7 +86,7 @@ namespace Plato.Messaging.Implementations.RMQ
                 try
                 {
                     _queueingConsumer = new RMQBasicConsumer(_channel);
-                    _channel.BasicConsume(_settings.QueueSettings.Name,
+                    _channel.BasicConsume(_settings.QueueSettings.QueueName,
                         _settings.QueueSettings.ConsumerSettings.NoAck,
                         _settings.QueueSettings.ConsumerSettings.Tag,
                         _settings.QueueSettings.ConsumerSettings.NoLocal,

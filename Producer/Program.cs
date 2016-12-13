@@ -19,6 +19,10 @@ namespace Producer
             IRMQConfigurationManager _configurationManager = new RMQConfigurationManager();
             IRMQConnectionManager _connectionManager = new RMQConnectionManager(_configurationManager);
             IRMQConnectionFactory _connectionFactory = new RMQConnectionFactory(_connectionManager);
+            
+            var esettings = _configurationManager.GetQueueSettings("SomeName1");
+
+            return;
 
             var rmqSettings = new RMQSettings()
             {

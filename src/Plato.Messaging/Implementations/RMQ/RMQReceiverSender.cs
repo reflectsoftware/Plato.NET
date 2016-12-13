@@ -2,11 +2,10 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using Plato.Messaging.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
+using Plato.Messaging.Interfaces;
 using RabbitMQ.Client;
 using System;
-using System.Collections.Generic;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
@@ -101,9 +100,14 @@ namespace Plato.Messaging.Implementations.RMQ
                 {
                     _channel = _connection.CreateModel();
 
-                    if (_settings.ExchangeSettings != null)
+                    if (_settings.ExchangeSettings != null 
+                    && !string.IsNullOrWhiteSpace(_settings.ExchangeSettings.ExchangeName))
                     {
-                        _channel.ExchangeDeclare(_settings.ExchangeSettings.Name, _settings.ExchangeSettings.Type, _settings.ExchangeSettings.Durable, _settings.ExchangeSettings.AutoDelete, _settings.ExchangeSettings.Arguments);
+                        _channel.ExchangeDeclare(_settings.ExchangeSettings.ExchangeName, 
+                            _settings.ExchangeSettings.Type, 
+                            _settings.ExchangeSettings.Durable, 
+                            _settings.ExchangeSettings.AutoDelete, 
+                            _settings.ExchangeSettings.Arguments);
                     }
                 }
             }
@@ -154,6 +158,10 @@ namespace Plato.Messaging.Implementations.RMQ
             Dispose(true);
         }
 
+        /// <summary>
+        /// Determines whether this instance is open.
+        /// </summary>
+        /// <returns></returns>
         public virtual bool IsOpen()
         {
             return _channel != null && _channel.IsOpen;
@@ -180,44 +188,6 @@ namespace Plato.Messaging.Implementations.RMQ
         {
             CloseChannel();
             CloseConnection();
-        }
-
-        /// <summary>
-        /// Exchanges the declare.
-        /// </summary>
-        /// <param name="exchange">The exchange.</param>
-        /// <param name="type">The type.</param>
-        /// <param name="durable">if set to <c>true</c> [durable].</param>
-        /// <param name="autoDelete">if set to <c>true</c> [automatic delete].</param>
-        /// <param name="arguments">The arguments.</param>
-        public void ExchangeDeclare(string exchange, string type = "direct", bool durable = true, bool autoDelete = false, IDictionary<string, object> arguments = null)
-        {
-            try
-            {
-                Open();
-
-                _channel = _connection.CreateModel();
-                _channel.ExchangeDeclare(exchange, type, durable, autoDelete, arguments);
-            }
-            catch (Exception ex)
-            {
-                var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
-                if (newException != null)
-                {
-                    throw newException;
-                }
-
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Exchanges the declare.
-        /// </summary>
-        /// <param name="exchangeSettings">The exchange settings.</param>
-        public void ExchangeDeclare(RMQExchangeSettings exchangeSettings)
-        {
-            ExchangeDeclare(exchangeSettings.Name, exchangeSettings.Type, exchangeSettings.Durable, exchangeSettings.AutoDelete, exchangeSettings.Arguments);
         }
     }
 }

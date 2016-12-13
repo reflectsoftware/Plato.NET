@@ -20,6 +20,14 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the exchange.
+        /// </summary>
+        /// <value>
+        /// The name of the exchange.
+        /// </value>
+        public string ExchangeName { get; set; }
+
+        /// <summary>
         /// Gets or sets the type.
         /// </summary>
         /// <value>
@@ -50,18 +58,20 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// The arguments.
         /// </value>
         public IDictionary<string, object> Arguments { get; set; }
-        
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="RMQExchangeSettings"/> class.
+        /// Initializes a new instance of the <see cref="RMQExchangeSettings" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
+        /// <param name="exchangeName">Name of the exchange.</param>
         /// <param name="type">The type.</param>
         /// <param name="durable">if set to <c>true</c> [durable].</param>
         /// <param name="autoDelete">if set to <c>true</c> [automatic delete].</param>
         /// <param name="arguments">The arguments.</param>
-        public RMQExchangeSettings(string name, string type = "direct", bool durable = true, bool autoDelete = false, IDictionary<string, object> arguments = null)
+        public RMQExchangeSettings(string name, string exchangeName = "", string type = "direct", bool durable = true, bool autoDelete = false, IDictionary<string, object> arguments = null)
         {
             Name = name;
+            ExchangeName = exchangeName;
             Type = type;
             Durable = durable;
             AutoDelete = autoDelete;

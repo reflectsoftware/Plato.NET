@@ -20,6 +20,14 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the queue.
+        /// </summary>
+        /// <value>
+        /// The name of the queue.
+        /// </value>
+        public string QueueName { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this <see cref="RMQQueueSettings"/> is durable.
         /// </summary>
         /// <value>
@@ -67,9 +75,10 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// <param name="exclusive">if set to <c>true</c> [exclusive].</param>
         /// <param name="autoDelete">if set to <c>true</c> [automatic delete].</param>
         /// <param name="arguments">The arguments.</param>
-        public RMQQueueSettings(string name, bool durable = true, bool exclusive = false, bool autoDelete = false, IDictionary<string, object> arguments = null)
+        public RMQQueueSettings(string name, string queueName = null, bool durable = true, bool exclusive = false, bool autoDelete = false, IDictionary<string, object> arguments = null)
         {
             Name = name;
+            QueueName = queueName ?? name;
             Durable = durable;
             Exclusive = exclusive;
             AutoDelete = autoDelete;

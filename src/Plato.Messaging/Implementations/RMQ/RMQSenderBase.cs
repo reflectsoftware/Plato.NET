@@ -35,10 +35,7 @@ namespace Plato.Messaging.Implementations.RMQ
         /// <param name="args">The <see cref="BasicReturnEventArgs"/> instance containing the event data.</param>
         private void DoOnReturn(object sender, BasicReturnEventArgs args)
         {
-            if (OnReturn != null)
-            {
-                OnReturn(args);
-            }
+            OnReturn?.Invoke(args);
         }
 
         /// <summary>
@@ -82,7 +79,7 @@ namespace Plato.Messaging.Implementations.RMQ
                 var senderProperties = new RMQSenderProperties()
                 {
                     Properties = props,
-                    Exchange = _settings.ExchangeSettings != null ? _settings.ExchangeSettings.Name : string.Empty,
+                    Exchange = _settings.ExchangeSettings != null ? _settings.ExchangeSettings.ExchangeName : string.Empty,
                     RoutingKey = string.Empty,
                     Mandatory = false,
                 };
