@@ -2,6 +2,8 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -134,6 +136,43 @@ namespace Plato.Utils.Strings
         public static string ToTitleCase(string str)
         {
             return ToTitleCase(CultureInfo.CurrentCulture, str);
+        }
+
+        /// <summary>
+        /// Splits the word phrase by.
+        /// </summary>
+        /// <param name="phrase">The phrase.</param>
+        /// <param name="maxPhraseSize">Maximum size of the phrase.</param>
+        /// <returns></returns>
+        public static IEnumerable<string> SplitWordPhraseBy(string phrase, int maxPhraseSize)
+        {
+            const char space = ' ';
+            var phrases = new List<string>();
+            var remaining = phrase.Length;
+            var next = 0;
+
+            while (remaining > 0)
+            {
+                var maxSize = Math.Min(remaining, maxPhraseSize);
+                var nextText = phrase.Substring(next, maxSize);
+
+                if (maxSize < remaining && nextText[nextText.Length - 1] != space)
+                {
+                    var testMaxSize = nextText.LastIndexOf(space) + 1;
+                    if (testMaxSize > 0)
+                    {
+                        nextText = phrase.Substring(next, testMaxSize);
+                        maxSize = testMaxSize;
+                    }
+                }
+
+                phrases.Add(nextText);
+
+                remaining -= maxSize;
+                next += maxSize;
+            }
+
+            return phrases;
         }
     }
 }

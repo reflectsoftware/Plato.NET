@@ -46,7 +46,7 @@ namespace Plato.Messaging.Implementations.RMQ
         /// </summary>
         ~RMQReceiverSender()
         {
-            Dispose(true);
+            Dispose(false);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Plato.Messaging.Implementations.RMQ
         {
             if (_connection == null || !_connection.IsOpen)
             {
-                _connection = _settings.ConnectionFactory.DeclareConnection(_settings.ConnectionName);
+                _connection = _settings.ConnectionFactory.CreateConnection(_settings.ConnectionName);
             }
         }
 
@@ -128,11 +128,12 @@ namespace Plato.Messaging.Implementations.RMQ
             {
                 return;
             }
+
             try
             {
                 if (_channel.IsOpen)
                 {
-                    _channel.Close();
+                    _channel.Close();                    
                 }
             }
             catch (Exception)
@@ -140,7 +141,7 @@ namespace Plato.Messaging.Implementations.RMQ
             }
             finally
             {
-                _channel.Dispose();
+                _channel?.Dispose();
                 _channel = null;
             }
         }

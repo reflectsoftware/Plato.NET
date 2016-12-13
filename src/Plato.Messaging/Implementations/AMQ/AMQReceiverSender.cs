@@ -41,12 +41,13 @@ namespace Plato.Messaging.Implementations.AMQ
             _session = null;            
         }
 
+        #region Dispose
         /// <summary>
         /// Finalizes an instance of the <see cref="AMQReceiverSender"/> class.
         /// </summary>
         ~AMQReceiverSender()
         {
-            Dispose(true);
+            Dispose(false);
         }
 
         /// <summary>
@@ -66,6 +67,15 @@ namespace Plato.Messaging.Implementations.AMQ
                 }
             }
         }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion Dispose
 
         /// <summary>
         /// Gets the delivery mode.
@@ -117,14 +127,6 @@ namespace Plato.Messaging.Implementations.AMQ
             }
         }
       
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
         /// <summary>
         /// Determines whether this instance is open.
         /// </summary>

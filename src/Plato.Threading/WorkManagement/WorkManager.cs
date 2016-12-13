@@ -41,6 +41,8 @@ namespace Plato.Threading.WorkManagement
         /// </value>
         public ManagerRuntimeStates ManagerRuntimeState { get; private set; }
 
+        public event Action<ManagerRuntimeStates> OnRuntimeState;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkManager"/> class.
         /// </summary>
@@ -68,6 +70,19 @@ namespace Plato.Threading.WorkManagement
         /// <param name="resolver">The resolver.</param>
         public WorkManager(WorkManagerRegistry registry, IWorkManagerDependencyResolver resolver) : this(registry, resolver, null)
         {
+        }
+
+        /// <summary>
+        /// Does the state of the on runtime.
+        /// </summary>
+        /// <param name="state">The state.</param>
+        private void DoOnRuntimeState(ManagerRuntimeStates state)
+        {
+            ManagerRuntimeState = state;
+            if (OnRuntimeState != null)
+            {
+                OnRuntimeState(state);
+            }
         }
 
         /// <summary>
@@ -119,7 +134,7 @@ namespace Plato.Threading.WorkManagement
         }
 
         /// <summary>
-        /// Receiveds the mq message.
+        /// Received the mq message.
         /// </summary>
         /// <param name="msg">The MSG.</param>
         internal void ReceivedMQMessage(MessageManagerInfo msg)
@@ -456,11 +471,11 @@ namespace Plato.Threading.WorkManagement
                 Notification.SendMessage("WorkingManager initiated startup sequence...", NotificationType.Information);
                 try
                 {
-                    ManagerRuntimeState = ManagerRuntimeStates.Starting;
+                    DoOnRuntimeState(ManagerRuntimeStates.Starting);
                     _messageManager.Start(true);
                     _threadWatcher.Start(true);
                     LoadAndStartWorkers();
-                    ManagerRuntimeState = ManagerRuntimeStates.Started;
+                    DoOnRuntimeState(ManagerRuntimeStates.Started);
                 }
                 catch (Exception ex)
                 {
@@ -492,7 +507,7 @@ namespace Plato.Threading.WorkManagement
                 Notification.SendMessage("WorkingManager initiated shutdown sequence...", NotificationType.Information);
                 try
                 {
-                    ManagerRuntimeState = ManagerRuntimeStates.Stopping;
+                    DoOnRuntimeState(ManagerRuntimeStates.Stopping);
                     _messageManager.SetAllMessagesToState(MessageState.Ignore);
                     _messageManager.SetMessageState(MessageManagerId.TerminateWorker, MessageState.Allow);
 
@@ -514,7 +529,7 @@ namespace Plato.Threading.WorkManagement
                 }
                 finally
                 {
-                    ManagerRuntimeState = ManagerRuntimeStates.Stopped;
+                    DoOnRuntimeState(ManagerRuntimeStates.Stopped);
                     Notification.SendMessage("WorkingManager shutdown sequence completed.", NotificationType.Information);
                 }
             }

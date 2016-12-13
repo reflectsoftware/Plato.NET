@@ -8,6 +8,7 @@ using Plato.Utils.Miscellaneous;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Plato.Cache
 {
@@ -141,6 +142,7 @@ namespace Plato.Cache
             DelayDisposeItems = new List<CacheNode>();
         }
 
+        #region Dispose
         /// <summary>
         /// Finalizes an instance of the <see cref="MemoryCache"/> class.
         /// </summary>
@@ -177,6 +179,7 @@ namespace Plato.Cache
         {
             Dispose(true);
         }
+        #endregion Dispose
 
         /// <summary>
         /// Adds to delay disposable.
@@ -266,7 +269,8 @@ namespace Plato.Cache
         /// <returns></returns>
         private CacheNode GetNode(string name)
         {
-            return CacheContainer[PrepareObjectName(name)];
+            var key = PrepareObjectName(name);
+            return CacheContainer.ContainsKey(key) ? CacheContainer[key] : null;
         }
 
         /// <summary>
@@ -277,6 +281,16 @@ namespace Plato.Cache
             CheckExpiredIfNecessary();
         }
 
+        /// <summary>
+        /// Purges the expired items asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public Task PurgeExpiredItemsAsync()
+        {
+            PurgeExpiredItems();
+            return Task.FromResult(0);
+        }
+        
         /// <summary>
         /// Removes the specified name.
         /// </summary>
@@ -300,13 +314,24 @@ namespace Plato.Cache
         }
 
         /// <summary>
+        /// Removes the asynchronous.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public Task<bool> RemoveAsync(string name)
+        {
+            var result = Remove(name);
+            return Task.FromResult(result);
+        }
+
+        /// <summary>
         /// Gets the specified name.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="name">The name.</param>
         /// <param name="bSlidingTimeWindow">if set to <c>true</c> [b sliding time window].</param>
         /// <returns></returns>
-        public T Get<T>(string name, bool bSlidingTimeWindow)
+        public T Get<T>(string name, bool bSlidingTimeWindow = false)
         {
             lock (this)
             {
@@ -334,14 +359,16 @@ namespace Plato.Cache
         }
 
         /// <summary>
-        /// Gets the specified name.
+        /// Gets the asynchronous.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="name">The name.</param>
+        /// <param name="bSlidingTimeWindow">if set to <c>true</c> [b sliding time window].</param>
         /// <returns></returns>
-        public T Get<T>(string name)
+        public Task<T> GetAsync<T>(string name, bool bSlidingTimeWindow = false)
         {
-            return Get<T>(name, false);
+            var result = Get<T>(name, bSlidingTimeWindow);
+            return Task.FromResult(result);
         }
 
         /// <summary>
@@ -356,10 +383,7 @@ namespace Plato.Cache
         /// <exception cref="System.ArgumentNullException">callback</exception>
         public T Get<T>(string name, bool bSlidingTimeWindow, Func<string, object[], ObtainCacheDataInfo> callback, params object[] args)
         {
-            if (callback == null)
-            {
-                throw new ArgumentNullException("callback");
-            }
+            Guard.AgainstNull(() => callback);
 
             var result = Get<T>(name, bSlidingTimeWindow);
             if (result == null)
@@ -389,6 +413,46 @@ namespace Plato.Cache
         }
 
         /// <summary>
+        /// Gets the asynchronous.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name">The name.</param>
+        /// <param name="bSlidingTimeWindow">if set to <c>true</c> [b sliding time window].</param>
+        /// <param name="callbackAsync">The callback asynchronous.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns></returns>
+        public Task<T> GetAsync<T>(string name, bool bSlidingTimeWindow, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
+        {
+            Guard.AgainstNull(() => callbackAsync);
+
+            var result = Get<T>(name, bSlidingTimeWindow);
+            if (result == null)
+            {
+                using (var rLock = new ResourceLock(name))
+                {
+                    rLock.EnterWriteLock();
+                    try
+                    {
+                        result = Get<T>(name);
+                        if (result == null)
+                        {
+                            var cData = callbackAsync(name, args);
+                            Set(name, cData.Result.NewCacheData, cData.Result.KeepAlive);
+
+                            result = (T)cData.Result.NewCacheData;
+                        }
+                    }
+                    finally
+                    {
+                        rLock.ExitWriteLock();
+                    }
+                }
+            }
+
+            return Task.FromResult(result);
+        }
+
+        /// <summary>
         /// Gets the specified name.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -399,6 +463,19 @@ namespace Plato.Cache
         public T Get<T>(string name, Func<string, object[], ObtainCacheDataInfo> callback, params object[] args)
         {
             return Get<T>(name, false, callback, args);
+        }
+
+        /// <summary>
+        /// Gets the asynchronous.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name">The name.</param>
+        /// <param name="callbackAsync">The callback asynchronous.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns></returns>
+        public Task<T> GetAsync<T>(string name, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
+        {
+            return GetAsync<T>(name, false, callbackAsync, args);
         }
 
         /// <summary>
@@ -430,6 +507,19 @@ namespace Plato.Cache
         }
 
         /// <summary>
+        /// Sets the asynchronous.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="item">The item.</param>
+        /// <param name="keepAlive">The keep alive.</param>
+        /// <returns></returns>
+        public Task SetAsync(string name, object item, TimeSpan keepAlive)
+        {
+            Set(name, item, keepAlive);
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
         /// Sets the specified name.
         /// </summary>
         /// <param name="name">The name.</param>
@@ -440,11 +530,33 @@ namespace Plato.Cache
         }
 
         /// <summary>
+        /// Sets the asynchronous.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public Task SetAsync(string name, object item)
+        {
+            Set(name, item);
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
         /// Clears this instance.
         /// </summary>
         void IMemoryCacheExtension.Clear()
         {
             _ForceDispose();
+        }
+
+        /// <summary>
+        /// Clears the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        Task IMemoryCacheExtension.ClearAsync()
+        {
+            (this as IMemoryCacheExtension).Clear();
+            return Task.FromResult(0);
         }
     }
 }

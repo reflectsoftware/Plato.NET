@@ -41,8 +41,8 @@
       <HintPath>..\..\packages\Apache.NMS.ActiveMQ.1.7.1\lib\net40\Apache.NMS.ActiveMQ.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RabbitMQ.Client, Version=3.6.5.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RabbitMQ.Client.3.6.5\lib\net45\RabbitMQ.Client.dll</HintPath>
+    <Reference Include="RabbitMQ.Client, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\RabbitMQ.Client.4.1.1\lib\net451\RabbitMQ.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -87,42 +87,47 @@
     <Compile Include="Implementations\AMQ\Interfaces\IAMQReceiverFactory.cs" />
     <Compile Include="Implementations\AMQ\Settings\AMQConnectionSettings.cs" />
     <Compile Include="Implementations\AMQ\Settings\AMQDestinationSettings.cs" />
-    <Compile Include="Implementations\RMQ\RMQBasicConsumer.cs" />
-    <Compile Include="Implementations\RMQ\RMQExceptionHandler.cs" />
-    <Compile Include="Interfaces\IMessageConnectionFactory.cs" />
-    <Compile Include="Interfaces\IMessageReceiver.cs" />
-    <Compile Include="Interfaces\IMessageReceiverFactory.cs" />
-    <Compile Include="Interfaces\IMessageReceiveResult.cs" />
-    <Compile Include="Interfaces\IMessageReceiverSender.cs" />
-    <Compile Include="Interfaces\IMessageRPCRequesterFactory.cs" />
-    <Compile Include="Interfaces\IMessageRPCResponder.cs" />
-    <Compile Include="Interfaces\IMessageRPCRequester.cs" />
-    <Compile Include="Interfaces\IMessageRPCResponderFactory.cs" />
-    <Compile Include="Interfaces\IMessageSettings.cs" />
-    <Compile Include="Interfaces\IMessageSender.cs" />
-    <Compile Include="Exceptions\MessageException.cs" />
-    <Compile Include="Interfaces\IMessageConnectionManager.cs" />
-    <Compile Include="Interfaces\IMessageSenderFactory.cs" />
-    <Compile Include="Interfaces\ISenderProperties.cs" />
-    <Compile Include="Implementations\RMQ\Factories\RMQRPCRequesterFactory.cs" />
-    <Compile Include="Implementations\RMQ\Factories\RMQRPCResponderFactory.cs" />
-    <Compile Include="Implementations\RMQ\Factories\RMQSenderFactory.cs" />
+    <Compile Include="Implementations\RMQ\Factories\RMQConnectionFactory.cs" />
     <Compile Include="Implementations\RMQ\Factories\RMQReceiverFactory.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQConfigurationManager.cs" />
+    <Compile Include="Implementations\RMQ\Factories\RMQSenderFactory.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQConnectionFactory.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQConnectionManager.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQReceiver.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQReceiverFactory.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQReceiverText.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQSender.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQSenderFactory.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQSenderText.cs" />
+    <Compile Include="Implementations\RMQ\RMQBasicConsumer.cs" />
     <Compile Include="Implementations\RMQ\RMQConfigurationManager.cs" />
-    <Compile Include="Implementations\RMQ\Factories\RMQConnectionManager.cs" />
-    <Compile Include="Implementations\RMQ\RMQRPCRequester.cs" />
-    <Compile Include="Implementations\RMQ\RMQRPCResponder.cs" />
+    <Compile Include="Implementations\RMQ\RMQConnectionManager.cs" />
+    <Compile Include="Implementations\RMQ\RMQExceptionHandler.cs" />
+    <Compile Include="Implementations\RMQ\RMQReceiver.cs" />
+    <Compile Include="Implementations\RMQ\RMQReceiverBase.cs" />
+    <Compile Include="Implementations\RMQ\RMQReceiverResultBase.cs" />
+    <Compile Include="Implementations\RMQ\RMQReceiverResultBytes.cs" />
+    <Compile Include="Implementations\RMQ\RMQReceiverResultText.cs" />
+    <Compile Include="Implementations\RMQ\RMQReceiverSender.cs" />
+    <Compile Include="Implementations\RMQ\RMQReceiverText.cs" />
+    <Compile Include="Implementations\RMQ\RMQSender.cs" />
+    <Compile Include="Implementations\RMQ\RMQSenderBase.cs" />
+    <Compile Include="Implementations\RMQ\RMQSenderProperties.cs" />
+    <Compile Include="Implementations\RMQ\RMQSenderText.cs" />
     <Compile Include="Implementations\RMQ\Settings\RMQConnectionSettings.cs" />
     <Compile Include="Implementations\RMQ\Settings\RMQConsumerSettings.cs" />
     <Compile Include="Implementations\RMQ\Settings\RMQExchangeSettings.cs" />
     <Compile Include="Implementations\RMQ\Settings\RMQQueueSettings.cs" />
-    <Compile Include="Implementations\RMQ\RMQReceiver.cs" />
-    <Compile Include="Implementations\RMQ\RMQReceiverResult.cs" />
-    <Compile Include="Implementations\RMQ\RMQReceiverSender.cs" />
     <Compile Include="Implementations\RMQ\Settings\RMQSettings.cs" />
-    <Compile Include="Implementations\RMQ\RMQSenderProperties.cs" />
-    <Compile Include="Implementations\RMQ\RMQSender.cs" />
+    <Compile Include="Interfaces\IMessageConnectionFactory.cs" />
+    <Compile Include="Interfaces\IMessageReceiver.cs" />
+    <Compile Include="Interfaces\IMessageReceiveResult.cs" />
+    <Compile Include="Interfaces\IMessageReceiverSender.cs" />
+    <Compile Include="Interfaces\IMessageSettings.cs" />
+    <Compile Include="Interfaces\IMessageSender.cs" />
+    <Compile Include="Exceptions\MessageException.cs" />
+    <Compile Include="Interfaces\IMessageConnectionManager.cs" />
+    <Compile Include="Interfaces\ISenderProperties.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQConfigurationManager.cs" />
     <Compile Include="MessageListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

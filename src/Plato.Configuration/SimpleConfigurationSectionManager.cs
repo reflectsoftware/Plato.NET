@@ -2,6 +2,8 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Plato.Configuration.Interfaces;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
@@ -12,12 +14,12 @@ namespace Plato.Configuration
     /// <summary>
     /// 
     /// </summary>
-    public class SimpleConfigurationSectionManager
+    public class SimpleConfigurationSectionManager : ISimpleConfigurationSectionManager
     {
-        protected NodeChildAttributes _nodeAttributes;
-       
+        public NodeChildAttributes NodeAttributes { get; protected set; }
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleConfigurationSectionManager"/> class.
+        /// Initializes a new instance of the <see cref="XSimpleConfigurationSectionManager"/> class.
         /// </summary>
         public SimpleConfigurationSectionManager(string settings = null)
         {
@@ -27,7 +29,7 @@ namespace Plato.Configuration
                 if (xmlConfigSection != null)
                 {
                     var cc = new ConfigNode(xmlConfigSection);
-                    _nodeAttributes = ConfigHelper.GetNodeChildAttributes(cc, ".");
+                    NodeAttributes = ConfigHelper.GetNodeChildAttributes(cc, ".");
                 }
             }
         }
@@ -41,9 +43,9 @@ namespace Plato.Configuration
         public NameValueCollection GetAttributes(string nodeName, string name)
         {
             NameValueCollection attributes = null;
-            if (_nodeAttributes != null)
+            if (NodeAttributes != null)
             {
-                var nodeAttributes = _nodeAttributes.ChildAttributes.FirstOrDefault(x => x.NodeName == nodeName && x.Attributes["name"] == name);
+                var nodeAttributes = NodeAttributes.ChildAttributes.FirstOrDefault(x => x.NodeName == nodeName && x.Attributes["name"] == name);
                 if (nodeAttributes != null)
                 {
                     attributes = new NameValueCollection(nodeAttributes.Attributes);
@@ -65,6 +67,37 @@ namespace Plato.Configuration
         {
             var attributes = GetAttributes(nodeName, name);
             return attributes[attribute] ?? defaultValue;
+        }
+
+        /// <summary>
+        /// Gets the attribute values.
+        /// </summary>
+        /// <param name="nodeName">Name of the node.</param>
+        /// <param name="attribute">The attribute.</param>
+        /// <returns></returns>
+        public IEnumerable<string> GetAttributeValues(string nodeName, string attribute)
+        {
+            var values = NodeAttributes
+                .ChildAttributes
+                .Where(x => x.NodeName == nodeName && x.Attributes[attribute] != null)
+                .Select(x => x.Attributes[attribute]);
+
+            return values;
+        }
+
+        /// <summary>
+        /// Gets the attribute values.
+        /// </summary>
+        /// <param name="attribute">The attribute.</param>
+        /// <returns></returns>
+        public IEnumerable<string> GetAttributeValues(string attribute)
+        {
+            var values = NodeAttributes
+                .ChildAttributes
+                .Where(x => x.Attributes[attribute] != null)
+                .Select(x => x.Attributes[attribute]);
+
+            return values;
         }
     }
 }

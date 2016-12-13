@@ -33,8 +33,8 @@ namespace Plato.Messaging.Implementations.AMQ
         /// <param name="attributes">The attributes.</param>
         public AMQConfigurationManager(IEnumerable<AMQConnectionSettings> connections, IEnumerable<AMQDestinationSettings> destinations = null)
         {
-            _nodeAttributes = new NodeChildAttributes();
-            _nodeAttributes.ParentAttributes.NodeName = "amqSettings";
+            NodeAttributes = new NodeChildAttributes();
+            NodeAttributes.ParentAttributes.NodeName = "amqSettings";
 
             if(connections != null)
             {
@@ -53,7 +53,7 @@ namespace Plato.Messaging.Implementations.AMQ
                     childNode.Attributes["asyncSend"] = connection.AsyncSend ? "true" : "false";
                     childNode.Attributes["delayOnReconnect"] = connection.DelayOnReconnect.ToString();
 
-                    _nodeAttributes.ChildAttributes.Add(childNode);
+                    NodeAttributes.ChildAttributes.Add(childNode);
                 }
             }
             
@@ -74,8 +74,8 @@ namespace Plato.Messaging.Implementations.AMQ
                     childNode.Attributes["deliveryMode"] = destination.DeliveryMode.ToString().ToLower();
                     childNode.Attributes["ackMode"] = destination.AckMode.ToString().ToLower();
                     childNode.Attributes["durable"] = destination.Durable ? "true" : "false";
-                    
-                    _nodeAttributes.ChildAttributes.Add(childNode);
+
+                    NodeAttributes.ChildAttributes.Add(childNode);
                 }
             }
         }
@@ -89,9 +89,9 @@ namespace Plato.Messaging.Implementations.AMQ
         {
             List<NameValueCollection> collections = null;
 
-            if (_nodeAttributes != null)
+            if (NodeAttributes != null)
             {
-                collections = _nodeAttributes.ChildAttributes.Where(x => x.NodeName == nodeName).Select(x => x.Attributes).ToList();
+                collections = NodeAttributes.ChildAttributes.Where(x => x.NodeName == nodeName).Select(x => x.Attributes).ToList();
             }
 
             return collections ?? new List<NameValueCollection>();

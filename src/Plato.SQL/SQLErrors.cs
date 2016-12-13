@@ -56,5 +56,23 @@ namespace Plato.SQL
 
             return dubCodes.Contains(code);
         }
+
+        /// <summary>
+        /// Determines whether [is referential integrity] [the specified code].
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <returns>
+        ///   <c>true</c> if [is referential integrity] [the specified code]; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsReferentialIntegrity(int code)
+        {
+            var refCodes = new int[] {
+                UNIQUE_KEY_CONSTRAINT,
+                DUPLICATE_KEY_CONSTRAINT,
+                FOREIGN_KEY_CONSTRAINT,
+            };
+
+            return refCodes.Contains(code);
+        }
     }
 }

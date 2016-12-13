@@ -14,13 +14,13 @@ using System.IO;
 
 // TODO: Revisit this implementation. IConnection factory doesn't look right
 
-namespace Plato.Messaging.Implementations.RMQ.Factories
+namespace Plato.Messaging.Implementations.RMQ
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Plato.Messaging.Interfaces.IMessageConnectionManager{RabbitMQ.Client.IConnection}" />
-    public class RMQConnectionManager : IMessageConnectionManager<IConnection>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQConnectionManager" />
+    public class RMQConnectionManager : IRMQConnectionManager
     {
         private class NamedConnection : IDisposable
         {
@@ -55,7 +55,7 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
         }
 
         private Dictionary<string, NamedConnection> _connections;
-        private IRMQConfigurationManager _configManager;
+        private readonly IRMQConfigurationManager _configManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQConnectionManager"/> class.

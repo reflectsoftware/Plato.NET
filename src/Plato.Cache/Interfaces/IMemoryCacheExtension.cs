@@ -2,6 +2,8 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using System.Threading.Tasks;
+
 namespace Plato.Cache.Interfaces
 {
     /// <summary>
@@ -13,5 +15,11 @@ namespace Plato.Cache.Interfaces
         /// Clears this instance.
         /// </summary>
         void Clear();
+
+        /// <summary>
+        /// Clears the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        Task ClearAsync();
     }
 }
