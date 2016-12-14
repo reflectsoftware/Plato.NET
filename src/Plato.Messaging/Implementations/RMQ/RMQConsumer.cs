@@ -43,12 +43,12 @@ namespace Plato.Messaging.Implementations.RMQ
                 {
                     _queueingConsumer = new RMQBasicConsumer(_channel);
 
-                    _channel.BasicConsume(_settings.QueueName,
-                        _settings.ConsumerSettings.NoAck,
-                        _settings.ConsumerSettings.Tag,
-                        _settings.ConsumerSettings.NoLocal,
-                        _settings.ConsumerSettings.Exclusive,
-                        _settings.ConsumerSettings.Arguments,
+                    _channel.BasicConsume(_queueSettings.QueueName,
+                        _queueSettings.ConsumerSettings.NoAck,
+                        _queueSettings.ConsumerSettings.Tag,
+                        _queueSettings.ConsumerSettings.NoLocal,
+                        _queueSettings.ConsumerSettings.Exclusive,
+                        _queueSettings.ConsumerSettings.Arguments,
                         _queueingConsumer);
 
                     _queueingConsumer.ConsumerCancelled += OnCancelConsumer;

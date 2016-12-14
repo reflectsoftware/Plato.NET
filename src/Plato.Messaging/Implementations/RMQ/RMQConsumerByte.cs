@@ -22,7 +22,7 @@ namespace Plato.Messaging.Implementations.RMQ
         public RMQReceiverResultByte Receive(int msecTimeout = Timeout.Infinite)
         {
             var deliveryArgs = _Receive(msecTimeout);
-            return new RMQReceiverResultByte(_connection, _channel, deliveryArgs, _settings.QueueName);
+            return new RMQReceiverResultByte(_connection, _channel, deliveryArgs, _queueSettings.QueueName);
         }
     }
 }

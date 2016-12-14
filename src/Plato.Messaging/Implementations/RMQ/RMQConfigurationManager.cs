@@ -140,6 +140,7 @@ namespace Plato.Messaging.Implementations.RMQ
         public RMQQueueSettings GetQueueSettings(string name, IDictionary<string, object> arguments = null)
         {
             var attributes = GetAttributes("queue", name);
+            var routingKeys = new List<string>();
 
             var queueSettings = new RMQQueueSettings(name)
             {
@@ -147,8 +148,19 @@ namespace Plato.Messaging.Implementations.RMQ
                 Exclusive = StringHelper.IfNullOrEmptyUseDefault(attributes["exclusive"], "true") == "true",
                 Durable = StringHelper.IfNullOrEmptyUseDefault(attributes["durable"], "true") == "true",
                 AutoDelete = StringHelper.IfNullOrEmptyUseDefault(attributes["autoDelete"], "false") == "true",
+                Persistent = StringHelper.IfNullOrEmptyUseDefault(attributes["persistent"], "true") == "true",
+                RoutingKeys = routingKeys,
                 Arguments = arguments
             };
+
+            var sRoutingKeys = StringHelper.IfNullOrEmptyUseDefault(attributes["routingKeys"], string.Empty);
+            if(!string.IsNullOrWhiteSpace(sRoutingKeys))
+            {
+                foreach(var routingKey in sRoutingKeys.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    routingKeys.Add(routingKey.Trim());
+                }
+            }
 
             if(_configNode != null)
             {

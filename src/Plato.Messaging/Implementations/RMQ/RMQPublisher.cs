@@ -20,19 +20,8 @@ namespace Plato.Messaging.Implementations.RMQ
             IRMQConnectionFactory connctionFactory, 
             string connectionName,
             RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings = null,
-            IEnumerable<string> routingKeys = null) 
-            : base(connctionFactory, connectionName, exchangeSettings, queueSettings, routingKeys)
-        {
-        }
-
-        public RMQPublisher(
-            IRMQConnectionFactory connctionFactory,
-            string connectionName,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings = null,
-            string routingKeys = "")
-            : base(connctionFactory, connectionName, exchangeSettings, queueSettings, routingKeys)
+            RMQQueueSettings queueSettings = null)
+            : base(connctionFactory, connectionName, exchangeSettings, queueSettings)
         {
         }
 
@@ -56,11 +45,9 @@ namespace Plato.Messaging.Implementations.RMQ
                     Open();
                 }
 
-                var props = _channel.CreateBasicProperties();
-
                 var senderProperties = new RMQSenderProperties()
                 {
-                    Properties = props,
+                    Properties = null,
                     Exchange = _exchangeSettings.ExchangeName,
                     RoutingKey = string.Empty,
                     Mandatory = false,
@@ -75,7 +62,7 @@ namespace Plato.Messaging.Implementations.RMQ
                     senderProperties.Exchange, 
                     senderProperties.RoutingKey, 
                     senderProperties.Mandatory, 
-                    props, 
+                    null, 
                     data);
             }
             catch (Exception ex)

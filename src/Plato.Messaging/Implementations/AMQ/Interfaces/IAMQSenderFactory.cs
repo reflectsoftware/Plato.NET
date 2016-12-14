@@ -5,7 +5,7 @@
 using Plato.Messaging.Implementations.AMQ.Settings;
 
 namespace Plato.Messaging.Implementations.AMQ.Interfaces
-{    
+{
     /// <summary>
     /// 
     /// </summary>

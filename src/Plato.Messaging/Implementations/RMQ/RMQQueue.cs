@@ -10,15 +10,15 @@ namespace Plato.Messaging.Implementations.RMQ
 {
     public abstract class RMQQueue : RMQReceiverSender
     {
-        protected readonly RMQQueueSettings _settings;
+        protected readonly RMQQueueSettings _queueSettings;
         
         public RMQQueue(
             IRMQConnectionFactory connctionFactory, 
             string connectionName, 
-            RMQQueueSettings settings) 
+            RMQQueueSettings queueSettings) 
             : base(connctionFactory, connectionName)
         {
-            _settings = settings;
+            _queueSettings = queueSettings;
         }       
 
         protected override void OpenChannel()
@@ -28,11 +28,11 @@ namespace Plato.Messaging.Implementations.RMQ
             try
             {
                 _channel.QueueDeclare(
-                    queue: _settings.QueueName,
-                    durable: _settings.Durable,
-                    exclusive: _settings.Exclusive,
-                    autoDelete: _settings.AutoDelete,
-                    arguments: _settings.Arguments);
+                    queue: _queueSettings.QueueName,
+                    durable: _queueSettings.Durable,
+                    exclusive: _queueSettings.Exclusive,
+                    autoDelete: _queueSettings.AutoDelete,
+                    arguments: _queueSettings.Arguments);
             }
             catch (Exception ex)
             {

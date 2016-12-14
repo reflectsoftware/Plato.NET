@@ -27,37 +27,17 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
         public IRMQPublisherByte CreateByte(
             string connectionName, 
             RMQExchangeSettings exchangeSettings, 
-            RMQQueueSettings queueSettings,
-            IEnumerable<string> routingKeys = null)
+            RMQQueueSettings queueSettings)
         {
-            return new RMQPublisherByte(_connectionFactory, connectionName, exchangeSettings, queueSettings, routingKeys);
-        }
-
-        public IRMQPublisherByte CreateByte(
-            string connectionName,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings,
-            string routingKey = "")
-        {
-            return new RMQPublisherByte(_connectionFactory, connectionName, exchangeSettings, queueSettings, routingKey);
+            return new RMQPublisherByte(_connectionFactory, connectionName, exchangeSettings, queueSettings);
         }
 
         public IRMQPublisherText CreateText(
             string connectionName,
             RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings,
-            IEnumerable<string> routingKeys = null)
+            RMQQueueSettings queueSettings)
         {
-            return new RMQPublisherText(_connectionFactory, connectionName, exchangeSettings, queueSettings, routingKeys);
-        }
-
-        public IRMQPublisherText CreateText(
-            string connectionName,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings,
-            string routingKey = "")
-        {
-            return new RMQPublisherText(_connectionFactory, connectionName, exchangeSettings, queueSettings, routingKey);
+            return new RMQPublisherText(_connectionFactory, connectionName, exchangeSettings, queueSettings);
         }
     }
 }

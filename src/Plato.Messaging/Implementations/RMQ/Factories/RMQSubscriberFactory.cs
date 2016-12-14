@@ -4,7 +4,6 @@
 
 using Plato.Messaging.Implementations.RMQ.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
-using System.Collections.Generic;
 
 namespace Plato.Messaging.Implementations.RMQ.Factories
 {
@@ -27,37 +26,17 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
         public IRMQSubscriberByte CreateByte(
             string connectionName, 
             RMQExchangeSettings exchangeSettings, 
-            RMQQueueSettings queueSettings,
-            IEnumerable<string> routingKeys = null)
+            RMQQueueSettings queueSettings)
         {
-            return new RMQSubscriberByte(_connectionFactory, connectionName, exchangeSettings, queueSettings, routingKeys);
-        }
-
-        public IRMQSubscriberByte CreateByte(
-            string connectionName,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings,
-            string routingKey = "")
-        {
-            return new RMQSubscriberByte(_connectionFactory, connectionName, exchangeSettings, queueSettings, routingKey);
+            return new RMQSubscriberByte(_connectionFactory, connectionName, exchangeSettings, queueSettings);
         }
 
         public IRMQSubscriberText CreateText(
             string connectionName,
             RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings,
-            IEnumerable<string> routingKeys = null)
+            RMQQueueSettings queueSettings)
         {
-            return new RMQSubscriberText(_connectionFactory, connectionName, exchangeSettings, queueSettings, routingKeys);
-        }
-
-        public IRMQSubscriberText CreateText(
-            string connectionName,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings,
-            string routingKey = "")
-        {
-            return new RMQSubscriberText(_connectionFactory, connectionName, exchangeSettings, queueSettings, routingKey);
+            return new RMQSubscriberText(_connectionFactory, connectionName, exchangeSettings, queueSettings);
         }
     }
 }

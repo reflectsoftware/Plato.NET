@@ -12,62 +12,131 @@ using System.Threading.Tasks;
 
 namespace Producer
 {
+    class SampleData
+    {
+        public string Name { get; set; }
+        public string Location { get; set; }
+    }
+
     class Program
     {
-        static void ProducerConsumerTest()
+        static void Send(IMessageSender<string> sender, SampleData sample, List<string> routes = null)
         {
-            IRMQConfigurationManager _configurationManager = new RMQConfigurationManager();
-            IRMQConnectionFactory _connectionManager = new RMQConnectionFactory(_configurationManager);
+            var rnd = new Random((int)DateTime.Now.Ticks);
 
-            RMQQueueSettings queueSettings = _configurationManager.GetQueueSettings("TestQueue1");
-
-            using (RMQProducerText producerText = new RMQProducerText(_connectionManager, "defaultConnection", queueSettings))
+            var data = JsonConvert.SerializeObject(sample);
+            if (routes == null)
             {
-                var sample = new
-                {
-                    Name = "Ross",
-                    Location = "Toronto"
-                };
-
-                producerText.Send(JsonConvert.SerializeObject(sample));
+                sender.Send(data);
             }
-
-            using (RMQConsumerText consumerText = new RMQConsumerText(_connectionManager, "defaultConnection", queueSettings))
+            else
             {
-                var result = consumerText.Receive();
-                var data = result.Data;
+                var route = routes[rnd.Next(routes.Count)];
+                Console.WriteLine($"Route: {route}");
 
-                result.Acknowledge();
+                sender.Send(data, (props) =>
+                {
+                    var senderProps = (RMQSenderProperties)props;
+                    senderProps.RoutingKey = route;
+                });
             }
         }
 
-        static void PubSubTest()
+        static void Sender(IMessageSender<string> sender, List<string> routes = null)
+        {
+            Console.WriteLine("Ready!");
+                       
+
+            while (true)
+            {
+                var key = Console.ReadKey();
+                if (key.KeyChar == 's')
+                {
+                    sender.Send("stop");
+                    break;
+                }
+                else if (key.KeyChar == 'c')
+                {
+                    sender.Send("clear");                    
+                }
+                else if (key.KeyChar == '1') // single
+                {
+                    var sample = new SampleData
+                    {
+                        Name = "Ross",
+                        Location = "Toronto"
+                    };
+
+                    Send(sender, sample, routes);
+
+                }
+                else if (key.KeyChar == '2' || key.KeyChar == '3') 
+                {
+                    var count = key.KeyChar == '3' ? 10000 : 1000;
+                    for (var i = 0; i < count; i++)
+                    {
+                        var sample = new SampleData
+                        {
+                            Name = $"Ross: {i}",
+                            Location = "Toronto"
+                        };
+
+                        Send(sender, sample, routes);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Unknown action");
+                    continue;
+                }
+
+                Console.WriteLine("Done!");
+            }
+        }
+
+        static void ProducerTest()
+        {            
+            IRMQConfigurationManager _configurationManager = new RMQConfigurationManager();
+            IRMQConnectionFactory _connectionManager = new RMQConnectionFactory(_configurationManager);
+            var queueSettings = _configurationManager.GetQueueSettings("ProConQueueTest");
+
+            using (IRMQProducerText producerText = new RMQProducerText(_connectionManager, "defaultConnection", queueSettings))
+            {
+                Sender(producerText);
+            }
+        }
+
+        static void PubSubFanoutTest()
         {
             IRMQConfigurationManager _configurationManager = new RMQConfigurationManager();
             IRMQConnectionFactory _connectionManager = new RMQConnectionFactory(_configurationManager);
+            var exchangeSettings = _configurationManager.GetExchangeSettings("Test.FanoutExchange");
 
-            RMQQueueSettings queueSettings = _configurationManager.GetQueueSettings("TestQueue1");
+            using (IRMQPublisherText publisherText = new RMQPublisherText(_connectionManager, "defaultConnection", exchangeSettings))
+            {
+                Sender(publisherText);
+            }
+        }
+
+        static void PubSubDirectTest()
+        {
+            IRMQConfigurationManager _configurationManager = new RMQConfigurationManager();
+            IRMQConnectionFactory _connectionManager = new RMQConnectionFactory(_configurationManager);
+            var exchangeSettings = _configurationManager.GetExchangeSettings("Test.DirectExchange");
+
+            using (IRMQPublisherText publisherText = new RMQPublisherText(_connectionManager, "defaultConnection", exchangeSettings))
+            {
+                Sender(publisherText, new List<string> { "R1", "R2", "R3"});
+            }
         }
         
         static void Main(string[] args)
         {
             try
             {
-                //ProducerConsumerTest();
-
-
-                ////while (true)
-                ////{
-                ////    var key = Console.ReadKey();
-                ////    if(key.KeyChar == 'q')
-                ////    {
-                ////        break;
-                ////    }
-                ////}
-
-                //sender.Dispose();
-                //_connectionManager.Dispose();
-
+                //ProducerTest();
+                //PubSubFanoutTest();
+                PubSubDirectTest();
             }
             catch (Exception ex)
             {

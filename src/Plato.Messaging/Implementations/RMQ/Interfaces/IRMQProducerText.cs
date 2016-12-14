@@ -1,10 +1,12 @@
+// Plato.NET
+// Copyright (c) 2016 ReflectSoftware Inc.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
+
 using Plato.Messaging.Interfaces;
-using System;
 
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
-    public interface IRMQProducerText
+    public interface IRMQProducerText : IMessageSender<string>, IMessageReceiverSender
     {
-        void Send(string text, Action<ISenderProperties> action = null);
     }
 }

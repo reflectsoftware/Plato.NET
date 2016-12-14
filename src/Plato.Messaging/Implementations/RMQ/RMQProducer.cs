@@ -29,12 +29,13 @@ namespace Plato.Messaging.Implementations.RMQ
                 }
 
                 var props = _channel.CreateBasicProperties();
+                props.Persistent = _queueSettings.Persistent;
 
                 var senderProperties = new RMQSenderProperties()
                 {
                     Properties = props,
                     Exchange = string.Empty,
-                    RoutingKey = _settings.QueueName,
+                    RoutingKey = _queueSettings.QueueName,
                     Mandatory = false,
                 };
 
@@ -45,7 +46,7 @@ namespace Plato.Messaging.Implementations.RMQ
 
                 _channel.BasicPublish(
                     string.Empty, 
-                    _settings.QueueName, 
+                    _queueSettings.QueueName, 
                     senderProperties.Mandatory, 
                     props, 
                     data);

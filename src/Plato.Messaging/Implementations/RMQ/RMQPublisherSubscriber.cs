@@ -5,7 +5,6 @@
 using Plato.Messaging.Implementations.RMQ.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
 using System;
-using System.Collections.Generic;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
@@ -13,29 +12,16 @@ namespace Plato.Messaging.Implementations.RMQ
     {
         protected readonly RMQExchangeSettings _exchangeSettings;
         protected readonly RMQQueueSettings _queueSettings;
-        protected readonly List<string> _routingKeys;
-
+        
         public RMQPublisherSubscriber(
             IRMQConnectionFactory connctionFactory, 
             string connectionName,
             RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings = null,
-            IEnumerable<string> routingKeys = null) 
+            RMQQueueSettings queueSettings = null)
             : base(connctionFactory, connectionName)
         {
             _exchangeSettings = exchangeSettings;
             _queueSettings = queueSettings;
-            _routingKeys = new List<string>(routingKeys ?? new[] { string.Empty });
-        }
-
-        public RMQPublisherSubscriber(
-            IRMQConnectionFactory connctionFactory,
-            string connectionName,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings = null,
-            string routingKey = "")
-            : this(connctionFactory, connectionName, exchangeSettings, queueSettings, new string[] { routingKey })
-        {
         }
         
         protected override void OpenChannel()
@@ -60,12 +46,12 @@ namespace Plato.Messaging.Implementations.RMQ
                         autoDelete: _queueSettings.AutoDelete,
                         arguments: _queueSettings.Arguments);
 
-                    foreach (var routingKey in _routingKeys)
+                    foreach (var routingKey in _queueSettings.RoutingKeys)
                     {
                         _channel.QueueBind(
                             _queueSettings.QueueName,
                             _exchangeSettings.ExchangeName, 
-                            routingKey, 
+                            routingKey ?? string.Empty, 
                             null);
                     }
                 }

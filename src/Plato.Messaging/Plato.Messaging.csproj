@@ -89,6 +89,8 @@
     <Compile Include="Implementations\AMQ\Settings\AMQDestinationSettings.cs" />
     <Compile Include="Implementations\RMQ\Factories\RMQPublisherFactory.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQPublisherFactory.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQReceiverByte.cs" />
+    <Compile Include="Implementations\RMQ\Interfaces\IRMQReceiverText.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQSubscriberFactory.cs" />
     <Compile Include="Implementations\RMQ\Factories\RMQConsumerFactory.cs" />
     <Compile Include="Implementations\RMQ\Factories\RMQSubscriberFactory.cs" />

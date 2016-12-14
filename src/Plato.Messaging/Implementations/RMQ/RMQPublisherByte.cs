@@ -6,7 +6,6 @@ using Plato.Messaging.Implementations.RMQ.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
 using Plato.Messaging.Interfaces;
 using System;
-using System.Collections.Generic;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
@@ -16,19 +15,8 @@ namespace Plato.Messaging.Implementations.RMQ
             IRMQConnectionFactory connctionFactory, 
             string connectionName,
             RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings = null,
-            IEnumerable<string> routingKeys = null) 
-            : base(connctionFactory, connectionName, exchangeSettings, queueSettings, routingKeys)
-        {
-        }
-
-        public RMQPublisherByte(
-            IRMQConnectionFactory connctionFactory,
-            string connectionName,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings = null,
-            string routingKeys = "")
-            : base(connctionFactory, connectionName, exchangeSettings, queueSettings, routingKeys)
+            RMQQueueSettings queueSettings = null)
+            : base(connctionFactory, connectionName, exchangeSettings, queueSettings)
         {
         }
 
