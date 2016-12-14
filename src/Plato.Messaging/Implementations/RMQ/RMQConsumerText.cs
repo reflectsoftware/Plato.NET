@@ -8,9 +8,13 @@ using System.Threading;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
-    public class RMQComsumerText : RMQConsumer
+    public class RMQConsumerText : RMQConsumer, IRMQConsumerText
     {
-        public RMQComsumerText(IRMQConnectionFactory connctionFactory, string connectionName, RMQQueueSettings settings) : base(connctionFactory, connectionName, settings)
+        public RMQConsumerText(
+            IRMQConnectionFactory connctionFactory, 
+            string connectionName, 
+            RMQQueueSettings settings) 
+            : base(connctionFactory, connectionName, settings)
         {
         }
 

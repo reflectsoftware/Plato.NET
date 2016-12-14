@@ -6,20 +6,33 @@ using Plato.Messaging.Implementations.RMQ.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
 using RabbitMQ.Client.Events;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
 
-    public abstract class RMQConsumer : RMQQueue, IRMQConsumer
+    public class RMQSubscriber : RMQPublisherSubscriber, IRMQSubscriber
     {
         protected RMQBasicConsumer _queueingConsumer;
 
-        public RMQConsumer(
-            IRMQConnectionFactory connctionFactory, 
-            string connectionName, 
-            RMQQueueSettings settings) 
-            : base(connctionFactory, connectionName, settings)
+        public RMQSubscriber(
+            IRMQConnectionFactory connctionFactory,
+            string connectionName,
+            RMQExchangeSettings exchangeSettings,
+            RMQQueueSettings queueSettings,
+            IEnumerable<string> routingKeys = null)
+            : base(connctionFactory, connectionName, exchangeSettings, queueSettings, routingKeys)
+        {
+        }
+
+        public RMQSubscriber(
+            IRMQConnectionFactory connctionFactory,
+            string connectionName,
+            RMQExchangeSettings exchangeSettings,
+            RMQQueueSettings queueSettings,
+            string routingKey = "")
+            : base(connctionFactory, connectionName, exchangeSettings, queueSettings, routingKey)
         {
         }
 
@@ -43,12 +56,12 @@ namespace Plato.Messaging.Implementations.RMQ
                 {
                     _queueingConsumer = new RMQBasicConsumer(_channel);
 
-                    _channel.BasicConsume(_settings.QueueName,
-                        _settings.ConsumerSettings.NoAck,
-                        _settings.ConsumerSettings.Tag,
-                        _settings.ConsumerSettings.NoLocal,
-                        _settings.ConsumerSettings.Exclusive,
-                        _settings.ConsumerSettings.Arguments,
+                    _channel.BasicConsume(_queueSettings.QueueName,
+                        _queueSettings.ConsumerSettings.NoAck,
+                        _queueSettings.ConsumerSettings.Tag,
+                        _queueSettings.ConsumerSettings.NoLocal,
+                        _queueSettings.ConsumerSettings.Exclusive,
+                        _queueSettings.ConsumerSettings.Arguments,
                         _queueingConsumer);
 
                     _queueingConsumer.ConsumerCancelled += OnCancelConsumer;
@@ -102,12 +115,12 @@ namespace Plato.Messaging.Implementations.RMQ
                 var status = _queueingConsumer.Queue.Dequeue(msecTimeout, out deliverArgs);
                 if (status)
                 {
-                    return deliverArgs; 
+                    return deliverArgs;
                 }
 
                 throw _TimeoutException;
             }
-            catch(TimeoutException)
+            catch (TimeoutException)
             {
                 throw;
             }

@@ -14,49 +14,65 @@ namespace Producer
 {
     class Program
     {
-        static void Main(string[] args)
+        static void ProducerConsumerTest()
         {
             IRMQConfigurationManager _configurationManager = new RMQConfigurationManager();
             IRMQConnectionFactory _connectionManager = new RMQConnectionFactory(_configurationManager);
 
-            using (var connection = _connectionManager.CreateConnection("defaultConnection"))
+            RMQQueueSettings queueSettings = _configurationManager.GetQueueSettings("TestQueue1");
+
+            using (RMQProducerText producerText = new RMQProducerText(_connectionManager, "defaultConnection", queueSettings))
             {
+                var sample = new
+                {
+                    Name = "Ross",
+                    Location = "Toronto"
+                };
+
+                producerText.Send(JsonConvert.SerializeObject(sample));
             }
-            
-            //var esettings = _configurationManager.GetQueueSettings("SomeName1");
 
-            //return;
+            using (RMQConsumerText consumerText = new RMQConsumerText(_connectionManager, "defaultConnection", queueSettings))
+            {
+                var result = consumerText.Receive();
+                var data = result.Data;
 
-            //var rmqSettings = new RMQSettings()
-            //{
-            //    ConnectionName = "defaultConnection",
-            //    ConnectionFactory = _connectionFactory,
-            //    ExchangeSettings  = _configurationManager.GetExchangeSettings("test")
-            //};
-                       
+                result.Acknowledge();
+            }
+        }
 
-            //var senderFactory = new RMQSenderFactory();
-            //var sender = senderFactory.CreateText(rmqSettings);
+        static void PubSubTest()
+        {
+            IRMQConfigurationManager _configurationManager = new RMQConfigurationManager();
+            IRMQConnectionFactory _connectionManager = new RMQConnectionFactory(_configurationManager);
 
-            //var sample =  new
-            //{
-            //    Name = "Ross",
-            //    Location = "Toronto"
-            //};
+            RMQQueueSettings queueSettings = _configurationManager.GetQueueSettings("TestQueue1");
+        }
+        
+        static void Main(string[] args)
+        {
+            try
+            {
+                //ProducerConsumerTest();
 
-            //sender.Send( JsonConvert.SerializeObject(sample));
 
-            ////while (true)
-            ////{
-            ////    var key = Console.ReadKey();
-            ////    if(key.KeyChar == 'q')
-            ////    {
-            ////        break;
-            ////    }
-            ////}
+                ////while (true)
+                ////{
+                ////    var key = Console.ReadKey();
+                ////    if(key.KeyChar == 'q')
+                ////    {
+                ////        break;
+                ////    }
+                ////}
 
-            //sender.Dispose();
-            //_connectionManager.Dispose();
+                //sender.Dispose();
+                //_connectionManager.Dispose();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 }
