@@ -17,7 +17,7 @@ namespace Plato.Messaging.Implementations.RMQ
     {
         protected static TimeoutException _TimeoutException;
 
-        protected readonly IRMQConnectionFactory _connctionFactory;
+        protected readonly IRMQConnectionFactory _connectionFactory;
         protected readonly string _connectionName;
         protected IConnection _connection;
         protected IModel _channel;
@@ -48,7 +48,7 @@ namespace Plato.Messaging.Implementations.RMQ
             string connectionName)
         {
             Disposed = false;
-            _connctionFactory = connectionFactory;
+            _connectionFactory = connectionFactory;
             _connectionName = connectionName;
             _channel = null;            
         }
@@ -94,7 +94,7 @@ namespace Plato.Messaging.Implementations.RMQ
         {
             if (_connection == null || !_connection.IsOpen)
             {
-                _connection = _connctionFactory.CreateConnection(_connectionName);
+                _connection = _connectionFactory.CreateConnection(_connectionName);
             }
         }
 

@@ -29,13 +29,14 @@ namespace Plato.Messaging.Implementations.AMQ
         public bool Disposed { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AMQReceiverSender"/> class.
+        /// Initializes a new instance of the <see cref="AMQReceiverSender" /> class.
         /// </summary>
-        /// <param name="settings">The settings.</param>
-        public AMQReceiverSender(IAMQConnectionFactory connctionFactory, string connectionName)
+        /// <param name="connectionFactory">The connection factory.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        public AMQReceiverSender(IAMQConnectionFactory connectionFactory, string connectionName)
         {
             Disposed = false;
-            _connectionFactory = connctionFactory;
+            _connectionFactory = connectionFactory;
             _connectionName = connectionName;
             _connection = null;
             _session = null;            

@@ -23,14 +23,14 @@ namespace Plato.Messaging.Implementations.RMQ
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQConsumer"/> class.
         /// </summary>
-        /// <param name="connctionFactory">The connction factory.</param>
+        /// <param name="connectionFactory">The connection factory.</param>
         /// <param name="connectionName">Name of the connection.</param>
         /// <param name="settings">The settings.</param>
         public RMQConsumer(
-            IRMQConnectionFactory connctionFactory, 
+            IRMQConnectionFactory connectionFactory, 
             string connectionName, 
             RMQQueueSettings settings) 
-            : base(connctionFactory, connectionName, settings)
+            : base(connectionFactory, connectionName, settings)
         {
         }
 
