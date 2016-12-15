@@ -66,7 +66,7 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// <value>
         /// The routing keys.
         /// </value>
-        public IEnumerable<string> RoutingKeys { get; set; }
+        public IList<string> RoutingKeys { get; set; }
 
         /// <summary>
         /// Gets or sets the arguments.
@@ -101,7 +101,7 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
             bool exclusive = false, 
             bool autoDelete = false,
             bool persistent = true,
-            IEnumerable<string> routingKeys = null,
+            IList<string> routingKeys = null,
             IDictionary<string, object> arguments = null)
         {
             Name = name;
@@ -110,7 +110,7 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
             Exclusive = exclusive;
             AutoDelete = autoDelete;
             Persistent = persistent;
-            RoutingKeys = routingKeys ?? Enumerable.Empty<string>();
+            RoutingKeys = routingKeys ?? new List<string>();
             Arguments = arguments;
             ConsumerSettings = new RMQConsumerSettings();
         }

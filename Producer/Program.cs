@@ -22,8 +22,6 @@ namespace Producer
     {
         static void Send(IMessageSender<string> sender, SampleData sample, List<string> routes = null)
         {
-            var rnd = new Random((int)DateTime.Now.Ticks);
-
             var data = JsonConvert.SerializeObject(sample);
             if (routes == null)
             {
@@ -31,6 +29,7 @@ namespace Producer
             }
             else
             {
+                var rnd = new Random((int)DateTime.Now.Ticks);
                 var route = routes[rnd.Next(routes.Count)];
                 Console.WriteLine($"Route: {route}");
 
@@ -44,8 +43,7 @@ namespace Producer
 
         static void Sender(IMessageSender<string> sender, List<string> routes = null)
         {
-            Console.WriteLine("Ready!");
-                       
+            Console.WriteLine("Ready!");                       
 
             while (true)
             {
@@ -106,7 +104,7 @@ namespace Producer
             }
         }
 
-        static void PubSubFanoutTest()
+        static void SubscribeFanoutTest()
         {
             IRMQConfigurationManager _configurationManager = new RMQConfigurationManager();
             IRMQConnectionFactory _connectionManager = new RMQConnectionFactory(_configurationManager);
@@ -129,14 +127,66 @@ namespace Producer
                 Sender(publisherText, new List<string> { "R1", "R2", "R3"});
             }
         }
+
+        static void PubSubTopicTest()
+        {
+            IRMQConfigurationManager _configurationManager = new RMQConfigurationManager();
+            IRMQConnectionFactory _connectionManager = new RMQConnectionFactory(_configurationManager);
+            var exchangeSettings = _configurationManager.GetExchangeSettings("Test.TopicExchange");
+
+            using (IRMQPublisherText publisherText = new RMQPublisherText(_connectionManager, "defaultConnection", exchangeSettings))
+            {
+                Console.WriteLine("Press any key...");
+                Console.ReadKey();
+                
+                publisherText.Send("{'Name':'fast.orange.dog'}", (props) =>
+                {
+                    var senderProps = (RMQSenderProperties)props;
+                    senderProps.RoutingKey = "fast.orange.dog";
+                    Console.WriteLine(senderProps.RoutingKey);
+                });
+
+
+                Console.WriteLine("Press any key...");
+                Console.ReadKey();
+
+                publisherText.Send("{'Name':'fast.brown.rabbit'}", (props) =>
+                {
+                    var senderProps = (RMQSenderProperties)props;
+                    senderProps.RoutingKey = "fast.brown.rabbit";
+                    Console.WriteLine(senderProps.RoutingKey);
+                });
+
+                Console.WriteLine("Press any key...");
+                Console.ReadKey();
+
+                publisherText.Send("{'Name':'lazy.orange.dog'}", (props) =>
+                {
+                    var senderProps = (RMQSenderProperties)props;
+                    senderProps.RoutingKey = "lazy.orange.dog";
+                    Console.WriteLine(senderProps.RoutingKey);
+                });
+
+                Console.WriteLine("Press any key...");
+                Console.ReadKey();
+
+                publisherText.Send("{'Name':'fast.brown.dog'}", (props) =>
+                {
+                    var senderProps = (RMQSenderProperties)props;
+                    senderProps.RoutingKey = "fast.brown.dog";
+                    Console.WriteLine(senderProps.RoutingKey);
+                });
+            }
+        }
         
         static void Main(string[] args)
         {
             try
             {
                 //ProducerTest();
-                //PubSubFanoutTest();
-                PubSubDirectTest();
+                //SubscribeFanoutTest();
+                //PubSubDirectTest();
+                PubSubTopicTest();
             }
             catch (Exception ex)
             {

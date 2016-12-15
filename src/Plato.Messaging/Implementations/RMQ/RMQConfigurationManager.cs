@@ -154,12 +154,9 @@ namespace Plato.Messaging.Implementations.RMQ
             };
 
             var sRoutingKeys = StringHelper.IfNullOrEmptyUseDefault(attributes["routingKeys"], string.Empty);
-            if(!string.IsNullOrWhiteSpace(sRoutingKeys))
+            foreach(var routingKey in sRoutingKeys.Split(new char[] {','}))
             {
-                foreach(var routingKey in sRoutingKeys.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    routingKeys.Add(routingKey.Trim());
-                }
+                routingKeys.Add(routingKey.Trim());
             }
 
             if(_configNode != null)
