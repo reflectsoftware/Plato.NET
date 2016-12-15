@@ -4,7 +4,11 @@
 
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQReceiverText" />
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQConsumer" />
     public interface IRMQConsumerText : IRMQReceiverText, IRMQConsumer
     {
     }

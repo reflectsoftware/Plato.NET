@@ -60,7 +60,12 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// <param name="noAck">if set to <c>true</c> [no ack].</param>
         /// <param name="noLocal">if set to <c>true</c> [no local].</param>
         /// <param name="arguments">The arguments.</param>
-        public RMQConsumerSettings(string tag = null, bool exclusive = false, bool noAck = false, bool noLocal = false, IDictionary<string, object> arguments = null)
+        public RMQConsumerSettings(
+            string tag = null, 
+            bool exclusive = false, 
+            bool noAck = false, 
+            bool noLocal = false, 
+            IDictionary<string, object> arguments = null)
         {
             Tag = tag ?? Guid.NewGuid().ToString();
             Exclusive = exclusive;

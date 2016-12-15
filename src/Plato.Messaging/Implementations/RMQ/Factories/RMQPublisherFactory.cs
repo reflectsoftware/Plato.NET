@@ -4,7 +4,6 @@
 
 using Plato.Messaging.Implementations.RMQ.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
-using System.Collections.Generic;
 
 namespace Plato.Messaging.Implementations.RMQ.Factories
 {
@@ -24,6 +23,13 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
             _connectionFactory = connectionFactory;
         }
 
+        /// <summary>
+        /// Creates the byte.
+        /// </summary>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="exchangeSettings">The exchange settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
+        /// <returns></returns>
         public IRMQPublisherByte CreateByte(
             string connectionName, 
             RMQExchangeSettings exchangeSettings, 
@@ -32,6 +38,13 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
             return new RMQPublisherByte(_connectionFactory, connectionName, exchangeSettings, queueSettings);
         }
 
+        /// <summary>
+        /// Creates the text.
+        /// </summary>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="exchangeSettings">The exchange settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
+        /// <returns></returns>
         public IRMQPublisherText CreateText(
             string connectionName,
             RMQExchangeSettings exchangeSettings,

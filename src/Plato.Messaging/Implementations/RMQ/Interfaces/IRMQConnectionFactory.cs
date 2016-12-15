@@ -7,6 +7,10 @@ using RabbitMQ.Client;
 
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.Interfaces.IMessageConnectionFactory{RabbitMQ.Client.IConnection}" />
     public interface IRMQConnectionFactory : IMessageConnectionFactory<IConnection>
     {        
     }

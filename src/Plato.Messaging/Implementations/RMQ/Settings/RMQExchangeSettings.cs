@@ -68,7 +68,13 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// <param name="durable">if set to <c>true</c> [durable].</param>
         /// <param name="autoDelete">if set to <c>true</c> [automatic delete].</param>
         /// <param name="arguments">The arguments.</param>
-        public RMQExchangeSettings(string name, string exchangeName = "", string type = "direct", bool durable = true, bool autoDelete = false, IDictionary<string, object> arguments = null)
+        public RMQExchangeSettings(
+            string name, 
+            string exchangeName = "", 
+            string type = "direct", 
+            bool durable = true, 
+            bool autoDelete = false, 
+            IDictionary<string, object> arguments = null)
         {
             Name = name;
             ExchangeName = exchangeName;

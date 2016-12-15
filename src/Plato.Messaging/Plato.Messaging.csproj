@@ -143,7 +143,6 @@
     <Compile Include="Interfaces\IMessageReceiverSender.cs" />
     <Compile Include="Interfaces\IMessageSender.cs" />
     <Compile Include="Exceptions\MessageException.cs" />
-    <Compile Include="Interfaces\IMessageConnectionManager.cs" />
     <Compile Include="Interfaces\ISenderProperties.cs" />
     <Compile Include="MessageListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

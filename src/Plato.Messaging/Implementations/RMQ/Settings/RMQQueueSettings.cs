@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Plato.Messaging.Implementations.RMQ.Settings
 {
@@ -93,6 +92,7 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// <param name="exclusive">if set to <c>true</c> [exclusive].</param>
         /// <param name="autoDelete">if set to <c>true</c> [automatic delete].</param>
         /// <param name="persistent">if set to <c>true</c> [persistent].</param>
+        /// <param name="routingKeys">The routing keys.</param>
         /// <param name="arguments">The arguments.</param>
         public RMQQueueSettings(
             string name, 

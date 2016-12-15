@@ -20,7 +20,11 @@ namespace Plato.Messaging.Implementations.RMQ
         /// <param name="channel">The channel.</param>
         /// <param name="args">The <see cref="BasicDeliverEventArgs"/> instance containing the event data.</param>
         /// <param name="queueName">Name of the queue.</param>
-        internal RMQReceiverResultByte(IConnection connection, IModel channel, BasicDeliverEventArgs args, string queueName)
+        internal RMQReceiverResultByte(
+            IConnection connection, 
+            IModel channel, 
+            BasicDeliverEventArgs args, 
+            string queueName)
             : base(connection, channel, args, queueName)
         {
         }

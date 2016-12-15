@@ -10,25 +10,44 @@ using System.Threading;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.RMQPublisherSubscriber" />
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQSubscriber" />
     public class RMQSubscriber : RMQPublisherSubscriber, IRMQSubscriber
     {
         protected RMQBasicConsumer _queueingConsumer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQSubscriber"/> class.
+        /// </summary>
+        /// <param name="connectionFactory">The connection factory.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="exchangeSettings">The exchange settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
         public RMQSubscriber(
-            IRMQConnectionFactory connctionFactory,
+            IRMQConnectionFactory connectionFactory,
             string connectionName,
             RMQExchangeSettings exchangeSettings,
             RMQQueueSettings queueSettings)
-            : base(connctionFactory, connectionName, exchangeSettings, queueSettings)
+            : base(connectionFactory, connectionName, exchangeSettings, queueSettings)
         {
         }
 
+        /// <summary>
+        /// Called when [cancel consumer].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The <see cref="ConsumerEventArgs"/> instance containing the event data.</param>
         private void OnCancelConsumer(object sender, ConsumerEventArgs args)
         {
             _queueingConsumer = null;
         }
 
+        /// <summary>
+        /// Opens this instance.
+        /// </summary>
         public override void Open()
         {
             try
@@ -72,6 +91,9 @@ namespace Plato.Messaging.Implementations.RMQ
             }
         }
 
+        /// <summary>
+        /// Clears the cache buffer.
+        /// </summary>
         public void ClearCacheBuffer()
         {
             try
@@ -93,6 +115,11 @@ namespace Plato.Messaging.Implementations.RMQ
             }
         }
 
+        /// <summary>
+        /// Receives the specified msec timeout.
+        /// </summary>
+        /// <param name="msecTimeout">The msec timeout.</param>
+        /// <returns></returns>
         protected BasicDeliverEventArgs _Receive(int msecTimeout = Timeout.Infinite)
         {
             try

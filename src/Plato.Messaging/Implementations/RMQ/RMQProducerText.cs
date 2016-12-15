@@ -10,16 +10,32 @@ using System.Text;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.RMQProducer" />
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQProducerText" />
     public class RMQProducerText : RMQProducer, IRMQProducerText
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQProducerText"/> class.
+        /// </summary>
+        /// <param name="connectionFactory">The connection factory.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="settings">The settings.</param>
         public RMQProducerText(
-            IRMQConnectionFactory connctionFactory, 
+            IRMQConnectionFactory connectionFactory, 
             string connectionName,             
             RMQQueueSettings settings) 
-            : base(connctionFactory, connectionName, settings)
+            : base(connectionFactory, connectionName, settings)
         {
         }
 
+        /// <summary>
+        /// Sends the specified text.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <param name="action">The action.</param>
         public void Send(string text, Action<ISenderProperties> action = null)
         {
             var data = Encoding.UTF8.GetBytes(text);

@@ -9,16 +9,31 @@ using System;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.RMQQueue" />
     public abstract class RMQProducer : RMQQueue
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQProducer"/> class.
+        /// </summary>
+        /// <param name="connectionFactory">The conndction factory.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="settings">The settings.</param>
         public RMQProducer(
-            IRMQConnectionFactory connctionFactory, 
+            IRMQConnectionFactory connectionFactory, 
             string connectionName,             
             RMQQueueSettings settings) 
-            : base(connctionFactory, connectionName, settings)
+            : base(connectionFactory, connectionName, settings)
         {
         }
 
+        /// <summary>
+        /// Sends the specified data.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="action">The action.</param>
         protected void _Send(byte[] data, Action<ISenderProperties> action = null)
         {
             try

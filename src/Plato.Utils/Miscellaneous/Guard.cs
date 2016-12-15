@@ -9,20 +9,20 @@ using System.Reflection;
 
 namespace Plato.Utils.Miscellaneous
 {
-	/// <summary>
-	/// Helper class for guard statements, that allow prettier code for guard clauses
-	/// </summary>
-	/// <example>
-	/// Sample usage:
-	/// <code>
-	/// <![CDATA[
-	/// Guard.Against(name.Length == 0).With<ArgumentException>("Name must have at least 1 char length");
-	/// Guard.AgainstNull(obj, "obj");
-	/// Guard.AgainstNullOrEmpty(name, "name", "Name must have a value");
-	/// ]]>
-	/// </code>
-	/// </example>
-	public static class Guard
+    /// <summary>
+    /// Helper class for guard statements, that allow prettier code for guard clauses
+    /// </summary>
+    /// <example>
+    /// Sample usage:
+    /// <code>
+    /// <![CDATA[
+    /// Guard.Against(name.Length == 0).With<ArgumentException>("Name must have at least 1 char length");
+    /// Guard.AgainstNull(obj, "obj");
+    /// Guard.AgainstNullOrEmpty(name, "name", "Name must have a value");
+    /// ]]>
+    /// </code>
+    /// </example>
+    public static class Guard
 	{
 		/// <summary>
 		/// Checks the supplied condition and act with exception if condition resolves to <c>true</c>.

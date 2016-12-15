@@ -10,17 +10,34 @@ using System.Text;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.RMQPublisher" />
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQPublisherText" />
     public class RMQPublisherText : RMQPublisher, IRMQPublisherText
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQPublisherText"/> class.
+        /// </summary>
+        /// <param name="connectionFactory">The connection factory.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="exchangeSettings">The exchange settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
         public RMQPublisherText(
-            IRMQConnectionFactory connctionFactory, 
+            IRMQConnectionFactory connectionFactory, 
             string connectionName,
             RMQExchangeSettings exchangeSettings,
             RMQQueueSettings queueSettings = null)
-            : base(connctionFactory, connectionName, exchangeSettings, queueSettings)
+            : base(connectionFactory, connectionName, exchangeSettings, queueSettings)
         {
         }
 
+        /// <summary>
+        /// Sends the specified text.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <param name="action">The action.</param>
         public void Send(string text, Action<ISenderProperties> action = null)
         {
             var data = Encoding.UTF8.GetBytes(text);

@@ -23,6 +23,13 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
             _connectionFactory = connectionFactory;
         }
 
+        /// <summary>
+        /// Creates the byte.
+        /// </summary>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="exchangeSettings">The exchange settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
+        /// <returns></returns>
         public IRMQSubscriberByte CreateByte(
             string connectionName, 
             RMQExchangeSettings exchangeSettings, 
@@ -31,6 +38,13 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
             return new RMQSubscriberByte(_connectionFactory, connectionName, exchangeSettings, queueSettings);
         }
 
+        /// <summary>
+        /// Creates the text.
+        /// </summary>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="exchangeSettings">The exchange settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
+        /// <returns></returns>
         public IRMQSubscriberText CreateText(
             string connectionName,
             RMQExchangeSettings exchangeSettings,

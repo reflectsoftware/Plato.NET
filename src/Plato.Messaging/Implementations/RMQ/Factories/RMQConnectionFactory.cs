@@ -12,15 +12,31 @@ using System.IO;
 
 namespace Plato.Messaging.Implementations.RMQ.Factories
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQConnectionFactory" />
     public class RMQConnectionFactory : IRMQConnectionFactory
     {
         private IRMQConfigurationManager _configManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQConnectionFactory"/> class.
+        /// </summary>
+        /// <param name="configManager">The configuration manager.</param>
         public RMQConnectionFactory(IRMQConfigurationManager configManager)
         {
             _configManager = configManager;
         }
 
+        /// <summary>
+        /// Creates the connection.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException"></exception>
+        /// <exception cref="MessageException">
+        /// </exception>
         public IConnection CreateConnection(string name)
         {
             try

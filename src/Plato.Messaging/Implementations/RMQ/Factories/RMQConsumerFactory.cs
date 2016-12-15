@@ -10,12 +10,13 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
     /// <summary>
     /// 
     /// </summary>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQConsumerFactory" />
     public class RMQConsumerFactory : IRMQConsumerFactory
     {
         private readonly IRMQConnectionFactory _connectionFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RMQConsumerFactory"/> class.
+        /// Initializes a new instance of the <see cref="RMQConsumerFactory" /> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
         public RMQConsumerFactory(IRMQConnectionFactory connectionFactory)

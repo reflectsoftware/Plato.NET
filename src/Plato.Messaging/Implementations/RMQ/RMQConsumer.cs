@@ -11,10 +11,21 @@ using System.Threading;
 namespace Plato.Messaging.Implementations.RMQ
 {
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.RMQQueue" />
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQConsumer" />
     public abstract class RMQConsumer : RMQQueue, IRMQConsumer
     {
         protected RMQBasicConsumer _queueingConsumer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQConsumer"/> class.
+        /// </summary>
+        /// <param name="connctionFactory">The connction factory.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="settings">The settings.</param>
         public RMQConsumer(
             IRMQConnectionFactory connctionFactory, 
             string connectionName, 
@@ -23,11 +34,19 @@ namespace Plato.Messaging.Implementations.RMQ
         {
         }
 
+        /// <summary>
+        /// Called when [cancel consumer].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The <see cref="ConsumerEventArgs"/> instance containing the event data.</param>
         private void OnCancelConsumer(object sender, ConsumerEventArgs args)
         {
             _queueingConsumer = null;
         }
 
+        /// <summary>
+        /// Opens this instance.
+        /// </summary>
         public override void Open()
         {
             try
@@ -71,6 +90,9 @@ namespace Plato.Messaging.Implementations.RMQ
             }
         }
 
+        /// <summary>
+        /// Clears the cache buffer.
+        /// </summary>
         public void ClearCacheBuffer()
         {
             try
@@ -92,6 +114,11 @@ namespace Plato.Messaging.Implementations.RMQ
             }
         }
 
+        /// <summary>
+        /// Receives the specified msec timeout.
+        /// </summary>
+        /// <param name="msecTimeout">The msec timeout.</param>
+        /// <returns></returns>
         protected BasicDeliverEventArgs _Receive(int msecTimeout = Timeout.Infinite)
         {
             try

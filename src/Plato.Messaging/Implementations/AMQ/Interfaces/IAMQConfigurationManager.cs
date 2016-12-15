@@ -8,9 +8,11 @@ using System.Collections.Specialized;
 
 namespace Plato.Messaging.Implementations.AMQ.Interfaces
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IAMQConfigurationManager
     {
-
         /// <summary>
         /// Gets the attributes collection for all nodes.
         /// </summary>

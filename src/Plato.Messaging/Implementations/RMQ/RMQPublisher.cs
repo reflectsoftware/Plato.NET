@@ -7,35 +7,64 @@ using Plato.Messaging.Implementations.RMQ.Settings;
 using Plato.Messaging.Interfaces;
 using RabbitMQ.Client.Events;
 using System;
-using System.Collections.Generic;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.RMQPublisherSubscriber" />
+    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQPublisher" />
     public class RMQPublisher: RMQPublisherSubscriber, IRMQPublisher
     {
+        /// <summary>
+        /// Gets or sets the on return.
+        /// </summary>
+        /// <value>
+        /// The on return.
+        /// </value>
         public Action<BasicReturnEventArgs> OnReturn { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQPublisher"/> class.
+        /// </summary>
+        /// <param name="connectionFactory">The connection factory.</param>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="exchangeSettings">The exchange settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
         public RMQPublisher(
-            IRMQConnectionFactory connctionFactory, 
+            IRMQConnectionFactory connectionFactory, 
             string connectionName,
             RMQExchangeSettings exchangeSettings,
             RMQQueueSettings queueSettings = null)
-            : base(connctionFactory, connectionName, exchangeSettings, queueSettings)
+            : base(connectionFactory, connectionName, exchangeSettings, queueSettings)
         {
         }
 
+        /// <summary>
+        /// Does the on return.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The <see cref="BasicReturnEventArgs"/> instance containing the event data.</param>
         private void DoOnReturn(object sender, BasicReturnEventArgs args)
         {
             OnReturn?.Invoke(args);
         }
 
+        /// <summary>
+        /// Opens this instance.
+        /// </summary>
         public override void Open()
         {
             base.Open();
             _channel.BasicReturn += DoOnReturn;
         }
 
+        /// <summary>
+        /// Sends the specified data.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="action">The action.</param>
         protected void _Send(byte[] data, Action<ISenderProperties> action = null)
         {
             try
