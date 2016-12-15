@@ -6,7 +6,7 @@ using Plato.Messaging.Interfaces;
 
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
-    public interface IRMQSender : IMessageSender<byte[]>
+    public interface IRMQProducerText : IMessageSender<string>, IMessageReceiverSender
     {
     }
 }

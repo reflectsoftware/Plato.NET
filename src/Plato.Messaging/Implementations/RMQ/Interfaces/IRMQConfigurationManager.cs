@@ -49,5 +49,13 @@ namespace Plato.Messaging.Implementations.RMQ.Interfaces
         /// <param name="arguments">The arguments.</param>
         /// <returns></returns>
         RMQExchangeSettings GetExchangeSettings(string name, IDictionary<string, object> arguments = null);
+
+        /// <summary>
+        /// Gets the queue settings.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="arguments">The arguments.</param>
+        /// <returns></returns>
+        RMQQueueSettings GetQueueSettings(string name, IDictionary<string, object> arguments = null);
     }
 }

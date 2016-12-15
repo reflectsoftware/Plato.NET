@@ -1,13 +1,15 @@
-﻿// Plato.NET
+// Plato.NET
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Plato.Messaging.Interfaces;
-using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System;
 
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
-    public interface IRMQConnectionFactory : IMessageConnectionFactory<IConnection>
-    {        
+    public interface IRMQPublisher : IMessageReceiverSender
+    {
+        Action<BasicReturnEventArgs> OnReturn { get; set; }
     }
 }
