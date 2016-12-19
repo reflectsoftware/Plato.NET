@@ -111,6 +111,7 @@
     <Compile Include="Implementations\RMQ\Interfaces\IRMQSubscriber.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQSubscriberText.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQSubscriberByte.cs" />
+    <Compile Include="Implementations\RMQ\IRMQQueue.cs" />
     <Compile Include="Implementations\RMQ\RMQBasicConsumer.cs" />
     <Compile Include="Implementations\RMQ\RMQConsumerText.cs" />
     <Compile Include="Implementations\RMQ\RMQConfigurationManager.cs" />
