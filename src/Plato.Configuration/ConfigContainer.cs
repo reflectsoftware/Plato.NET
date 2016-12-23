@@ -143,7 +143,7 @@ namespace Plato.Configuration
         /// <param name="sectionName">Name of the section.</param>
         /// <param name="settingsSectionName">Name of the settings section.</param>
         /// <param name="connectionStringsSectionName">Name of the connection strings section.</param>
-        internal ConfigContainer(string fileName, string sectionName = "./configuration", string settingsSectionName = "appSettings", string connectionStringsSectionName = "connectionStrings")
+        public ConfigContainer(string fileName, string sectionName = "./configuration", string settingsSectionName = "appSettings", string connectionStringsSectionName = "connectionStrings")
         {
             BaseInit();
 
