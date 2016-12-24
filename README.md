@@ -1,14 +1,16 @@
 # Plato.NET Framework
 
 [![Build status](https://ci.appveyor.com/api/projects/status/github/reflectsoftware/Plato.NET?svg=true)](https://ci.appveyor.com/project/reflectsoftware/Plato.NET)
-[![Stars](https://img.shields.io/github/stars/reflectsoftware/Plato.NET.svg)](https://github.com/reflectsoftware/Plato.NET/stargazers)
+[![Stars](https://img.shields.io/github/stars/reflectsoftware/Plato.NET.svg)](https://github.com/reflectsoftware/Plato.NET/stargazers) 
+
+**Platforms** - .NET 4.6.1
 
 ## What is Plato.NET? ##
 
 TODO
 
 
-**Platforms** - .NET 4.6.1 and up.
+
 
 ## Packages
 
