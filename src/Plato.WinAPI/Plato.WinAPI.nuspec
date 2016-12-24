@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Plato.WinAPI</id>
+    <version>$version$</version>
+    <title>Plato.WinAPI</title>
+    <authors>ReflectSoftware Inc.</authors>
+    <owners>ReflectSoftware Inc.</owners>
+    <projectUrl>https://github.com/reflectsoftware/Plato.NET</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Plato.WinAPI deployment package</description>
+    <copyright>© 2016 ReflectSoftware Inc.</copyright>
+    <releaseNotes></releaseNotes>
+  </metadata>
+  <files>
+    <file src="bin\Release\**" target="lib\net461" />
+    <file src="..\**\*.cs" exclude="..\**\obj\**\*.*" target="src" />
+  </files>
+</package>

@@ -153,13 +153,13 @@
       <Project>{4e421333-54d9-48ce-ba71-a3ec80e9fa0f}</Project>
       <Name>Plato.Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Plato.Threading\Plato.Threading.csproj">
-      <Project>{54328f32-1c58-4ba0-be59-57423bf5271c}</Project>
-      <Name>Plato.Threading</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plato.Utils\Plato.Utils.csproj">
+    <ProjectReference Include="..\Plato.Core\Plato.Core.csproj">
       <Project>{fe8c4552-9ad9-4d4c-b6ec-64bf4fd0e3f4}</Project>
-      <Name>Plato.Utils</Name>
+      <Name>Plato.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plato\Plato.csproj">
+      <Project>{AC558AAF-818F-4D13-B29E-B1A81CDB39F0}</Project>
+      <Name>Plato</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +169,9 @@
     <None Include="Implementations\AMQ\AMQSettings.Sample.config" />
     <None Include="Implementations\RMQ\RMQSettings.Sample.config" />
     <None Include="packages.config" />
+    <None Include="Plato.Messaging.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

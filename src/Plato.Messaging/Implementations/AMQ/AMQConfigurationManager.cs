@@ -6,7 +6,7 @@ using Apache.NMS;
 using Plato.Configuration;
 using Plato.Messaging.Implementations.AMQ.Interfaces;
 using Plato.Messaging.Implementations.AMQ.Settings;
-using Plato.Utils.Strings;
+using Plato.Core.Strings;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;

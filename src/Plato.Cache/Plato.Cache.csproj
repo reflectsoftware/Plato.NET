@@ -72,15 +72,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Plato.Utils\Plato.Utils.csproj">
-      <Project>{FE8C4552-9AD9-4D4C-B6EC-64BF4FD0E3F4}</Project>
-      <Name>Plato.Utils</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Plato.NET.licenseheader">
       <Link>Plato.NET.licenseheader</Link>
     </None>
+    <None Include="Plato.Cache.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plato.Core\Plato.Core.csproj">
+      <Project>{fe8c4552-9ad9-4d4c-b6ec-64bf4fd0e3f4}</Project>
+      <Name>Plato.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

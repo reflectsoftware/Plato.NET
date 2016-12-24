@@ -6,7 +6,7 @@ using Plato.Configuration;
 using Plato.Configuration.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
-using Plato.Utils.Strings;
+using Plato.Core.Strings;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
