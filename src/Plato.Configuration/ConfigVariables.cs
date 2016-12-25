@@ -5,7 +5,7 @@
 using Plato.Configuration.Enums;
 using Plato.Configuration.Interfaces;
 using Plato.Security.Interfaces;
-using Plato.Utils.Miscellaneous;
+using Plato.Core.Miscellaneous;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;

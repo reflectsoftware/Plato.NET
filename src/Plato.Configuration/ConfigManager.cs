@@ -4,7 +4,7 @@
 
 using Plato.Configuration.Enums;
 using Plato.Configuration.Interfaces;
-using Plato.Utils.Strings;
+using Plato.Core.Strings;
 using System;
 using System.Collections.Generic;
 

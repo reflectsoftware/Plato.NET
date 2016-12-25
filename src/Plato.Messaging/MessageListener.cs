@@ -2,10 +2,11 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Plato;
 using Plato.Messaging.Interfaces;
-using Plato.Threading;
-using Plato.Utils.Logging.Interfaces;
+using Plato.Core.Logging.Interfaces;
 using System;
+using Plato.Threading;
 
 namespace Plato.Messaging
 {

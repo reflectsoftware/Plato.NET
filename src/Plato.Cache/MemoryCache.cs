@@ -3,8 +3,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Plato.Cache.Interfaces;
-using Plato.Utils.Locks;
-using Plato.Utils.Miscellaneous;
+using Plato.Core;
+using Plato.Core.Locks;
+using Plato.Core.Miscellaneous;
 using System;
 using System.Collections.Generic;
 using System.Linq;

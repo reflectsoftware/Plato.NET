@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Plato.Configuration.Interfaces;
-using Plato.Utils.Strings;
+using Plato.Core.Strings;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Xml;

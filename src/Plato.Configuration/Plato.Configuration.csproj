@@ -95,6 +95,10 @@
     <Compile Include="ValueListStates.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Plato.Core\Plato.Core.csproj">
+      <Project>{fe8c4552-9ad9-4d4c-b6ec-64bf4fd0e3f4}</Project>
+      <Name>Plato.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Plato.Security\Plato.Security.csproj">
       <Project>{EFB05004-B25B-4AD6-90AD-E634D34B2D6F}</Project>
       <Name>Plato.Security</Name>
@@ -103,14 +107,13 @@
       <Project>{3824e704-14aa-4714-9aab-5608e52666c3}</Project>
       <Name>Plato.Serializers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Plato.Utils\Plato.Utils.csproj">
-      <Project>{FE8C4552-9AD9-4D4C-B6EC-64BF4FD0E3F4}</Project>
-      <Name>Plato.Utils</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Plato.NET.licenseheader">
       <Link>Plato.NET.licenseheader</Link>
+    </None>
+    <None Include="Plato.Configuration.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="SectionContentContainer.Example.config" />
   </ItemGroup>
