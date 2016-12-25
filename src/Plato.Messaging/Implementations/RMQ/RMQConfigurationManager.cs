@@ -163,7 +163,7 @@ namespace Plato.Messaging.Implementations.RMQ
             var queueSettings = new RMQQueueSettings(name)
             {
                 QueueName = StringHelper.IfNullOrEmptyUseDefault(attributes["QueueName"], name),
-                Exclusive = StringHelper.IfNullOrEmptyUseDefault(attributes["exclusive"], "true") == "true",
+                Exclusive = StringHelper.IfNullOrEmptyUseDefault(attributes["exclusive"], "false") == "true",
                 Durable = StringHelper.IfNullOrEmptyUseDefault(attributes["durable"], "true") == "true",
                 AutoDelete = StringHelper.IfNullOrEmptyUseDefault(attributes["autoDelete"], "false") == "true",
                 Persistent = StringHelper.IfNullOrEmptyUseDefault(attributes["persistent"], "true") == "true",
@@ -184,9 +184,9 @@ namespace Plato.Messaging.Implementations.RMQ
                 {
                     attributes = consumerNode.GetAttributes();
                     queueSettings.ConsumerSettings.Tag = StringHelper.IfNullOrEmptyUseDefault(attributes["tag"], Guid.NewGuid().ToString());
-                    queueSettings.ConsumerSettings.Exclusive = StringHelper.IfNullOrEmptyUseDefault(attributes["exclusive"], "true") == "true";
-                    queueSettings.ConsumerSettings.NoAck = StringHelper.IfNullOrEmptyUseDefault(attributes["noAck"], "true") == "true";
-                    queueSettings.ConsumerSettings.NoLocal = StringHelper.IfNullOrEmptyUseDefault(attributes["noLocal"], "true") == "true";
+                    queueSettings.ConsumerSettings.Exclusive = StringHelper.IfNullOrEmptyUseDefault(attributes["exclusive"], "false") == "true";
+                    queueSettings.ConsumerSettings.NoAck = StringHelper.IfNullOrEmptyUseDefault(attributes["noAck"], "false") == "true";
+                    queueSettings.ConsumerSettings.NoLocal = StringHelper.IfNullOrEmptyUseDefault(attributes["noLocal"], "false") == "true";
                 }
             }
             
