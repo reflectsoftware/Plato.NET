@@ -38,6 +38,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. SolutionItems", "01. SolutionItems", "{2E348269-C6DF-4688-9908-1DB4EF24F3FC}"
 	ProjectSection(SolutionItems) = preProject
 		src\Plato.NET.licenseheader = src\Plato.NET.licenseheader
+		README.md = README.md
 		src\VersionInfo.cs = src\VersionInfo.cs
 	EndProjectSection
 EndProject
