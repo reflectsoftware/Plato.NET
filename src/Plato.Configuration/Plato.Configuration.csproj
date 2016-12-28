@@ -50,24 +50,24 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Plato.Cache, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Security.2.0.27\lib\net461\Plato.Cache.dll</HintPath>
+    <Reference Include="Plato.Cache, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Security.2.0.29\lib\net461\Plato.Cache.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Plato.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Security.2.0.27\lib\net461\Plato.Core.dll</HintPath>
+    <Reference Include="Plato.Core, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Security.2.0.29\lib\net461\Plato.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Plato.Security, Version=2.0.27.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Security.2.0.27\lib\net461\Plato.Security.dll</HintPath>
+    <Reference Include="Plato.Security, Version=2.0.29.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Security.2.0.29\lib\net461\Plato.Security.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Plato.Serializers, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Security.2.0.27\lib\net461\Plato.Serializers.dll</HintPath>
+    <Reference Include="Plato.Serializers, Version=2.0.27.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Security.2.0.29\lib\net461\Plato.Serializers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Plato.WinAPI, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Security.2.0.27\lib\net461\Plato.WinAPI.dll</HintPath>
+    <Reference Include="Plato.WinAPI, Version=2.0.27.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Security.2.0.29\lib\net461\Plato.WinAPI.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
