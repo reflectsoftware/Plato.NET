@@ -1,9 +1,9 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyCompany("ReflectSoftware")]
+[assembly: AssemblyCompany("ReflectSoftware Inc.")]
 [assembly: AssemblyProduct("ReflectSoftware reusable common libraries.")]
-[assembly: AssemblyCopyright("Copyright (C) 2016 ReflectSoftware Inc.")]
+[assembly: AssemblyCopyright("Copyright (C) 2017 ReflectSoftware Inc.")]
 [assembly: AssemblyVersion("2.0.1.0")]
 [assembly: AssemblyFileVersion("2.0.1.0")]
 [assembly: AssemblyInformationalVersion("2.0.1 (rev 1)")]
