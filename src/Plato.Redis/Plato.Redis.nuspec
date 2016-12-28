@@ -3,7 +3,7 @@
   <metadata>
     <id>Plato.Redis</id>
     <version>$version$</version>
-    <title>Plato.Core</title>
+    <title>Plato.Redis</title>
     <authors>ReflectSoftware Inc.</authors>
     <owners>ReflectSoftware Inc.</owners>
     <projectUrl>https://github.com/reflectsoftware/Plato.NET</projectUrl>
