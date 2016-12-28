@@ -23,6 +23,14 @@ namespace Plato.Redis.Interfaces
         ConnectionMultiplexer Connect(ConfigurationOptions options, string connectionStrings, TextWriter log = null);
 
         /// <summary>
+        /// Connects the specified connection strings.
+        /// </summary>
+        /// <param name="connectionStrings">The connection strings.</param>
+        /// <param name="log">The log.</param>
+        /// <returns></returns>
+        ConnectionMultiplexer Connect(string connectionStrings, TextWriter log = null);
+
+        /// <summary>
         /// Connects the asynchronous.
         /// </summary>
         /// <param name="options">The options.</param>
@@ -30,5 +38,13 @@ namespace Plato.Redis.Interfaces
         /// <param name="log">The log.</param>
         /// <returns></returns>
         Task<ConnectionMultiplexer> ConnectAsync(ConfigurationOptions options, string connectionStrings, TextWriter log = null);
+
+        /// <summary>
+        /// Connects the asynchronous.
+        /// </summary>
+        /// <param name="connectionStrings">The connection strings.</param>
+        /// <param name="log">The log.</param>
+        /// <returns></returns>
+        Task<ConnectionMultiplexer> ConnectAsync(string connectionStrings, TextWriter log = null);
     }
 }

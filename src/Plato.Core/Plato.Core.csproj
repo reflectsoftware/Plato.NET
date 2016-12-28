@@ -96,9 +96,6 @@
     <Compile Include="Strings\StringHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BigInteger\BigIntegerDoc.html" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Plato.NET.licenseheader">
       <Link>Plato.NET.licenseheader</Link>
     </None>
