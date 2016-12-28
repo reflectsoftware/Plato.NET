@@ -50,6 +50,26 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Plato.Cache, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Security.2.0.0\lib\net461\Plato.Cache.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Security.2.0.0\lib\net461\Plato.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.Security, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Security.2.0.0\lib\net461\Plato.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.Serializers, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Security.2.0.0\lib\net461\Plato.Serializers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.WinAPI, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Security.2.0.0\lib\net461\Plato.WinAPI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -95,27 +115,17 @@
     <Compile Include="ValueListStates.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Plato.Core\Plato.Core.csproj">
-      <Project>{fe8c4552-9ad9-4d4c-b6ec-64bf4fd0e3f4}</Project>
-      <Name>Plato.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plato.Security\Plato.Security.csproj">
-      <Project>{EFB05004-B25B-4AD6-90AD-E634D34B2D6F}</Project>
-      <Name>Plato.Security</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plato.Serializers\Plato.Serializers.csproj">
-      <Project>{3824e704-14aa-4714-9aab-5608e52666c3}</Project>
-      <Name>Plato.Serializers</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Plato.NET.licenseheader">
       <Link>Plato.NET.licenseheader</Link>
     </None>
+    <None Include="packages.config" />
     <None Include="Plato.Configuration.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="SectionContentContainer.Example.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BigInteger\BigIntegerDoc.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

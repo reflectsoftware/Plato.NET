@@ -41,6 +41,34 @@
       <HintPath>..\..\packages\Apache.NMS.ActiveMQ.1.7.2\lib\net40\Apache.NMS.ActiveMQ.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Plato, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.Cache, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.Cache.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.Configuration, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.Configuration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.Security, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.Serializers, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.Serializers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.WinAPI, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.WinAPI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RabbitMQ.Client, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
       <HintPath>..\..\packages\RabbitMQ.Client.4.1.1\lib\net451\RabbitMQ.Client.dll</HintPath>
       <Private>True</Private>
@@ -149,20 +177,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Plato.Configuration\Plato.Configuration.csproj">
-      <Project>{4e421333-54d9-48ce-ba71-a3ec80e9fa0f}</Project>
-      <Name>Plato.Configuration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plato.Core\Plato.Core.csproj">
-      <Project>{fe8c4552-9ad9-4d4c-b6ec-64bf4fd0e3f4}</Project>
-      <Name>Plato.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plato\Plato.csproj">
-      <Project>{AC558AAF-818F-4D13-B29E-B1A81CDB39F0}</Project>
-      <Name>Plato</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Plato.NET.licenseheader">
       <Link>Plato.NET.licenseheader</Link>
     </None>
@@ -173,7 +187,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="BigInteger\BigIntegerDoc.html" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
