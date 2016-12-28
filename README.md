@@ -24,7 +24,7 @@ Package name  | Details
 [Plato.Messaging](http://www.nuget.org/packages/Plato.Messaging/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.Messaging.svg?style=flat)](http://www.nuget.org/packages/Plato.Messaging/)
 [Plato.Security](http://www.nuget.org/packages/Plato.Security/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.Security.svg?style=flat)](http://www.nuget.org/packages/Plato.Security/)
 [Plato.Serializers](http://www.nuget.org/packages/Plato.Serializers/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.Serializers.svg?style=flat)](http://www.nuget.org/packages/Plato.Serializers/)
-[Plato.SqlServer](http://www.nuget.org/packages/Plato.SqlServer/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.SqlServer.svg?style=flat)](http://www.nuget.org/packages/Plato.SqlServer/)
+[Plato.Redis](http://www.nuget.org/packages/Plato.Redis/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.Redis.svg?style=flat)](http://www.nuget.org/packages/Plato.Redis/)
 [Plato.WinAPI](http://www.nuget.org/packages/Plato.WinAPI/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.WinAPI.svg?style=flat)](http://www.nuget.org/packages/Plato.WinAPI/)
 
 
