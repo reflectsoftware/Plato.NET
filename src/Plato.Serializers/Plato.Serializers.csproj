@@ -52,6 +52,14 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Plato.Cache, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Cache.2.0.23\lib\net461\Plato.Cache.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plato.Core, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Core.2.0.23\lib\net461\Plato.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -78,18 +86,14 @@
     <Compile Include="ObjectXmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Plato.Cache\Plato.Cache.csproj">
-      <Project>{96e1c168-23ca-4423-96f9-46e547561f3c}</Project>
-      <Name>Plato.Cache</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Plato.NET.licenseheader">
       <Link>Plato.NET.licenseheader</Link>
     </None>
-    <None Include="Plato.WinAPI.nuspec">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="packages.config" />
+    <None Include="Plato.Serializers.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BigInteger\BigIntegerDoc.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
