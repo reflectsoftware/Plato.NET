@@ -61,6 +61,7 @@
     <Compile Include="Interfaces\IExceptionPublisher.cs" />
     <Compile Include="ExceptionManagement\PublisherInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlServer\SQLErrors.cs" />
     <Compile Include="Threading\BaseThread.cs" />
     <Compile Include="Threading\DelegateThread.cs" />
     <Compile Include="Enums\BaseThreadState.cs" />

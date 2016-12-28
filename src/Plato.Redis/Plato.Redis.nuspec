@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Plato.SqlServer</id>
+    <id>Plato.Redis</id>
     <version>$version$</version>
-    <title>Plato.SqlServer</title>
+    <title>Plato.Core</title>
     <authors>ReflectSoftware Inc.</authors>
     <owners>ReflectSoftware Inc.</owners>
     <projectUrl>https://github.com/reflectsoftware/Plato.NET</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Plato.SqlServer deployment package</description>
+    <description>Plato.Redis deployment package</description>
     <copyright>© 2016 ReflectSoftware Inc.</copyright>
     <releaseNotes></releaseNotes>
   </metadata>
