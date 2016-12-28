@@ -50,8 +50,8 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Plato.Core, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Core.2.0.23\lib\net461\Plato.Core.dll</HintPath>
+    <Reference Include="Plato.Core, Version=2.0.27.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Core.2.0.27\lib\net461\Plato.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -83,9 +83,6 @@
     <None Include="Plato.Cache.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BigInteger\BigIntegerDoc.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
