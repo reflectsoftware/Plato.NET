@@ -50,5 +50,27 @@ namespace Plato.Redis
         {
             return await ConnectionMultiplexer.ConnectAsync(EnhanceConfiguration(options, connectionStrings), log);
         }
+
+        /// <summary>
+        /// Connects the specified connection strings.
+        /// </summary>
+        /// <param name="connectionStrings">The connection strings.</param>
+        /// <param name="log">The log.</param>
+        /// <returns></returns>
+        public ConnectionMultiplexer Connect(string connectionStrings, TextWriter log = null)
+        {
+            return Connect(new ConfigurationOptions(), connectionStrings, log);
+        }
+
+        /// <summary>
+        /// Connects the asynchronous.
+        /// </summary>
+        /// <param name="connectionStrings">The connection strings.</param>
+        /// <param name="log">The log.</param>
+        /// <returns></returns>
+        public Task<ConnectionMultiplexer> ConnectAsync(string connectionStrings, TextWriter log = null)
+        {
+            return ConnectAsync(new ConfigurationOptions(), connectionStrings, log);
+        }
     }
 }
