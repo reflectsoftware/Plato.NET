@@ -1,0 +1,23 @@
+version: 2.0.{build}
+skip_tags: true
+configuration: Release
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*, **\VersionInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true
+before_build:
+- cmd: nuget restore
+build:
+  publish_nuget: true
+  publish_nuget_symbols: true
+  include_nuget_references: true
+  verbosity: minimal
+artifacts:
+- path: '*.nupkg'
+deploy: off
