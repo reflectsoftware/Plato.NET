@@ -52,12 +52,12 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Plato.Cache, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Cache.2.0.0\lib\net461\Plato.Cache.dll</HintPath>
+    <Reference Include="Plato.Cache, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Cache.2.0.23\lib\net461\Plato.Cache.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Plato.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Cache.2.0.0\lib\net461\Plato.Core.dll</HintPath>
+    <Reference Include="Plato.Core, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Core.2.0.23\lib\net461\Plato.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

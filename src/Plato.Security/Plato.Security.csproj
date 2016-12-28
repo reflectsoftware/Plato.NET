@@ -51,19 +51,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Plato.Cache, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Serializers.2.0.0\lib\net461\Plato.Cache.dll</HintPath>
+      <HintPath>..\..\packages\Plato.Serializers.2.0.23\lib\net461\Plato.Cache.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Plato.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Serializers.2.0.0\lib\net461\Plato.Core.dll</HintPath>
+      <HintPath>..\..\packages\Plato.Serializers.2.0.23\lib\net461\Plato.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Plato.Serializers, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Serializers.2.0.0\lib\net461\Plato.Serializers.dll</HintPath>
+    <Reference Include="Plato.Serializers, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.Serializers.2.0.23\lib\net461\Plato.Serializers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Plato.WinAPI, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.WinAPI.2.0.0\lib\net461\Plato.WinAPI.dll</HintPath>
+    <Reference Include="Plato.WinAPI, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.WinAPI.2.0.23\lib\net461\Plato.WinAPI.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

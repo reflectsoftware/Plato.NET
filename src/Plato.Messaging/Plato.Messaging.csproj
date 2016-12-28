@@ -41,32 +41,32 @@
       <HintPath>..\..\packages\Apache.NMS.ActiveMQ.1.7.2\lib\net40\Apache.NMS.ActiveMQ.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Plato, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.dll</HintPath>
+    <Reference Include="Plato, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plato.2.0.23\lib\net461\Plato.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Plato.Cache, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.Cache.dll</HintPath>
+      <HintPath>..\..\packages\Plato.2.0.23\lib\net461\Plato.Cache.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Plato.Configuration, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.Configuration.dll</HintPath>
+      <HintPath>..\..\packages\Plato.2.0.23\lib\net461\Plato.Configuration.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Plato.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.Core.dll</HintPath>
+      <HintPath>..\..\packages\Plato.2.0.23\lib\net461\Plato.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Plato.Security, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.Security.dll</HintPath>
+      <HintPath>..\..\packages\Plato.2.0.23\lib\net461\Plato.Security.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Plato.Serializers, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.Serializers.dll</HintPath>
+      <HintPath>..\..\packages\Plato.2.0.23\lib\net461\Plato.Serializers.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Plato.WinAPI, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.2.0.0\lib\net461\Plato.WinAPI.dll</HintPath>
+      <HintPath>..\..\packages\Plato.2.0.23\lib\net461\Plato.WinAPI.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
