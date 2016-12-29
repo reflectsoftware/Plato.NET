@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="StackExchange.Redis, Version=1.1.608.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\StackExchange.Redis.1.1.608\lib\net46\StackExchange.Redis.dll</HintPath>
       <Private>True</Private>
@@ -48,8 +52,14 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Collections\RedisDictionary.cs" />
+    <Compile Include="Collections\RedisList.cs" />
+    <Compile Include="Collections\RedisQueue.cs" />
+    <Compile Include="Collections\RedisStack.cs" />
     <Compile Include="ConnectionMultiplexerFactory.cs" />
     <Compile Include="Interfaces\IConnectionMultiplexerFactory.cs" />
+    <Compile Include="Interfaces\IRedisQueue.cs" />
+    <Compile Include="Interfaces\IRedisStack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisDatabaseProxy.cs" />
     <Compile Include="RedisDatabaseProxyConfiguration.cs" />
