@@ -37,6 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.Messaging", "src\Plat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. SolutionItems", "01. SolutionItems", "{2E348269-C6DF-4688-9908-1DB4EF24F3FC}"
 	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
 		src\Plato.NET.licenseheader = src\Plato.NET.licenseheader
 		README.md = README.md
 		src\VersionInfo.cs = src\VersionInfo.cs
