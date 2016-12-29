@@ -50,22 +50,6 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Plato.Cache, Version=2.0.27.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Serializers.2.0.29\lib\net461\Plato.Cache.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Plato.Core, Version=2.0.23.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Serializers.2.0.29\lib\net461\Plato.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Plato.Serializers, Version=2.0.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Serializers.2.0.29\lib\net461\Plato.Serializers.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Plato.WinAPI, Version=2.0.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.WinAPI.2.0.29\lib\net461\Plato.WinAPI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Security" />
@@ -108,10 +92,23 @@
     <None Include="..\Plato.NET.licenseheader">
       <Link>Plato.NET.licenseheader</Link>
     </None>
-    <None Include="packages.config" />
     <None Include="Plato.Security.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plato.Core\Plato.Core.csproj">
+      <Project>{fe8c4552-9ad9-4d4c-b6ec-64bf4fd0e3f4}</Project>
+      <Name>Plato.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plato.Serializers\Plato.Serializers.csproj">
+      <Project>{3824e704-14aa-4714-9aab-5608e52666c3}</Project>
+      <Name>Plato.Serializers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plato.WinAPI\Plato.WinAPI.csproj">
+      <Project>{5a518f0a-7b62-4690-aea9-1c19cf35d386}</Project>
+      <Name>Plato.WinAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

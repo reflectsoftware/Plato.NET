@@ -50,10 +50,6 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Plato.Core, Version=2.0.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plato.Core.2.0.29\lib\net461\Plato.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
@@ -79,10 +75,15 @@
     <None Include="..\Plato.NET.licenseheader">
       <Link>Plato.NET.licenseheader</Link>
     </None>
-    <None Include="packages.config" />
     <None Include="Plato.Cache.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plato.Core\Plato.Core.csproj">
+      <Project>{fe8c4552-9ad9-4d4c-b6ec-64bf4fd0e3f4}</Project>
+      <Name>Plato.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
