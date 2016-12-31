@@ -4,7 +4,7 @@
 
 using Plato.Threading.Enums;
 using Plato.Threading.Exceptions;
-using Plato.Threading.Interfaces;
+using Plato.Interfaces;
 using System;
 using System.Threading;
 
@@ -14,7 +14,7 @@ namespace Plato.Threading.WorkManagement
     /// 
     /// </summary>
     /// <seealso cref="Plato.Threading.BaseThread" />
-    /// <seealso cref="Plato.Threading.Interfaces.IBaseWorker" />
+    /// <seealso cref="Plato.Interfaces.IBaseWorker" />
     public abstract class BaseWorker : BaseThread, IBaseWorker
     {
         private readonly ThreadWatcherInfo _threadWatcherInfo;        

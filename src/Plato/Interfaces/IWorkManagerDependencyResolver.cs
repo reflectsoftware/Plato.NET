@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Plato.Threading.Interfaces
+namespace Plato.Interfaces
 {
     /// <summary>
     /// 

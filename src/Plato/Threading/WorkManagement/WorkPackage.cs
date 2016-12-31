@@ -2,7 +2,7 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using Plato.Threading.Interfaces;
+using Plato.Interfaces;
 using Plato.Core.Strings;
 using System.Collections.Specialized;
 
@@ -11,7 +11,7 @@ namespace Plato.Threading.WorkManagement
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Plato.Threading.Interfaces.IWorkPackage" />
+    /// <seealso cref="Plato.Interfaces.IWorkPackage" />
     public class WorkPackage : IWorkPackage
     {
         private readonly NameValueCollection _parameters;
