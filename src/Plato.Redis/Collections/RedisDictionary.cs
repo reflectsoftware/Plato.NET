@@ -63,6 +63,18 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
+        /// Adds the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="when">The when.</param>
+        /// <returns></returns>
+        public bool Add(TKey key, TValue value, When when)
+        {
+            return RedisDb.HashSet(RedisKey, Serialize(key), Serialize(value), when: when);
+        }
+        
+        /// <summary>
         /// Determines whether the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key.
         /// </summary>
         /// <param name="key">The key to locate in the <see cref="T:System.Collections.Generic.IDictionary`2" />.</param>

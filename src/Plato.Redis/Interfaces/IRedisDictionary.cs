@@ -2,6 +2,7 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 
@@ -23,6 +24,15 @@ namespace Plato.Redis.Interfaces
         /// <param name="addFunction">The add function.</param>
         /// <returns></returns>
         TValue GetOrAdd(TKey key, Func<TKey, TValue> addFunction);
+
+        /// <summary>
+        /// Adds the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="when">The when.</param>
+        /// <returns></returns>
+        bool Add(TKey key, TValue value, When when);
 
         /// <summary>
         /// Adds the multiple.
