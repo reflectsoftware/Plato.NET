@@ -164,7 +164,7 @@ namespace Plato.Messaging.Implementations.RMQ
             var queueSettings = new RMQQueueSettings(name)
             {
                 QueueName = StringHelper.IfNullOrEmptyUseDefault(attributes["QueueName"], name),
-                Exclusive = StringHelper.IfNullOrEmptyUseDefault(attributes["exclusive"], "true") == "true",
+                Exclusive = StringHelper.IfNullOrEmptyUseDefault(attributes["exclusive"], "false") == "true",
                 Durable = StringHelper.IfNullOrEmptyUseDefault(attributes["durable"], "true") == "true",
                 AutoDelete = StringHelper.IfNullOrEmptyUseDefault(attributes["autoDelete"], "false") == "true",
                 Persistent = StringHelper.IfNullOrEmptyUseDefault(attributes["persistent"], "true") == "true",
