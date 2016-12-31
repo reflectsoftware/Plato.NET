@@ -27,15 +27,34 @@ namespace Plato.Messaging.Implementations.RMQ
         private readonly IConfigNode _configNode;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RMQConfigurationManager"/> class.
+        /// Initializes a new instance of the <see cref="RMQConfigurationManager" /> class.
         /// </summary>
-        public RMQConfigurationManager()
+        /// <param name="configPath">The configuration path.</param>
+        public RMQConfigurationManager(string configPath = null)
         {
-            var xmlConfigSection = (XmlNode)ConfigurationManager.GetSection("rmqSettings");
-            if (xmlConfigSection != null)
+            if (configPath == null)
             {
-                _configNode = new ConfigNode(xmlConfigSection);
-                _nodeAttributes = ConfigHelper.GetNodeChildAttributes(_configNode, ".");
+                try
+                {
+                    var xmlConfigSection = (XmlNode)ConfigurationManager.GetSection("rmqSettings");
+                    if (xmlConfigSection != null)
+                    {
+                        _configNode = new ConfigNode(xmlConfigSection);
+                        _nodeAttributes = ConfigHelper.GetNodeChildAttributes(_configNode, ".");
+                    }
+                }
+                catch (ConfigurationErrorsException)
+                {
+                    _nodeAttributes = new NodeChildAttributes();
+                }
+            }
+            else
+            {
+                using (var configContainer = new ConfigContainer(configPath, "./rmqSettings"))
+                {
+                    _configNode = configContainer.Node;
+                    _nodeAttributes = ConfigHelper.GetNodeChildAttributes(_configNode, ".");
+                }
             }
         }
 
