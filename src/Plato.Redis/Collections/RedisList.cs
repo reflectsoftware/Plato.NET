@@ -16,9 +16,8 @@ namespace Plato.Redis.Collections
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Plato.Redis.RedisControl" />
-    /// <seealso cref="Plato.Redis.Interfaces.IRedisControl" />
-    /// <seealso cref="System.Collections.Generic.IList{T}" />
-    public class RedisList<T> : RedisControl, IRedisControl, IList<T>
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisList{T}" />
+    public class RedisList<T> : RedisControl, IRedisList<T>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisList{T}" /> class.
@@ -132,7 +131,7 @@ namespace Plato.Redis.Collections
                 var value = RedisDb.ListGetByIndex(RedisKey, i);
                 if(!value.HasValue)
                 {
-                    // we reached an are of the list where there are no longer any values.
+                    // we reached an are of the list where there are no longer values.
                     break;
                 }
 

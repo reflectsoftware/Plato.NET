@@ -5,6 +5,7 @@
 using Newtonsoft.Json;
 using Plato.Redis.Interfaces;
 using StackExchange.Redis;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,9 +19,8 @@ namespace Plato.Redis.Collections
     /// <typeparam name="TKey">The type of the key.</typeparam>
     /// <typeparam name="TValue">The type of the value.</typeparam>
     /// <seealso cref="Plato.Redis.RedisControl" />
-    /// <seealso cref="Plato.Redis.Interfaces.IRedisControl" />
-    /// <seealso cref="System.Collections.Generic.IDictionary{TKey, TValue}" />
-    public class RedisDictionary<TKey, TValue> : RedisControl, IRedisControl, IDictionary<TKey, TValue>
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisDictionary{TKey, TValue}" />
+    public class RedisDictionary<TKey, TValue> : RedisControl, IRedisDictionary<TKey, TValue>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisDictionary{TKey, TValue}"/> class.
@@ -106,6 +106,24 @@ namespace Plato.Redis.Collections
             value = Deserialize<TValue>(redisValue.ToString());
             return true;
 
+        }
+
+        /// <summary>
+        /// Gets the or add.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="addFunction">The add function.</param>
+        /// <returns></returns>
+        public TValue GetOrAdd(TKey key, Func<TKey,TValue> addFunction)
+        {
+            TValue value;
+            if(!TryGetValue(key, out value))
+            {
+                value = addFunction(key);
+                Add(key, value);
+            }
+
+            return value;
         }
 
         /// <summary>

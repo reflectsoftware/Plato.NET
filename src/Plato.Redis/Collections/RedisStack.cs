@@ -17,10 +17,6 @@ namespace Plato.Redis.Collections
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Plato.Redis.Interfaces.IRedisStack{T}" />
-    /// <seealso cref="System.Collections.Generic.IEnumerable{T}" />
-    /// <seealso cref="System.Collections.IEnumerable" />
-    /// <seealso cref="System.Collections.ICollection" />
-    /// <seealso cref="System.Collections.Generic.IReadOnlyCollection{T}" />
     public class RedisStack<T> : IRedisStack<T>
     {
         private readonly RedisList<T> _redisList;

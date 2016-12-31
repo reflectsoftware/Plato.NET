@@ -52,6 +52,8 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Interfaces\IRedisDictionary.cs" />
+    <Compile Include="Interfaces\IRedisList.cs" />
     <Compile Include="RedisControl.cs" />
     <Compile Include="Collections\RedisDictionary.cs" />
     <Compile Include="Collections\RedisList.cs" />
