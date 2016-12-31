@@ -6,6 +6,7 @@ using Plato.Core.Logging;
 using Plato.Core.Logging.Enums;
 using Plato.Core.Logging.Interfaces;
 using Plato.Core.Miscellaneous;
+using Plato.Interfaces;
 using Plato.Threading.Enums;
 using Plato.Threading.Exceptions;
 using System;
@@ -17,7 +18,7 @@ namespace Plato.Threading
     /// 
     /// </summary>
     /// <seealso cref="Plato.Interfaces.IBaseThread" />
-    public abstract class BaseThread : Plato.Interfaces.IBaseThread
+    public abstract class BaseThread : IBaseThread
     {
         private readonly object _threadLock;
         protected bool _terminated;
@@ -86,8 +87,6 @@ namespace Plato.Threading
             Notification = notification ?? new LogNotification();
             ThreadState = BaseThreadState.Stopped;
             DoWorkExecutionCount = 0;
-
-            // AppDomain.CurrentDomain.ProcessExit += ProcessExist;
         }
 
         /// <summary>
