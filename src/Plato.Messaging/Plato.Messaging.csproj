@@ -97,7 +97,6 @@
     <Compile Include="Implementations\RMQ\Interfaces\IRMQConsumerFactory.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQProducerFactory.cs" />
     <Compile Include="Implementations\RMQ\Factories\RMQProducerFactory.cs" />
-    <Compile Include="Implementations\RMQ\Factories\RMQConnectionFactory.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQConfigurationManager.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQConnectionFactory.cs" />
     <Compile Include="Implementations\RMQ\Interfaces\IRMQConsumer.cs" />
@@ -134,6 +133,7 @@
     <Compile Include="Implementations\RMQ\RMQReceiverResultByte.cs" />
     <Compile Include="Implementations\RMQ\RMQReceiverResultText.cs" />
     <Compile Include="Implementations\RMQ\RMQSenderProperties.cs" />
+    <Compile Include="Implementations\RMQ\Factories\RMQConnectionFactory.cs" />
     <Compile Include="Implementations\RMQ\Settings\RMQConnectionSettings.cs" />
     <Compile Include="Implementations\RMQ\Settings\RMQConsumerSettings.cs" />
     <Compile Include="Implementations\RMQ\Settings\RMQExchangeSettings.cs" />

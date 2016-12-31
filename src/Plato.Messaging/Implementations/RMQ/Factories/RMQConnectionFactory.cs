@@ -7,8 +7,10 @@ using Plato.Messaging.Exceptions;
 using Plato.Messaging.Implementations.RMQ.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace Plato.Messaging.Implementations.RMQ.Factories
 {
@@ -18,7 +20,7 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
     /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQConnectionFactory" />
     public class RMQConnectionFactory : IRMQConnectionFactory
     {
-        private IRMQConfigurationManager _configManager;
+        private readonly IRMQConfigurationManager _configManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQConnectionFactory"/> class.
@@ -34,44 +36,50 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException"></exception>
-        /// <exception cref="MessageException">
-        /// </exception>
+        /// <exception cref="MessageException"></exception>
         public IConnection CreateConnection(string name)
         {
-            try
+            var exceptionList = new List<Exception>();
+            var connectionSettings = _configManager.GetConnectionSettings(name);
+            if (string.IsNullOrWhiteSpace(connectionSettings.Uri))
             {
-                var connectionSettings = _configManager.GetConnectionSettings(name);
-                if (connectionSettings == null)
+                exceptionList.Add(new MessageException(MessageExceptionCode.UnhandledError, $"Missing or empty RMQ connection Uri for named connection settings: '{name}'."));
+            }
+
+            foreach (var uri in connectionSettings.Uri.Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                try
                 {
-                    throw new KeyNotFoundException($"Unable to fined RMQ connection settings for {name}.");
+                    var connectionFactory = new ConnectionFactory()
+                    {
+                        UserName = connectionSettings.Username,
+                        Password = connectionSettings.Password,
+                        VirtualHost = connectionSettings.VirtualHost,
+                        Protocol = connectionSettings.Protocol,
+                        Uri = uri
+                    };
+
+                    var connection = connectionFactory.CreateConnection();
+                    return connection;
+                }
+                catch (BrokerUnreachableException ex)
+                {
+                    exceptionList.Add(new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex));
+                }
+                catch (IOException ex)
+                {
+                    exceptionList.Add(new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex));
+                }
+                catch (UriFormatException ex)
+                {
+                    exceptionList.Add(ex);
                 }
 
-                var connectionFactory = new ConnectionFactory()
-                {
-                    HostName = connectionSettings.HostName,
-                    UserName = connectionSettings.Username,
-                    Password = connectionSettings.Password,
-                    VirtualHost = connectionSettings.VirtualHost,
-                    Protocol = connectionSettings.Protocol,
-                    Port = connectionSettings.Port
-                };
+                Thread.Sleep(connectionSettings.DelayOnReconnect);
+            }
 
-                var connection = connectionFactory.CreateConnection();
-                return connection;
-            }
-            catch (BrokerUnreachableException ex)
-            {
-                throw new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
-            }
-            catch (IOException ex)
-            {
-                throw new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                throw new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
-            }
+            var finalException = new AggregateException($"Unable to connect to any RabbitMQ Broker using the following connection uri: {connectionSettings.Uri}, for named connection settings: '{name}'.", exceptionList);
+            throw new MessageException(MessageExceptionCode.LostConnection, finalException.Message, finalException);
         }
     }
 }

@@ -19,13 +19,6 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// </value>
         public string Name { get; set; }
 
-        /// <summary>
-        /// Gets or sets the name of the host.
-        /// </summary>
-        /// <value>
-        /// The name of the host.
-        /// </value>
-        public string HostName { get; set; }
 
         /// <summary>
         /// Gets or sets the username.
@@ -52,12 +45,12 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         public string VirtualHost { get; set; }
 
         /// <summary>
-        /// Gets or sets the port.
+        /// Gets or sets the URI.
         /// </summary>
         /// <value>
-        /// The port.
+        /// The URI.
         /// </value>
-        public int Port { get; set; }
+        public string Uri { get; set; }
 
         /// <summary>
         /// Gets or sets the protocol.
@@ -66,5 +59,13 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// The protocol.
         /// </value>
         public IProtocol Protocol { get; set; }
+
+        /// <summary>
+        /// Gets or sets the delay on reconnect.
+        /// </summary>
+        /// <value>
+        /// The delay on reconnect.
+        /// </value>
+        public int DelayOnReconnect { get; set; }
     }
 }
