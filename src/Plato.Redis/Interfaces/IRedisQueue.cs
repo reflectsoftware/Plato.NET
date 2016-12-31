@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Plato.Redis.Interfaces
 {
-    public interface IRedisQueue<T> : IEnumerable<T>, IEnumerable, ICollection, IReadOnlyCollection<T>
+    public interface IRedisQueue<T> : IRedisControl, IEnumerable<T>, IEnumerable, ICollection, IReadOnlyCollection<T>
     {
         /// <summary>
         /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1"/>.

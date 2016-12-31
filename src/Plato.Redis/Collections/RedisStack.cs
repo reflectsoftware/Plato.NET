@@ -8,6 +8,7 @@ using StackExchange.Redis;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Plato.Redis.Collections
 { 
@@ -21,8 +22,6 @@ namespace Plato.Redis.Collections
     /// <seealso cref="System.Collections.Generic.IReadOnlyCollection{T}" />
     public class RedisStack<T> : IRedisStack<T>
     {
-        private readonly IDatabase _redisDb;
-        private readonly string _redisKey;
         private readonly RedisList<T> _redisList;
 
         /// <summary>
@@ -32,8 +31,6 @@ namespace Plato.Redis.Collections
         /// <param name="redisKey">The redis key.</param>
         public RedisStack(IDatabase redisDb, string redisKey)
         {
-            _redisKey = redisKey;
-            _redisDb = redisDb;
             _redisList = new RedisList<T>(redisDb, redisKey);
         }
 
@@ -71,6 +68,47 @@ namespace Plato.Redis.Collections
         public object SyncRoot
         {
             get { return this; }
+        }
+
+        /// <summary>
+        /// Gets the redis database.
+        /// </summary>
+        /// <value>
+        /// The redis database.
+        /// </value>
+        public IDatabase RedisDb
+        {
+            get { return _redisList.RedisDb; }
+        }
+
+        /// <summary>
+        /// Gets the redis key.
+        /// </summary>
+        /// <value>
+        /// The redis key.
+        /// </value>
+        public string RedisKey
+        {
+            get { return _redisList.RedisKey; }
+        }
+
+        /// <summary>
+        /// Locks the specified timeout.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="lockLength">Length of the lock.</param>
+        /// <returns></returns>
+        public bool Lock(int timeout = Timeout.Infinite, TimeSpan? lockLength = null)
+        {
+            return _redisList.Lock(timeout, lockLength);
+        }
+
+        /// <summary>
+        /// Unlocks this instance.
+        /// </summary>
+        public void Unlock()
+        {
+            _redisList.Unlock();
         }
 
         /// <summary>
@@ -118,7 +156,7 @@ namespace Plato.Redis.Collections
         /// <param name="item">The item.</param>
         public void Push(T item)
         {
-            _redisDb.ListLeftPush(_redisKey, Serialize(item));
+            _redisList.RedisDb.ListLeftPush(_redisList.RedisKey, Serialize(item));
         }
 
         /// <summary>
@@ -127,7 +165,7 @@ namespace Plato.Redis.Collections
         /// <returns></returns>
         public T Pop()
         {
-            var value = _redisDb.ListLeftPop(_redisKey);
+            var value = _redisList.RedisDb.ListLeftPop(_redisList.RedisKey);
             return value.HasValue ? Deserialize(value.ToString()) : default(T);
         }
 
@@ -147,7 +185,7 @@ namespace Plato.Redis.Collections
         public T[] ToArray()
         {
             var array = new List<T>();
-            foreach (var value in _redisDb.ListRange(_redisKey))
+            foreach (var value in _redisList.RedisDb.ListRange(_redisList.RedisKey))
             {
                 if(value.HasValue)
                 {

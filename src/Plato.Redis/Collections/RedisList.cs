@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Newtonsoft.Json;
+using Plato.Redis.Interfaces;
 using StackExchange.Redis;
 using System;
 using System.Collections;
@@ -15,20 +16,15 @@ namespace Plato.Redis.Collections
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="System.Collections.Generic.IList{T}" />
-    public class RedisList<T> : IList<T>
+    public class RedisList<T> : RedisControl, IRedisControl, IList<T>
     {
-        private readonly IDatabase _redisDb;
-        private readonly string _redisKey;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisList{T}" /> class.
         /// </summary>
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The key.</param>
-        public RedisList(IDatabase redisDb, string redisKey)
+        public RedisList(IDatabase redisDb, string redisKey) : base(redisDb, redisKey)
         {
-            _redisKey = redisKey;
-            _redisDb = redisDb;
         }
 
         /// <summary>
@@ -58,14 +54,14 @@ namespace Plato.Redis.Collections
         /// <param name="item">The object to insert into the <see cref="T:System.Collections.Generic.IList`1" />.</param>
         public void Insert(int index, T item)
         {
-            if (_redisDb.ListLength(_redisKey) > index)
+            if (RedisDb.ListLength(RedisKey) > index)
             {
-                var before = _redisDb.ListGetByIndex(_redisKey, index);
-                _redisDb.ListInsertBefore(_redisKey, before, Serialize(item));
+                var before = RedisDb.ListGetByIndex(RedisKey, index);
+                RedisDb.ListInsertBefore(RedisKey, before, Serialize(item));
             }
             else
             {
-                throw new IndexOutOfRangeException($"Index: '{index}' for Redis list: '{_redisKey}' is out of range.");
+                throw new IndexOutOfRangeException($"Index: '{index}' for Redis list: '{RedisKey}' is out of range.");
             }
         }
 
@@ -75,10 +71,10 @@ namespace Plato.Redis.Collections
         /// <param name="index">The zero-based index of the item to remove.</param>
         public void RemoveAt(int index)
         {            
-            var value = _redisDb.ListGetByIndex(_redisKey, index);
+            var value = RedisDb.ListGetByIndex(RedisKey, index);
             if (!value.IsNull)
             {
-                _redisDb.ListRemove(_redisKey, value);
+                RedisDb.ListRemove(RedisKey, value);
             }
         }
 
@@ -94,7 +90,7 @@ namespace Plato.Redis.Collections
         {
             get
             {
-                var value = _redisDb.ListGetByIndex(_redisKey, index);
+                var value = RedisDb.ListGetByIndex(RedisKey, index);
                 return value.HasValue ? Deserialize(value.ToString()) : default(T);
             }
             set
@@ -109,7 +105,7 @@ namespace Plato.Redis.Collections
         /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
         public void Add(T item)
         {
-            _redisDb.ListRightPush(_redisKey, Serialize(item));
+            RedisDb.ListRightPush(RedisKey, Serialize(item));
         }
 
         /// <summary>
@@ -117,7 +113,7 @@ namespace Plato.Redis.Collections
         /// </summary>
         public void Clear()
         {
-            _redisDb.KeyDelete(_redisKey);
+            RedisDb.KeyDelete(RedisKey);
         }
 
         /// <summary>
@@ -131,7 +127,7 @@ namespace Plato.Redis.Collections
         {
             for (int i = 0; i < Count; i++)
             {
-                var value = _redisDb.ListGetByIndex(_redisKey, i);
+                var value = RedisDb.ListGetByIndex(RedisKey, i);
                 if(!value.HasValue)
                 {
                     // we reached an are of the list where there are no longer any values.
@@ -154,7 +150,7 @@ namespace Plato.Redis.Collections
         /// <param name="index">The index.</param>
         public void CopyTo(T[] array, int index)
         {
-            var values = _redisDb.ListRange(_redisKey);
+            var values = RedisDb.ListRange(RedisKey);
             for(var i=0; i< values.Length; i++)
             {
                 array[index + i] = values[i].HasValue ? Deserialize(values[i].ToString()) : default(T);
@@ -172,7 +168,7 @@ namespace Plato.Redis.Collections
         {
             for (int i = 0; i < Count; i++)
             {
-                var value = _redisDb.ListGetByIndex(_redisKey, i);
+                var value = RedisDb.ListGetByIndex(RedisKey, i);
                 if(!value.HasValue)
                 {
                     return -1;
@@ -192,7 +188,7 @@ namespace Plato.Redis.Collections
         /// </summary>
         public int Count
         {
-            get { return (int)_redisDb.ListLength(_redisKey); }
+            get { return (int)RedisDb.ListLength(RedisKey); }
         }
 
         /// <summary>
@@ -215,7 +211,7 @@ namespace Plato.Redis.Collections
         /// </returns>
         public bool Remove(T item)
         {
-            return _redisDb.ListRemove(_redisKey, Serialize(item)) > 0;
+            return RedisDb.ListRemove(RedisKey, Serialize(item)) > 0;
         }
 
         /// <summary>
@@ -228,7 +224,7 @@ namespace Plato.Redis.Collections
         {
             for (int i = 0; i < Count; i++)
             {
-                var value = _redisDb.ListGetByIndex(_redisKey, i);
+                var value = RedisDb.ListGetByIndex(RedisKey, i);
                 yield return value.HasValue ? Deserialize(value.ToString()) : default(T);
             }
         }

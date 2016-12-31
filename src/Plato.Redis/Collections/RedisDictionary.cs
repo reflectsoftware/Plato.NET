@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Newtonsoft.Json;
+using Plato.Redis.Interfaces;
 using StackExchange.Redis;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,20 +18,15 @@ namespace Plato.Redis.Collections
     /// <typeparam name="TKey">The type of the key.</typeparam>
     /// <typeparam name="TValue">The type of the value.</typeparam>
     /// <seealso cref="System.Collections.Generic.IDictionary{TKey, TValue}" />
-    public class RedisDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+    public class RedisDictionary<TKey, TValue> : RedisControl, IRedisControl, IDictionary<TKey, TValue>
     {
-        private readonly IDatabase _redisDb;
-        private readonly string _redisKey;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisDictionary{TKey, TValue}"/> class.
         /// </summary>
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The redis key.</param>
-        public RedisDictionary(IDatabase redisDb, string redisKey)
+        public RedisDictionary(IDatabase redisDb, string redisKey) : base(redisDb, redisKey)
         {
-            _redisDb = redisDb;
-            _redisKey = redisKey;
         }
 
         /// <summary>
@@ -61,7 +57,7 @@ namespace Plato.Redis.Collections
         /// <param name="value">The object to use as the value of the element to add.</param>
         public void Add(TKey key, TValue value)
         {
-            _redisDb.HashSet(_redisKey, Serialize(key), Serialize(value));
+            RedisDb.HashSet(RedisKey, Serialize(key), Serialize(value));
         }
 
         /// <summary>
@@ -73,7 +69,7 @@ namespace Plato.Redis.Collections
         /// </returns>
         public bool ContainsKey(TKey key)
         {
-            return _redisDb.HashExists(_redisKey, Serialize(key));
+            return RedisDb.HashExists(RedisKey, Serialize(key));
         }
 
         /// <summary>
@@ -85,7 +81,7 @@ namespace Plato.Redis.Collections
         /// </returns>
         public bool Remove(TKey key)
         {
-            return _redisDb.HashDelete(_redisKey, Serialize(key));
+            return RedisDb.HashDelete(RedisKey, Serialize(key));
         }
 
         /// <summary>
@@ -98,7 +94,7 @@ namespace Plato.Redis.Collections
         /// </returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
-            var redisValue = _redisDb.HashGet(_redisKey, Serialize(key));
+            var redisValue = RedisDb.HashGet(RedisKey, Serialize(key));
             if (redisValue.IsNull)
             {
                 value = default(TValue);
@@ -115,7 +111,7 @@ namespace Plato.Redis.Collections
         /// </summary>
         public ICollection<TValue> Values
         {
-            get { return new Collection<TValue>(_redisDb.HashValues(_redisKey).Select(h => Deserialize<TValue>(h.ToString())).ToList()); }
+            get { return new Collection<TValue>(RedisDb.HashValues(RedisKey).Select(h => Deserialize<TValue>(h.ToString())).ToList()); }
         }
 
         /// <summary>
@@ -123,7 +119,7 @@ namespace Plato.Redis.Collections
         /// </summary>
         public ICollection<TKey> Keys
         {
-            get { return new Collection<TKey>(_redisDb.HashKeys(_redisKey).Select(h => Deserialize<TKey>(h.ToString())).ToList()); }
+            get { return new Collection<TKey>(RedisDb.HashKeys(RedisKey).Select(h => Deserialize<TKey>(h.ToString())).ToList()); }
         }
 
         /// <summary>
@@ -138,7 +134,7 @@ namespace Plato.Redis.Collections
         {
             get
             {
-                var redisValue = _redisDb.HashGet(_redisKey, Serialize(key));
+                var redisValue = RedisDb.HashGet(RedisKey, Serialize(key));
                 return redisValue.IsNull ? default(TValue) : Deserialize<TValue>(redisValue.ToString());
             }
             set
@@ -161,7 +157,7 @@ namespace Plato.Redis.Collections
         /// </summary>
         public void Clear()
         {
-            _redisDb.KeyDelete(_redisKey);
+            RedisDb.KeyDelete(RedisKey);
         }
 
         /// <summary>
@@ -173,7 +169,7 @@ namespace Plato.Redis.Collections
         /// </returns>
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            return _redisDb.HashExists(_redisKey, Serialize(item.Key));
+            return RedisDb.HashExists(RedisKey, Serialize(item.Key));
         }
 
         /// <summary>
@@ -183,7 +179,7 @@ namespace Plato.Redis.Collections
         /// <param name="arrayIndex">The zero-based index in <paramref name="array" /> at which copying begins.</param>
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            var values = _redisDb.HashGetAll(_redisKey);
+            var values = RedisDb.HashGetAll(RedisKey);
             for (var i = 0; i < values.Length; i++)
             {
                 var key = Deserialize<TKey>(values[i].Name.ToString());
@@ -198,7 +194,7 @@ namespace Plato.Redis.Collections
         /// </summary>
         public int Count
         {
-            get { return (int)_redisDb.HashLength(_redisKey); }
+            get { return (int)RedisDb.HashLength(RedisKey); }
         }
 
         /// <summary>
@@ -229,9 +225,9 @@ namespace Plato.Redis.Collections
         /// </returns>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            foreach (var hashKey in _redisDb.HashKeys(_redisKey))
+            foreach (var hashKey in RedisDb.HashKeys(RedisKey))
             {
-                var redisValue = _redisDb.HashGet(_redisKey, hashKey);
+                var redisValue = RedisDb.HashGet(RedisKey, hashKey);
                 yield return new KeyValuePair<TKey, TValue>(Deserialize<TKey>(hashKey.ToString()), Deserialize<TValue>(redisValue.ToString()));
             }
         }
@@ -253,7 +249,7 @@ namespace Plato.Redis.Collections
         /// <param name="items">The items.</param>
         public void AddMultiple(IEnumerable<KeyValuePair<TKey, TValue>> items)
         {
-            _redisDb.HashSet(_redisKey, items.Select(i => new HashEntry(Serialize(i.Key), Serialize(i.Value))).ToArray());
+            RedisDb.HashSet(RedisKey, items.Select(i => new HashEntry(Serialize(i.Key), Serialize(i.Value))).ToArray());
         }
     }
 }
