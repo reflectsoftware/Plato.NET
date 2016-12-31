@@ -16,6 +16,7 @@ namespace Plato.Redis.Collections
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisQueue{T}" />
     /// <seealso cref="System.Collections.Generic.IEnumerable{T}" />
     /// <seealso cref="System.Collections.IEnumerable" />
     /// <seealso cref="System.Collections.ICollection" />

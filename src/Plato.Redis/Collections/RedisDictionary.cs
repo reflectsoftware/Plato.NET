@@ -17,6 +17,8 @@ namespace Plato.Redis.Collections
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
     /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <seealso cref="Plato.Redis.RedisControl" />
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisControl" />
     /// <seealso cref="System.Collections.Generic.IDictionary{TKey, TValue}" />
     public class RedisDictionary<TKey, TValue> : RedisControl, IRedisControl, IDictionary<TKey, TValue>
     {

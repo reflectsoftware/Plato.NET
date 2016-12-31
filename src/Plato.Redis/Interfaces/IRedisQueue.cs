@@ -7,6 +7,15 @@ using System.Collections.Generic;
 
 namespace Plato.Redis.Interfaces
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisControl" />
+    /// <seealso cref="System.Collections.Generic.IEnumerable{T}" />
+    /// <seealso cref="System.Collections.IEnumerable" />
+    /// <seealso cref="System.Collections.ICollection" />
+    /// <seealso cref="System.Collections.Generic.IReadOnlyCollection{T}" />
     public interface IRedisQueue<T> : IRedisControl, IEnumerable<T>, IEnumerable, ICollection, IReadOnlyCollection<T>
     {
         /// <summary>

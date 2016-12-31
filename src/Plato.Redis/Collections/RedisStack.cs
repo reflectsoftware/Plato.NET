@@ -11,11 +11,12 @@ using System.Collections.Generic;
 using System.Threading;
 
 namespace Plato.Redis.Collections
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisStack{T}" />
     /// <seealso cref="System.Collections.Generic.IEnumerable{T}" />
     /// <seealso cref="System.Collections.IEnumerable" />
     /// <seealso cref="System.Collections.ICollection" />

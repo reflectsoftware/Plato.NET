@@ -15,6 +15,8 @@ namespace Plato.Redis.Collections
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <seealso cref="Plato.Redis.RedisControl" />
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisControl" />
     /// <seealso cref="System.Collections.Generic.IList{T}" />
     public class RedisList<T> : RedisControl, IRedisControl, IList<T>
     {
