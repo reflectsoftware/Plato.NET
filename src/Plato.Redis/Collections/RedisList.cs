@@ -96,7 +96,7 @@ namespace Plato.Redis.Collections
             }
             set
             {
-                Insert(index, value);
+                RedisDb.ListSetByIndex(RedisKey, index, Serialize(value));
             }
         }
 

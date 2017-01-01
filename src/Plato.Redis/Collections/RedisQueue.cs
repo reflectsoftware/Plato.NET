@@ -8,7 +8,6 @@ using StackExchange.Redis;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Plato.Redis.Collections
 {
@@ -17,7 +16,7 @@ namespace Plato.Redis.Collections
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Plato.Redis.Interfaces.IRedisQueue{T}" />
-    public class RedisQueue<T> : IRedisQueue<T>
+    public class RedisQueue<T> : RedisControl, IRedisQueue<T>
     {
         private readonly RedisList<T> _redisList;
 
@@ -26,7 +25,7 @@ namespace Plato.Redis.Collections
         /// </summary>
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The redis key.</param>
-        public RedisQueue(IDatabase redisDb, string redisKey)
+        public RedisQueue(IDatabase redisDb, string redisKey) : base(redisDb, redisKey)
         {
             _redisList = new RedisList<T>(redisDb, redisKey);
         }
@@ -55,47 +54,6 @@ namespace Plato.Redis.Collections
         public object SyncRoot
         {
             get { return this; }
-        }
-
-        /// <summary>
-        /// Gets the redis database.
-        /// </summary>
-        /// <value>
-        /// The redis database.
-        /// </value>
-        public IDatabase RedisDb
-        {
-            get { return _redisList.RedisDb; }
-        }
-
-        /// <summary>
-        /// Gets the redis key.
-        /// </summary>
-        /// <value>
-        /// The redis key.
-        /// </value>
-        public string RedisKey
-        {
-            get { return _redisList.RedisKey; }
-        }
-
-        /// <summary>
-        /// Locks the specified timeout.
-        /// </summary>
-        /// <param name="timeout">The timeout.</param>
-        /// <param name="lockLength">Length of the lock.</param>
-        /// <returns></returns>
-        public bool Lock(int timeout = Timeout.Infinite, TimeSpan? lockLength = null)
-        {
-            return _redisList.Lock(timeout, lockLength);
-        }
-        
-        /// <summary>
-        /// Unlocks this instance.
-        /// </summary>
-        public void Unlock()
-        {
-            _redisList.Unlock();
         }
 
         /// <summary>
