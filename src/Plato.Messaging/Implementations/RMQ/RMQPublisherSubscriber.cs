@@ -8,36 +8,22 @@ using System;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Plato.Messaging.Implementations.RMQ.RMQReceiverSender" />
     public abstract class RMQPublisherSubscriber : RMQReceiverSender
     {
         protected readonly RMQExchangeSettings _exchangeSettings;
         protected readonly RMQQueueSettings _queueSettings;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RMQPublisherSubscriber"/> class.
-        /// </summary>
-        /// <param name="connectionFactory">The connection factory.</param>
-        /// <param name="connectionName">Name of the connection.</param>
-        /// <param name="exchangeSettings">The exchange settings.</param>
-        /// <param name="queueSettings">The queue settings.</param>
+        
         public RMQPublisherSubscriber(
-            IRMQConnectionFactory connectionFactory, 
-            string connectionName,
+            IRMQConnectionFactory connectionFactory,
+            RMQConnectionSettings connectionSettings,
             RMQExchangeSettings exchangeSettings,
             RMQQueueSettings queueSettings = null)
-            : base(connectionFactory, connectionName)
+            : base(connectionFactory, connectionSettings)
         {
             _exchangeSettings = exchangeSettings;
             _queueSettings = queueSettings;
         }
-
-        /// <summary>
-        /// Opens the channel.
-        /// </summary>
+        
         protected override void OpenChannel()
         {
             base.OpenChannel();

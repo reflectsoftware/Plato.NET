@@ -7,6 +7,7 @@ using Apache.NMS.ActiveMQ;
 using Plato.Messaging.Enums;
 using Plato.Messaging.Exceptions;
 using Plato.Messaging.Implementations.AMQ.Interfaces;
+using Plato.Messaging.Implementations.AMQ.Settings;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -19,17 +20,6 @@ namespace Plato.Messaging.Implementations.AMQ.Factories
     /// <seealso cref="Plato.Messaging.Implementations.AMQ.Interfaces.IAMQConnectionFactory" />
     public class AMQConnectionFactory : IAMQConnectionFactory
     {
-        private IAMQConfigurationManager _configManager;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AMQConnectionFactory"/> class.
-        /// </summary>
-        /// <param name="connectionSettings">The AMQ connection settings.</param>
-        public AMQConnectionFactory(IAMQConfigurationManager configManager)
-        {
-            _configManager = configManager;
-        }
-
         /// <summary>
         /// Declares the connection.
         /// </summary>
@@ -37,26 +27,26 @@ namespace Plato.Messaging.Implementations.AMQ.Factories
         /// <returns></returns>
         /// <exception cref="MessageException">
         /// </exception>
-        public IConnection CreateConnection(string name)
+        public IConnection CreateConnection(AMQConnectionSettings settings)
         {
-            var exceptionList = new List<Exception>();
-            var connectionSettings = _configManager.GetConnectionSettings(name);
-
-            if (string.IsNullOrWhiteSpace(connectionSettings.Uri))
+            if (settings.Endpoints.Count == 0)
             {
-                exceptionList.Add(new MessageException(MessageExceptionCode.UnhandledError, $"Missing or empty AMQ connection Uri for named connection settings: '{name}'."));
+                throw new MessageException(MessageExceptionCode.NoAcceptableEndpoints, "There are no acceptable endpoints to connect any ActiveMQ Broker.");
             }
 
-            foreach (var uri in connectionSettings.Uri.Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            var exceptionList = new List<Exception>();
+            var retries = settings.Endpoints.Count - 1;
+
+            while (true)
             {
                 try
                 {
-                    var connectionUri = new Uri(uri);
+                    var connectionUri = new Uri(settings.Endpoints[settings.ActiveEndpointIndex]);
                     var connectionFactory = new ConnectionFactory(connectionUri)
                     {
-                        UserName = connectionSettings.Username,
-                        Password = connectionSettings.Password,
-                        AsyncSend = connectionSettings.AsyncSend,
+                        UserName = settings.Username,
+                        Password = settings.Password,
+                        AsyncSend = settings.AsyncSend,
                     };
 
                     var connection = connectionFactory.CreateConnection();
@@ -79,11 +69,21 @@ namespace Plato.Messaging.Implementations.AMQ.Factories
                     exceptionList.Add(ex);
                 }
 
-                Thread.Sleep(connectionSettings.DelayOnReconnect);
-            }
+                retries--;
+                if (retries < 0)
+                {
+                    var finalException = new AggregateException($"Unable to connect to any ActiveMQ Broker using the following connection uri: {settings.Uri}, for named connection settings: '{settings.Name}'.", exceptionList);
+                    throw new MessageException(MessageExceptionCode.LostConnection, finalException.Message, finalException);
+                }
 
-            var finalException = new AggregateException($"Unable to connect to any ActiveMQ Broker using the following connection uri: {connectionSettings.Uri}, for named connection settings: '{name}'.", exceptionList);
-            throw new MessageException(MessageExceptionCode.LostConnection, finalException.Message, finalException);
+                settings.ActiveEndpointIndex++;
+                if (settings.ActiveEndpointIndex >= settings.Endpoints.Count)
+                {
+                    settings.ActiveEndpointIndex = 0;
+                }
+
+                Thread.Sleep(settings.DelayOnReconnect);
+            }
         }
     }
 }

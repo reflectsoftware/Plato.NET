@@ -6,16 +6,8 @@ using System.Threading;
 
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public interface IRMQReceiverText
     {
-        /// <summary>
-        /// Receives the specified msec timeout.
-        /// </summary>
-        /// <param name="msecTimeout">The msec timeout.</param>
-        /// <returns></returns>
         RMQReceiverResultText Receive(int msecTimeout = Timeout.Infinite);
     }
 }

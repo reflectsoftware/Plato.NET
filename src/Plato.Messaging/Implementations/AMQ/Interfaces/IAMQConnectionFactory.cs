@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Apache.NMS;
-using Plato.Messaging.Interfaces;
+using Plato.Messaging.Implementations.AMQ.Settings;
 
 namespace Plato.Messaging.Implementations.AMQ.Interfaces
 {
@@ -11,7 +11,8 @@ namespace Plato.Messaging.Implementations.AMQ.Interfaces
     /// 
     /// </summary>
     /// <seealso cref="Plato.Messaging.Interfaces.IMessageConnectionFactory{Apache.NMS.IConnection}" />
-    public interface IAMQConnectionFactory : IMessageConnectionFactory<IConnection>
+    public interface IAMQConnectionFactory 
     {
+        IConnection CreateConnection(AMQConnectionSettings settings);
     }
 }

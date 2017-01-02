@@ -8,18 +8,8 @@ using System;
 
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Plato.Messaging.Interfaces.IMessageReceiverSender" />
     public interface IRMQPublisher : IMessageReceiverSender
     {
-        /// <summary>
-        /// Gets or sets the on return.
-        /// </summary>
-        /// <value>
-        /// The on return.
-        /// </value>
         Action<BasicReturnEventArgs> OnReturn { get; set; }
     }
 }

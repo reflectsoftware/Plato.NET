@@ -6,15 +6,8 @@ using Plato.Messaging.Interfaces;
 
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Plato.Messaging.Interfaces.IMessageReceiverSender" />
-    public interface IRMQConsumer : IMessageReceiverSender
+    public interface IRMQConsumer : IRMQQueue, IMessageReceiverSender
     {
-        /// <summary>
-        /// Clears the cache buffer.
-        /// </summary>
         void ClearCacheBuffer();
     }
 }

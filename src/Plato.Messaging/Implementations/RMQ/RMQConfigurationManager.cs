@@ -4,9 +4,9 @@
 
 using Plato.Configuration;
 using Plato.Configuration.Interfaces;
-using Plato.Core.Strings;
 using Plato.Messaging.Implementations.RMQ.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
+using Plato.Core.Strings;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
@@ -27,34 +27,15 @@ namespace Plato.Messaging.Implementations.RMQ
         private readonly IConfigNode _configNode;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RMQConfigurationManager" /> class.
+        /// Initializes a new instance of the <see cref="RMQConfigurationManager"/> class.
         /// </summary>
-        /// <param name="configPath">The configuration path.</param>
-        public RMQConfigurationManager(string configPath = null)
+        public RMQConfigurationManager()
         {
-            if (configPath == null)
+            var xmlConfigSection = (XmlNode)ConfigurationManager.GetSection("rmqSettings");
+            if (xmlConfigSection != null)
             {
-                try
-                {
-                    var xmlConfigSection = (XmlNode)ConfigurationManager.GetSection("rmqSettings");
-                    if (xmlConfigSection != null)
-                    {
-                        _configNode = new ConfigNode(xmlConfigSection);
-                        _nodeAttributes = ConfigHelper.GetNodeChildAttributes(_configNode, ".");
-                    }
-                }
-                catch (ConfigurationErrorsException)
-                {
-                    _nodeAttributes = new NodeChildAttributes();
-                }
-            }
-            else
-            {
-                using (var configContainer = new ConfigContainer(configPath, "./rmqSettings"))
-                {
-                    _configNode = configContainer.Node;
-                    _nodeAttributes = ConfigHelper.GetNodeChildAttributes(_configNode, ".");
-                }
+                _configNode = new ConfigNode(xmlConfigSection);
+                _nodeAttributes = ConfigHelper.GetNodeChildAttributes(_configNode, ".");
             }
         }
 
@@ -119,15 +100,22 @@ namespace Plato.Messaging.Implementations.RMQ
         {
             var attributes = GetAttributes("connectionSettings", name);
 
-            return new RMQConnectionSettings()
+            var settings = new RMQConnectionSettings()
             {
                 Protocol = Protocols.DefaultProtocol,
                 Username = StringHelper.IfNullOrEmptyUseDefault(attributes["username"], string.Empty),
                 Password = StringHelper.IfNullOrEmptyUseDefault(attributes["password"], string.Empty),
                 VirtualHost = StringHelper.IfNullOrEmptyUseDefault(attributes["virtualhost"], string.Empty),
-                DelayOnReconnect = int.Parse(StringHelper.IfNullOrEmptyUseDefault(attributes["delayOnReconnect"], "0")),
+                DelayOnReconnect = int.Parse(StringHelper.IfNullOrEmptyUseDefault(attributes["delayOnReconnect"], "1000")),
                 Uri = StringHelper.IfNullOrEmptyUseDefault(attributes["uri"], "amqp://localhost:5672"),
             };
+
+            foreach (var uri in settings.Uri.Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                settings.Endpoints.Add(uri);
+            }
+
+           return settings;
         }
 
         /// <summary>
@@ -164,7 +152,7 @@ namespace Plato.Messaging.Implementations.RMQ
             var queueSettings = new RMQQueueSettings(name)
             {
                 QueueName = StringHelper.IfNullOrEmptyUseDefault(attributes["QueueName"], name),
-                Exclusive = StringHelper.IfNullOrEmptyUseDefault(attributes["exclusive"], "false") == "true",
+                Exclusive = StringHelper.IfNullOrEmptyUseDefault(attributes["exclusive"], "true") == "true",
                 Durable = StringHelper.IfNullOrEmptyUseDefault(attributes["durable"], "true") == "true",
                 AutoDelete = StringHelper.IfNullOrEmptyUseDefault(attributes["autoDelete"], "false") == "true",
                 Persistent = StringHelper.IfNullOrEmptyUseDefault(attributes["persistent"], "true") == "true",

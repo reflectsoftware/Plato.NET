@@ -5,6 +5,7 @@
 using Plato.Messaging.Enums;
 using Plato.Messaging.Exceptions;
 using Plato.Messaging.Implementations.RMQ.Interfaces;
+using Plato.Messaging.Implementations.RMQ.Settings;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 using System;
@@ -20,43 +21,36 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
     /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQConnectionFactory" />
     public class RMQConnectionFactory : IRMQConnectionFactory
     {
-        private readonly IRMQConfigurationManager _configManager;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RMQConnectionFactory"/> class.
-        /// </summary>
-        /// <param name="configManager">The configuration manager.</param>
-        public RMQConnectionFactory(IRMQConfigurationManager configManager)
-        {
-            _configManager = configManager;
-        }
-
         /// <summary>
         /// Creates the connection.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name="settings">The settings.</param>
         /// <returns></returns>
-        /// <exception cref="MessageException"></exception>
-        public IConnection CreateConnection(string name)
-        {
-            var exceptionList = new List<Exception>();
-            var connectionSettings = _configManager.GetConnectionSettings(name);
-            if (string.IsNullOrWhiteSpace(connectionSettings.Uri))
+        /// <exception cref="MessageException">
+        /// There are no acceptable endpoints to connect too.
+        /// or
+        /// </exception>
+        public IConnection CreateConnection(RMQConnectionSettings settings)
+        {            
+            if(settings.Endpoints.Count == 0)
             {
-                exceptionList.Add(new MessageException(MessageExceptionCode.UnhandledError, $"Missing or empty RMQ connection Uri for named connection settings: '{name}'."));
+                throw new MessageException(MessageExceptionCode.NoAcceptableEndpoints, "There are no acceptable endpoints to connect any RabbitMQ Broker.");
             }
 
-            foreach (var uri in connectionSettings.Uri.Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            var exceptionList = new List<Exception>();
+            var retries = settings.Endpoints.Count - 1;                       
+
+            while(true)
             {
                 try
                 {
                     var connectionFactory = new ConnectionFactory()
                     {
-                        UserName = connectionSettings.Username,
-                        Password = connectionSettings.Password,
-                        VirtualHost = connectionSettings.VirtualHost,
-                        Protocol = connectionSettings.Protocol,
-                        Uri = uri
+                        UserName = settings.Username,
+                        Password = settings.Password,
+                        VirtualHost = settings.VirtualHost,
+                        Protocol = settings.Protocol,
+                        Uri = settings.Endpoints[settings.ActiveEndpointIndex]
                     };
 
                     var connection = connectionFactory.CreateConnection();
@@ -73,13 +67,23 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
                 catch (UriFormatException ex)
                 {
                     exceptionList.Add(ex);
+                }               
+
+                retries--;
+                if(retries < 0)
+                {
+                    var finalException = new AggregateException($"Unable to connect to any RabbitMQ Broker using the following connection uri: {settings.Uri}, for named connection settings: '{settings.Name}'.", exceptionList);
+                    throw new MessageException(MessageExceptionCode.LostConnection, finalException.Message, finalException);
                 }
 
-                Thread.Sleep(connectionSettings.DelayOnReconnect);
-            }
+                settings.ActiveEndpointIndex++;
+                if(settings.ActiveEndpointIndex >= settings.Endpoints.Count)
+                {
+                    settings.ActiveEndpointIndex = 0;
+                }
 
-            var finalException = new AggregateException($"Unable to connect to any RabbitMQ Broker using the following connection uri: {connectionSettings.Uri}, for named connection settings: '{name}'.", exceptionList);
-            throw new MessageException(MessageExceptionCode.LostConnection, finalException.Message, finalException);
+                Thread.Sleep(settings.DelayOnReconnect);
+            }
         }
     }
 }

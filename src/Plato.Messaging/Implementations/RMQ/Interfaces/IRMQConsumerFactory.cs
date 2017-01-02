@@ -6,22 +6,25 @@ using Plato.Messaging.Implementations.RMQ.Settings;
 
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IRMQConsumerFactory
     {
         /// <summary>
         /// Creates the byte.
         /// </summary>
-        /// <param name="settings">The settings.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
         /// <returns></returns>
-        IRMQConsumerByte CreateByte(RMQQueueSettings settings, string connectionName);
+        IRMQConsumerByte CreateByte(RMQConnectionSettings connectionSettings, RMQQueueSettings queueSettings);
 
         /// <summary>
         /// Creates the text.
         /// </summary>
-        /// <param name="settings">The settings.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
         /// <returns></returns>
-        IRMQConsumerText CreateText(RMQQueueSettings settings, string connectionName);
+        IRMQConsumerText CreateText(RMQConnectionSettings connectionSettings, RMQQueueSettings queueSettings);
     }
 }

@@ -4,11 +4,6 @@
 
 namespace Plato.Messaging.Implementations.RMQ.Interfaces
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQReceiverByte" />
-    /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQSubscriber" />
     public interface IRMQSubscriberByte : IRMQReceiverByte, IRMQSubscriber
     {        
     }

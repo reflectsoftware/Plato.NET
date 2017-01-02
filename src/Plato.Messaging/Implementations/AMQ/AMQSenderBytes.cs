@@ -17,12 +17,12 @@ namespace Plato.Messaging.Implementations.AMQ
     public class AMQSenderBytes : AMQSender, IAMQSenderBytes
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AMQSenderText"/> class.
+        /// Initializes a new instance of the <see cref="AMQSenderText" /> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="destination">The destination.</param>
-        public AMQSenderBytes(IAMQConnectionFactory connectionFactory, string connectionName, AMQDestinationSettings destination) : base(connectionFactory, connectionName, destination)
+        public AMQSenderBytes(IAMQConnectionFactory connectionFactory, AMQConnectionSettings connectionSettings, AMQDestinationSettings destination) : base(connectionFactory, connectionSettings, destination)
         {
         }
 

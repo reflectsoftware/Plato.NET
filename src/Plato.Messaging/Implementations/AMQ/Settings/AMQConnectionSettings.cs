@@ -2,6 +2,8 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using System.Collections.Generic;
+
 namespace Plato.Messaging.Implementations.AMQ.Settings
 {
     /// <summary>
@@ -9,6 +11,28 @@ namespace Plato.Messaging.Implementations.AMQ.Settings
     /// </summary>
     public class AMQConnectionSettings
     {
+        /// <summary>
+        /// Gets the index of the active endpoint.
+        /// </summary>
+        /// <value>
+        /// The index of the active endpoint.
+        /// </value>
+        public int ActiveEndpointIndex { get; internal set; }
+
+        /// <summary>
+        /// Gets the endpoints.
+        /// </summary>
+        /// <value>
+        /// The endpoints.
+        /// </value>
+        public List<string> Endpoints { get; private set; }
+
+        public AMQConnectionSettings()
+        {
+            ActiveEndpointIndex = 0;
+            Endpoints = new List<string>();
+        }
+        
         public string Name { get; set; }
 
         /// <summary>

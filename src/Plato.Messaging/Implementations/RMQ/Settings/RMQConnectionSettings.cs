@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using RabbitMQ.Client;
+using System.Collections.Generic;
 
 namespace Plato.Messaging.Implementations.RMQ.Settings
 {
@@ -11,6 +12,28 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
     /// </summary>
     public class RMQConnectionSettings
     {
+        /// <summary>
+        /// Gets the index of the active endpoint.
+        /// </summary>
+        /// <value>
+        /// The index of the active endpoint.
+        /// </value>
+        public int ActiveEndpointIndex { get; internal set; }
+
+        /// <summary>
+        /// Gets the endpoints.
+        /// </summary>
+        /// <value>
+        /// The endpoints.
+        /// </value>
+        public List<string> Endpoints { get; private set; }
+
+        public RMQConnectionSettings()
+        {
+            ActiveEndpointIndex = 0;
+            Endpoints = new List<string>();
+        }
+
         /// <summary>
         /// Gets or sets the name.
         /// </summary>

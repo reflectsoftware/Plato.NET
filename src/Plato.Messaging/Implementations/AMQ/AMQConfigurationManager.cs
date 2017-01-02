@@ -113,7 +113,7 @@ namespace Plato.Messaging.Implementations.AMQ
                 delayOnReconnect = 0;
             }
 
-            return new AMQConnectionSettings()
+            var settings = new AMQConnectionSettings()
             {
                 Name = StringHelper.IfNullOrEmptyUseDefault(attributes["name"], string.Empty),
                 Uri = StringHelper.FullTrim(StringHelper.IfNullOrEmptyUseDefault(attributes["uri"], string.Empty)),
@@ -122,6 +122,13 @@ namespace Plato.Messaging.Implementations.AMQ
                 AsyncSend = StringHelper.IfNullOrEmptyUseDefault(attributes["asyncSend"], "true") == "true",
                 DelayOnReconnect = delayOnReconnect,
             };
+
+            foreach (var uri in settings.Uri.Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                settings.Endpoints.Add(uri);
+            }
+
+            return settings;
         }
 
         /// <summary>

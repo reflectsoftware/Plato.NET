@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Plato.Messaging.Implementations.RMQ.Interfaces;
+using Plato.Messaging.Implementations.RMQ.Settings;
 using Plato.Messaging.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
@@ -14,23 +15,31 @@ namespace Plato.Messaging.Implementations.RMQ
     {
         protected static TimeoutException _TimeoutException;
 
-        protected readonly IRMQConnectionFactory _connctionFactory;
-        protected readonly string _connectionName;
+        protected readonly IRMQConnectionFactory _connectionFactory;
+        protected readonly RMQConnectionSettings _connectionSettings;
         protected IConnection _connection;
         protected IModel _channel;
 
         public bool Disposed { get; private set; }
 
+        /// <summary>
+        /// Initializes the <see cref="RMQReceiverSender"/> class.
+        /// </summary>
         static RMQReceiverSender()
         {
             _TimeoutException = new TimeoutException();
         }
-        
-        public RMQReceiverSender(IRMQConnectionFactory connctionFactory, string connectionName)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQReceiverSender"/> class.
+        /// </summary>
+        /// <param name="connectionFactory">The connection factory.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        public RMQReceiverSender(IRMQConnectionFactory connectionFactory, RMQConnectionSettings connectionSettings)
         {
             Disposed = false;
-            _connctionFactory = connctionFactory;
-            _connectionName = connectionName;
+            _connectionFactory = connectionFactory;
+            _connectionSettings = connectionSettings;
             _channel = null;            
         }
 
@@ -53,19 +62,28 @@ namespace Plato.Messaging.Implementations.RMQ
             }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
         }
 
+        /// <summary>
+        /// Opens the connection.
+        /// </summary>
         protected virtual void OpenConnection()
         {
             if (_connection == null || !_connection.IsOpen)
             {
-                _connection = _connctionFactory.CreateConnection(_connectionName);
+                _connection = _connectionFactory.CreateConnection(_connectionSettings);
             }
         }
 
+        /// <summary>
+        /// Closes the connection.
+        /// </summary>
         protected virtual void CloseConnection()
         {
             try
@@ -83,6 +101,9 @@ namespace Plato.Messaging.Implementations.RMQ
             }
         }
 
+        /// <summary>
+        /// Opens the channel.
+        /// </summary>
         protected virtual void OpenChannel()
         {
             try
@@ -104,6 +125,9 @@ namespace Plato.Messaging.Implementations.RMQ
             }
         }
 
+        /// <summary>
+        /// Closes the channel.
+        /// </summary>
         protected virtual void CloseChannel()
         {
             if (_channel == null)
@@ -128,6 +152,10 @@ namespace Plato.Messaging.Implementations.RMQ
             }
         }
 
+        /// <summary>
+        /// Determines whether this instance is open.
+        /// </summary>
+        /// <returns></returns>
         public virtual bool IsOpen()
         {
             return _channel != null && _channel.IsOpen;
@@ -144,6 +172,9 @@ namespace Plato.Messaging.Implementations.RMQ
             OpenChannel();
         }
 
+        /// <summary>
+        /// Closes this instance.
+        /// </summary>
         public virtual void Close()
         {
             CloseChannel();

@@ -14,19 +14,16 @@ namespace Plato.Messaging.Implementations.RMQ.Interfaces
         /// <summary>
         /// Creates the byte.
         /// </summary>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="exchangeSettings">The exchange settings.</param>
         /// <param name="queueSettings">The queue settings.</param>
         /// <returns></returns>
-        IRMQSubscriberByte CreateByte(string connectionName, RMQExchangeSettings exchangeSettings, RMQQueueSettings queueSettings);
+        IRMQSubscriberByte CreateByte(RMQConnectionSettings connectionSettings, RMQExchangeSettings exchangeSettings, RMQQueueSettings queueSettings);
 
         /// <summary>
         /// Creates the text.
         /// </summary>
-        /// <param name="connectionName">Name of the connection.</param>
-        /// <param name="exchangeSettings">The exchange settings.</param>
-        /// <param name="queueSettings">The queue settings.</param>
         /// <returns></returns>
-        IRMQSubscriberText CreateText(string connectionName, RMQExchangeSettings exchangeSettings, RMQQueueSettings queueSettings);
+        IRMQSubscriberText CreateText(RMQConnectionSettings connectionSettings, RMQExchangeSettings exchangeSettings, RMQQueueSettings queueSettings);
     }
 }

@@ -16,16 +16,16 @@ namespace Plato.Messaging.Implementations.RMQ
     public class RMQConsumerText : RMQConsumer, IRMQConsumerText
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RMQConsumerText"/> class.
+        /// Initializes a new instance of the <see cref="RMQConsumerText" /> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
-        /// <param name="connectionName">Name of the connection.</param>
-        /// <param name="settings">The settings.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
         public RMQConsumerText(
-            IRMQConnectionFactory connectionFactory, 
-            string connectionName, 
-            RMQQueueSettings settings) 
-            : base(connectionFactory, connectionName, settings)
+            IRMQConnectionFactory connectionFactory,
+            RMQConnectionSettings connectionSettings,
+            RMQQueueSettings queueSettings) 
+            : base(connectionFactory, connectionSettings, queueSettings)
         {
         }
 
