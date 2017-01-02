@@ -23,7 +23,7 @@ namespace Plato.Messaging.Implementations.AMQ
         /// <summary>
         /// Initializes a new instance of the <see cref="AMQConfigurationManager"/> class.
         /// </summary>
-        public AMQConfigurationManager() : base("amqSettings")
+        public AMQConfigurationManager(string configPath = null) : base("amqSettings", configPath)
         {
         }
 

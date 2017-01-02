@@ -67,7 +67,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisDatabaseProxy.cs" />
     <Compile Include="RedisDatabaseProxyConfiguration.cs" />
-    <Compile Include="RedisLock.cs" />
     <Compile Include="StackExchangeRedisExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
