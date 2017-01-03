@@ -1,21 +1,17 @@
-# Plato.NET Framework
+# Plato.NET  [![Build status](https://ci.appveyor.com/api/projects/status/github/reflectsoftware/Plato.NET?svg=true)](https://ci.appveyor.com/project/reflectsoftware/Plato.NET) [![Documentation](https://img.shields.io/badge/docs-wiki-yellow.svg)](https://github.com/reflectsoftware/Plato.NET/wiki) [![Stars](https://img.shields.io/github/stars/reflectsoftware/Plato.NET.svg)](https://github.com/reflectsoftware/Plato.NET/stargazers) 
 
-[![Build status](https://ci.appveyor.com/api/projects/status/github/reflectsoftware/Plato.NET?svg=true)](https://ci.appveyor.com/project/reflectsoftware/Plato.NET)
-[![Stars](https://img.shields.io/github/stars/reflectsoftware/Plato.NET.svg)](https://github.com/reflectsoftware/Plato.NET/stargazers) 
+**Platforms** - .NET Framework 4.6.1 and higher
 
-**Platforms** - .NET 4.6.1
+### What is Plato.NET?
 
-## What is Plato.NET? ##
-
-TODO
+Making .NET apps awesome!
 
 
 
+### Packages
 
-## Packages
-
-Package name  | Details
-------------- | ------------- 
+Package name  | .NET Framework
+------------- | ---------------
 [Plato](http://www.nuget.org/packages/Plato/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.svg?style=flat)](http://www.nuget.org/packages/Plato/) 
 [Plato.Cache](http://www.nuget.org/packages/Plato.Cache/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.Cache.svg?style=flat)](http://www.nuget.org/packages/Plato.Cache/)
 [Plato.Configuration](http://www.nuget.org/packages/Plato.Configuration/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.Configuration.svg?style=flat)](http://www.nuget.org/packages/Plato.Configuration/)
@@ -28,14 +24,15 @@ Package name  | Details
 [Plato.WinAPI](http://www.nuget.org/packages/Plato.WinAPI/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.WinAPI.svg?style=flat)](http://www.nuget.org/packages/Plato.WinAPI/)
 
 
-## Benefits of Plato.NET Framework ##
-
-TODO
+### Getting Started
 
 
-## Additional Resources
+If you want Plato.NET, just open up Visual Studio 2015 and search "Plato.NET" in the Extension Manager.
 
-[Submit User Feedback](http://reflectsoftware.uservoice.com/forums/158277-reflectinsight-feedback)
+After you create a project, head to our [documentation wiki](https://github.com/reflectsoftware/Plato.NET/wiki) and get started.
+
+
+### Additional Resources
 
 [Contact Support](support@reflectsoftware.com)
 
