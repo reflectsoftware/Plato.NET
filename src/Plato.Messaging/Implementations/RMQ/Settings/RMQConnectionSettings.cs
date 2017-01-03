@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using RabbitMQ.Client;
+using System.Collections.Generic;
 
 namespace Plato.Messaging.Implementations.RMQ.Settings
 {
@@ -12,6 +13,28 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
     public class RMQConnectionSettings
     {
         /// <summary>
+        /// Gets the index of the active endpoint.
+        /// </summary>
+        /// <value>
+        /// The index of the active endpoint.
+        /// </value>
+        public int ActiveEndpointIndex { get; internal set; }
+
+        /// <summary>
+        /// Gets the endpoints.
+        /// </summary>
+        /// <value>
+        /// The endpoints.
+        /// </value>
+        public List<string> Endpoints { get; private set; }
+
+        public RMQConnectionSettings()
+        {
+            ActiveEndpointIndex = 0;
+            Endpoints = new List<string>();
+        }
+
+        /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>
@@ -19,13 +42,6 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// </value>
         public string Name { get; set; }
 
-        /// <summary>
-        /// Gets or sets the name of the host.
-        /// </summary>
-        /// <value>
-        /// The name of the host.
-        /// </value>
-        public string HostName { get; set; }
 
         /// <summary>
         /// Gets or sets the username.
@@ -52,12 +68,12 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         public string VirtualHost { get; set; }
 
         /// <summary>
-        /// Gets or sets the port.
+        /// Gets or sets the URI.
         /// </summary>
         /// <value>
-        /// The port.
+        /// The URI.
         /// </value>
-        public int Port { get; set; }
+        public string Uri { get; set; }
 
         /// <summary>
         /// Gets or sets the protocol.
@@ -66,5 +82,13 @@ namespace Plato.Messaging.Implementations.RMQ.Settings
         /// The protocol.
         /// </value>
         public IProtocol Protocol { get; set; }
+
+        /// <summary>
+        /// Gets or sets the delay on reconnect.
+        /// </summary>
+        /// <value>
+        /// The delay on reconnect.
+        /// </value>
+        public int DelayOnReconnect { get; set; }
     }
 }

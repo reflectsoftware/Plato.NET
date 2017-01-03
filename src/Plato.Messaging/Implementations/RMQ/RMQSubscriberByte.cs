@@ -19,15 +19,15 @@ namespace Plato.Messaging.Implementations.RMQ
         /// Initializes a new instance of the <see cref="RMQSubscriberByte"/> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="exchangeSettings">The exchange settings.</param>
         /// <param name="queueSettings">The queue settings.</param>
         public RMQSubscriberByte(
             IRMQConnectionFactory connectionFactory,
-            string connectionName,
+            RMQConnectionSettings connectionSettings,
             RMQExchangeSettings exchangeSettings,
             RMQQueueSettings queueSettings)
-            : base(connectionFactory, connectionName, exchangeSettings, queueSettings)
+            : base(connectionFactory, connectionSettings, exchangeSettings, queueSettings)
         {
         }
 

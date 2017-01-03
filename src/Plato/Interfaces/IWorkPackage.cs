@@ -4,7 +4,7 @@
 
 using Plato.Threading.WorkManagement;
 
-namespace Plato.Threading.Interfaces
+namespace Plato.Interfaces
 {
     /// <summary>
     /// 

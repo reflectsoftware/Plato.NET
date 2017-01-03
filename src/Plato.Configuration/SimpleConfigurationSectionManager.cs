@@ -21,14 +21,27 @@ namespace Plato.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="XSimpleConfigurationSectionManager"/> class.
         /// </summary>
-        public SimpleConfigurationSectionManager(string settings = null)
+        public SimpleConfigurationSectionManager(string settings = null, string configPath = null)
         {
-            if (settings != null)
+            if(settings == null)
+            {
+                return;
+            }
+
+            if (configPath == null)
             {
                 var xmlConfigSection = (XmlNode)ConfigurationManager.GetSection(settings);
                 if (xmlConfigSection != null)
                 {
                     var cc = new ConfigNode(xmlConfigSection);
+                    NodeAttributes = ConfigHelper.GetNodeChildAttributes(cc, ".");
+                }
+            }
+            else
+            {
+                using (var configContainer = new ConfigContainer(configPath, "./rmqSettings"))
+                {
+                    var cc = configContainer.Node;
                     NodeAttributes = ConfigHelper.GetNodeChildAttributes(cc, ".");
                 }
             }

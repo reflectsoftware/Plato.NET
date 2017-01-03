@@ -2,13 +2,13 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using Plato.Threading.Enums;
-using Plato.Threading.Exceptions;
-using Plato.Threading.Interfaces;
 using Plato.Core.Logging;
 using Plato.Core.Logging.Enums;
 using Plato.Core.Logging.Interfaces;
 using Plato.Core.Miscellaneous;
+using Plato.Interfaces;
+using Plato.Threading.Enums;
+using Plato.Threading.Exceptions;
 using System;
 using System.Threading;
 
@@ -17,7 +17,7 @@ namespace Plato.Threading
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Plato.Threading.Interfaces.IBaseThread" />
+    /// <seealso cref="Plato.Interfaces.IBaseThread" />
     public abstract class BaseThread : IBaseThread
     {
         private readonly object _threadLock;
@@ -29,15 +29,7 @@ namespace Plato.Threading
         /// <value>
         ///   <c>true</c> if disposed; otherwise, <c>false</c>.
         /// </value>
-        public bool Disposed { get; private set; }
-
-        /// <summary>
-        /// Gets a value indicating whether [process exiting].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [process exiting]; otherwise, <c>false</c>.
-        /// </value>
-        public bool ProcessExiting { get; private set; }
+        public bool Disposed { get; private set; }              
 
         /// <summary>
         /// Gets the do work execution count.
@@ -89,15 +81,12 @@ namespace Plato.Threading
             _threadLock = new object();
             _terminated = true;
 
-            Disposed = false;
-            ProcessExiting = false;
+            Disposed = false;            
             Name = name;
             ActiveThread = null;            
             Notification = notification ?? new LogNotification();
             ThreadState = BaseThreadState.Stopped;
             DoWorkExecutionCount = 0;
-
-            AppDomain.CurrentDomain.ProcessExit += ProcessExist;
         }
 
         /// <summary>
@@ -106,25 +95,6 @@ namespace Plato.Threading
         /// <param name="name">The name.</param>
         public BaseThread(string name) : this(name, new LogNotification())
         {
-        }
-
-        /// <summary>
-        /// Processes the exist.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void ProcessExist(object sender, EventArgs e)
-        {
-            ProcessExiting = true;
-            AppDomain.CurrentDomain.ProcessExit -= ProcessExist;
-
-            lock (_threadLock)
-            {
-                if (ActiveThread != null)
-                {
-                    Stop();
-                }
-            }
         }
 
         /// <summary>

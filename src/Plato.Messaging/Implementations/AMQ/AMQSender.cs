@@ -9,6 +9,7 @@ using Plato.Messaging.Implementations.AMQ.Settings;
 using Plato.Messaging.Interfaces;
 using System;
 using System.Collections.Specialized;
+using System.IO;
 
 namespace Plato.Messaging.Implementations.AMQ
 {
@@ -23,12 +24,12 @@ namespace Plato.Messaging.Implementations.AMQ
         private IMessageProducer _producer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AMQSender"/> class.
+        /// Initializes a new instance of the <see cref="AMQSender" /> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="destination">The destination.</param>
-        public AMQSender(IAMQConnectionFactory connectionFactory, string connectionName, AMQDestinationSettings destination) : base(connectionFactory, connectionName)
+        public AMQSender(IAMQConnectionFactory connectionFactory, AMQConnectionSettings connectionSettings, AMQDestinationSettings destination) : base(connectionFactory, connectionSettings)
         {
             _destination = destination;
             _producer = null;
@@ -56,48 +57,59 @@ namespace Plato.Messaging.Implementations.AMQ
         /// <param name="createMessage">The create message.</param>
         public void Send(Action<ISenderProperties> action, Func<ISession, IMessage> createMessage)
         {
-            try
+            while (true)
             {
                 Open();
 
-                if (_producer == null)
+                try
                 {
-                    var destination = SessionUtil.GetDestination(_session, _destination.Path);
-                    _producer = _session.CreateProducer(destination);
+                    if (_producer == null)
+                    {
+                        var destination = SessionUtil.GetDestination(_session, _destination.Path);
+                        _producer = _session.CreateProducer(destination);
+                    }
+
+                    var senderProperties = new AMQSenderProperties()
+                    {
+                        Properties = new NameValueCollection()
+                    };
+
+                    if (action != null)
+                    {
+                        action(senderProperties);
+                    }
+
+                    var request = createMessage(_session);
+                    request.NMSCorrelationID = senderProperties.CorrelationId;
+                    request.NMSTimeToLive = senderProperties.TTL;
+
+                    foreach (var key in senderProperties.Properties.AllKeys)
+                    {
+                        request.Properties[key] = senderProperties.Properties[key];
+                    }
+
+                    _producer.Send(request);
+
+                    return;
                 }
-
-                var senderProperties = new AMQSenderProperties()
+                catch (Exception ex)
                 {
-                    Properties = new NameValueCollection()
-                };
+                    Close();
+                    
+                    if ((ex is NMSConnectionException) || (ex is IOException))
+                    {
+                        // retry
+                        continue;
+                    }
 
-                if (action != null)
-                {
-                    action(senderProperties);
+                    var newException = AMQExceptionHandler.ExceptionHandler(_connection, ex);
+                    if (newException != null)
+                    {
+                        throw newException;
+                    }
+
+                    throw;
                 }
-
-                var request = createMessage(_session);
-                request.NMSCorrelationID = senderProperties.CorrelationId;
-                request.NMSTimeToLive = senderProperties.TTL;
-
-                foreach (var key in senderProperties.Properties.AllKeys)
-                {
-                    request.Properties[key] = senderProperties.Properties[key];
-                }
-
-                _producer.Send(request);
-            }
-            catch (Exception ex)
-            {
-                Close();
-
-                var newException = AMQExceptionHandler.ExceptionHandler(_connection, ex);
-                if (newException != null)
-                {
-                    throw newException;
-                }
-
-                throw;
             }
         }
     }

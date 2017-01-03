@@ -18,12 +18,12 @@ namespace Plato.Messaging.Implementations.AMQ
     public class AMQReceiverText : AMQReceiver, IAMQReceiverText
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AMQReceiverText"/> class.
+        /// Initializes a new instance of the <see cref="AMQReceiverText" /> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="destination">The destination.</param>
-        public AMQReceiverText(IAMQConnectionFactory connectionFactory, string connectionName, AMQDestinationSettings destination) : base(connectionFactory, connectionName, destination)
+        public AMQReceiverText(IAMQConnectionFactory connectionFactory, AMQConnectionSettings connectionSettings, AMQDestinationSettings destination) : base(connectionFactory, connectionSettings, destination)
         {
         }
 

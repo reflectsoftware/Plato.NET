@@ -2,13 +2,13 @@
 // Copyright (c) 2016 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-namespace Plato.Threading.Interfaces
+namespace Plato.Interfaces
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Plato.Threading.Interfaces.IBaseThread" />
-    public interface IBaseWorker : IBaseThread
+    /// <seealso cref="Plato.Interfaces.IBaseThread" />
+    public interface IBaseWorker : Plato.Interfaces.IBaseThread
     {
         /// <summary>
         /// Gets the work package.

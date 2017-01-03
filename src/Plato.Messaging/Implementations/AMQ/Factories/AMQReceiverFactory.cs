@@ -26,34 +26,34 @@ namespace Plato.Messaging.Implementations.AMQ.Factories
         /// <summary>
         /// Creates the specified settings.
         /// </summary>
-        /// <param name="settings">The settings.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="destinationSettings">The settings.</param>
         /// <returns></returns>
-        public IAMQReceiver Create(AMQDestinationSettings settings, string connectionName)
+        public IAMQReceiver Create(AMQConnectionSettings connectionSettings, AMQDestinationSettings destinationSettings)
         {
-            return new AMQReceiver(_connectionFactory, connectionName, settings);
+            return new AMQReceiver(_connectionFactory, connectionSettings, destinationSettings);
         }
 
         /// <summary>
         /// Creates the text.
         /// </summary>
-        /// <param name="settings">The settings.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="destinationSettings">The destination settings.</param>
         /// <returns></returns>
-        public IAMQReceiverText CreateText(AMQDestinationSettings settings, string connectionName)
+        public IAMQReceiverText CreateText(AMQConnectionSettings connectionSettings, AMQDestinationSettings destinationSettings)
         {
-            return new AMQReceiverText(_connectionFactory, connectionName, settings);
+            return new AMQReceiverText(_connectionFactory, connectionSettings, destinationSettings);
         }
 
         /// <summary>
         /// Creates the bytes.
         /// </summary>
-        /// <param name="settings">The settings.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="destinationSettings">The destination settings.</param>
         /// <returns></returns>
-        public IAMQReceiverBytes CreateBytes(AMQDestinationSettings settings, string connectionName)
+        public IAMQReceiverBytes CreateBytes(AMQConnectionSettings connectionSettings, AMQDestinationSettings destinationSettings)
         {
-            return new AMQReceiverBytes(_connectionFactory, connectionName, settings);
+            return new AMQReceiverBytes(_connectionFactory, connectionSettings, destinationSettings);
         }
     }
 }

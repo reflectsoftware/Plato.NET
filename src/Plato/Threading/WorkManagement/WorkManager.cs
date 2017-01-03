@@ -4,7 +4,7 @@
 
 using Plato.Threading.Enums;
 using Plato.Threading.Exceptions;
-using Plato.Threading.Interfaces;
+using Plato.Interfaces;
 using Plato.Core.Logging.Enums;
 using Plato.Core.Miscellaneous;
 using System;

@@ -4,6 +4,7 @@
 
 using Apache.NMS;
 using Plato.Messaging.Implementations.AMQ.Interfaces;
+using Plato.Messaging.Implementations.AMQ.Settings;
 using Plato.Messaging.Interfaces;
 using System;
 
@@ -14,8 +15,8 @@ namespace Plato.Messaging.Implementations.AMQ
     /// </summary>
     /// <seealso cref="Plato.Messaging.Interfaces.IMessageReceiverSender" />
     public abstract class AMQReceiverSender : IMessageReceiverSender
-    {
-        protected readonly string _connectionName;
+    {        
+        protected readonly AMQConnectionSettings _connectionSettings;
         protected readonly IAMQConnectionFactory _connectionFactory;        
         protected IConnection _connection;
         protected ISession _session;
@@ -29,15 +30,14 @@ namespace Plato.Messaging.Implementations.AMQ
         public bool Disposed { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AMQReceiverSender" /> class.
+        /// Initializes a new instance of the <see cref="AMQReceiverSender"/> class.
         /// </summary>
-        /// <param name="connectionFactory">The connection factory.</param>
-        /// <param name="connectionName">Name of the connection.</param>
-        public AMQReceiverSender(IAMQConnectionFactory connectionFactory, string connectionName)
+        /// <param name="settings">The settings.</param>
+        public AMQReceiverSender(IAMQConnectionFactory connectionFactory, AMQConnectionSettings connectionSettings)
         {
             Disposed = false;
-            _connectionFactory = connectionFactory;
-            _connectionName = connectionName;
+            _connectionSettings = connectionSettings;
+            _connectionFactory = connectionFactory;            
             _connection = null;
             _session = null;            
         }
@@ -96,7 +96,7 @@ namespace Plato.Messaging.Implementations.AMQ
         {
             if (_connection == null)
             {
-                _connection = _connectionFactory.CreateConnection(_connectionName);
+                _connection = _connectionFactory.CreateConnection(_connectionSettings);
             }
 
             if (_session == null)

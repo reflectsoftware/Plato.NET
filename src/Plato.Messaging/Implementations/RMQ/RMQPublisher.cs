@@ -6,7 +6,9 @@ using Plato.Messaging.Implementations.RMQ.Interfaces;
 using Plato.Messaging.Implementations.RMQ.Settings;
 using Plato.Messaging.Interfaces;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 using System;
+using System.IO;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
@@ -29,15 +31,15 @@ namespace Plato.Messaging.Implementations.RMQ
         /// Initializes a new instance of the <see cref="RMQPublisher"/> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="exchangeSettings">The exchange settings.</param>
         /// <param name="queueSettings">The queue settings.</param>
         public RMQPublisher(
-            IRMQConnectionFactory connectionFactory, 
-            string connectionName,
+            IRMQConnectionFactory connectionFactory,
+            RMQConnectionSettings connectionSettings,
             RMQExchangeSettings exchangeSettings,
             RMQQueueSettings queueSettings = null)
-            : base(connectionFactory, connectionName, exchangeSettings, queueSettings)
+            : base(connectionFactory, connectionSettings, exchangeSettings, queueSettings)
         {
         }
 
@@ -67,42 +69,54 @@ namespace Plato.Messaging.Implementations.RMQ
         /// <param name="action">The action.</param>
         protected void _Send(byte[] data, Action<ISenderProperties> action = null)
         {
-            try
+            while (true)
             {
                 if (!IsOpen())
                 {
                     Open();
                 }
 
-                var senderProperties = new RMQSenderProperties()
+                try
                 {
-                    Properties = null,
-                    Exchange = _exchangeSettings.ExchangeName,
-                    RoutingKey = string.Empty,
-                    Mandatory = false,
-                };
 
-                if (action != null)
-                {
-                    action(senderProperties);
+                    var senderProperties = new RMQSenderProperties()
+                    {
+                        Properties = null,
+                        Exchange = _exchangeSettings.ExchangeName,
+                        RoutingKey = string.Empty,
+                        Mandatory = false,
+                    };
+
+                    if (action != null)
+                    {
+                        action(senderProperties);
+                    }
+
+                    _channel.BasicPublish(
+                        senderProperties.Exchange,
+                        senderProperties.RoutingKey,
+                        senderProperties.Mandatory,
+                        null,
+                        data);
+
+                    return;
                 }
-
-                _channel.BasicPublish(
-                    senderProperties.Exchange, 
-                    senderProperties.RoutingKey, 
-                    senderProperties.Mandatory, 
-                    null, 
-                    data);
-            }
-            catch (Exception ex)
-            {
-                var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
-                if (newException != null)
+                catch (Exception ex)
                 {
-                    throw newException;
-                }
+                    if ((ex is AlreadyClosedException) || (ex is IOException))
+                    {
+                        // retry
+                        continue;
+                    }
 
-                throw;
+                    var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
+                    if (newException != null)
+                    {
+                        throw newException;
+                    }
+
+                    throw;
+                }
             }
         }
     }

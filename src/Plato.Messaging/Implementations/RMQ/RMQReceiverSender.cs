@@ -3,35 +3,27 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Plato.Messaging.Implementations.RMQ.Interfaces;
+using Plato.Messaging.Implementations.RMQ.Settings;
 using Plato.Messaging.Interfaces;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 using System;
 
 namespace Plato.Messaging.Implementations.RMQ
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Plato.Messaging.Interfaces.IMessageReceiverSender" />
     public abstract class RMQReceiverSender : IMessageReceiverSender
     {
         protected static TimeoutException _TimeoutException;
 
         protected readonly IRMQConnectionFactory _connectionFactory;
-        protected readonly string _connectionName;
+        protected readonly RMQConnectionSettings _connectionSettings;
         protected IConnection _connection;
         protected IModel _channel;
 
-        /// <summary>
-        /// Gets a value indicating whether this <see cref="IMessageReceiverSender" /> is disposed.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if disposed; otherwise, <c>false</c>.
-        /// </value>
         public bool Disposed { get; private set; }
 
         /// <summary>
-        /// Initializes the <see cref="RMQReceiverSender" /> class.
+        /// Initializes the <see cref="RMQReceiverSender"/> class.
         /// </summary>
         static RMQReceiverSender()
         {
@@ -42,29 +34,20 @@ namespace Plato.Messaging.Implementations.RMQ
         /// Initializes a new instance of the <see cref="RMQReceiverSender"/> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
-        /// <param name="connectionName">Name of the connection.</param>
-        public RMQReceiverSender(
-            IRMQConnectionFactory connectionFactory, 
-            string connectionName)
+        /// <param name="connectionSettings">The connection settings.</param>
+        public RMQReceiverSender(IRMQConnectionFactory connectionFactory, RMQConnectionSettings connectionSettings)
         {
             Disposed = false;
             _connectionFactory = connectionFactory;
-            _connectionName = connectionName;
+            _connectionSettings = connectionSettings;
             _channel = null;            
         }
 
-        /// <summary>
-        /// Finalizes an instance of the <see cref="RMQReceiverSender"/> class.
-        /// </summary>
         ~RMQReceiverSender()
         {
             Dispose(false);
         }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        
         protected virtual void Dispose(bool disposing)
         {
             lock (this)
@@ -94,7 +77,7 @@ namespace Plato.Messaging.Implementations.RMQ
         {
             if (_connection == null || !_connection.IsOpen)
             {
-                _connection = _connectionFactory.CreateConnection(_connectionName);
+                _connection = _connectionFactory.CreateConnection(_connectionSettings);
             }
         }
 
@@ -103,9 +86,19 @@ namespace Plato.Messaging.Implementations.RMQ
         /// </summary>
         protected virtual void CloseConnection()
         {
-            _connection?.Close();
-            _connection?.Dispose();
-            _connection = null;
+            try
+            {
+                _connection?.Close();
+            }
+            catch (AlreadyClosedException)
+            {
+                // just swallow as it's safe to continue with the close process.
+            }
+            finally
+            {
+                _connection?.Dispose();
+                _connection = null;
+            }
         }
 
         /// <summary>
@@ -168,9 +161,6 @@ namespace Plato.Messaging.Implementations.RMQ
             return _channel != null && _channel.IsOpen;
         }
 
-        /// <summary>
-        /// Opens this instance.
-        /// </summary>
         public virtual void Open()
         {
             if (IsOpen())

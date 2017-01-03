@@ -5,10 +5,13 @@
 using Plato.Messaging.Enums;
 using Plato.Messaging.Exceptions;
 using Plato.Messaging.Implementations.RMQ.Interfaces;
+using Plato.Messaging.Implementations.RMQ.Settings;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace Plato.Messaging.Implementations.RMQ.Factories
 {
@@ -18,59 +21,68 @@ namespace Plato.Messaging.Implementations.RMQ.Factories
     /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQConnectionFactory" />
     public class RMQConnectionFactory : IRMQConnectionFactory
     {
-        private IRMQConfigurationManager _configManager;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RMQConnectionFactory"/> class.
-        /// </summary>
-        /// <param name="configManager">The configuration manager.</param>
-        public RMQConnectionFactory(IRMQConfigurationManager configManager)
-        {
-            _configManager = configManager;
-        }
-
         /// <summary>
         /// Creates the connection.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name="settings">The settings.</param>
         /// <returns></returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException"></exception>
         /// <exception cref="MessageException">
+        /// There are no acceptable endpoints to connect too.
+        /// or
         /// </exception>
-        public IConnection CreateConnection(string name)
-        {
-            try
+        public IConnection CreateConnection(RMQConnectionSettings settings)
+        {            
+            if(settings.Endpoints.Count == 0)
             {
-                var connectionSettings = _configManager.GetConnectionSettings(name);
-                if (connectionSettings == null)
+                throw new MessageException(MessageExceptionCode.NoAcceptableEndpoints, "There are no acceptable endpoints to connect any RabbitMQ Broker.");
+            }
+
+            var exceptionList = new List<Exception>();
+            var retries = settings.Endpoints.Count - 1;                       
+
+            while(true)
+            {
+                try
                 {
-                    throw new KeyNotFoundException($"Unable to fined RMQ connection settings for {name}.");
+                    var connectionFactory = new ConnectionFactory()
+                    {
+                        UserName = settings.Username,
+                        Password = settings.Password,
+                        VirtualHost = settings.VirtualHost,
+                        Protocol = settings.Protocol,
+                        Uri = settings.Endpoints[settings.ActiveEndpointIndex]
+                    };
+
+                    var connection = connectionFactory.CreateConnection();
+                    return connection;
+                }
+                catch (BrokerUnreachableException ex)
+                {
+                    exceptionList.Add(new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex));
+                }
+                catch (IOException ex)
+                {
+                    exceptionList.Add(new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex));
+                }
+                catch (UriFormatException ex)
+                {
+                    exceptionList.Add(ex);
+                }               
+
+                retries--;
+                if(retries < 0)
+                {
+                    var finalException = new AggregateException($"Unable to connect to any RabbitMQ Broker using the following connection uri: {settings.Uri}, for named connection settings: '{settings.Name}'.", exceptionList);
+                    throw new MessageException(MessageExceptionCode.LostConnection, finalException.Message, finalException);
                 }
 
-                var connectionFactory = new ConnectionFactory()
+                settings.ActiveEndpointIndex++;
+                if(settings.ActiveEndpointIndex >= settings.Endpoints.Count)
                 {
-                    HostName = connectionSettings.HostName,
-                    UserName = connectionSettings.Username,
-                    Password = connectionSettings.Password,
-                    VirtualHost = connectionSettings.VirtualHost,
-                    Protocol = connectionSettings.Protocol,
-                    Port = connectionSettings.Port
-                };
+                    settings.ActiveEndpointIndex = 0;
+                }
 
-                var connection = connectionFactory.CreateConnection();
-                return connection;
-            }
-            catch (BrokerUnreachableException ex)
-            {
-                throw new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
-            }
-            catch (IOException ex)
-            {
-                throw new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                throw new MessageException(MessageExceptionCode.LostConnection, ex.Message, ex);
+                Thread.Sleep(settings.DelayOnReconnect);
             }
         }
     }

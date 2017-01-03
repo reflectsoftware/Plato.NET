@@ -25,6 +25,11 @@ namespace Plato.Messaging.Enums
         PoisonMessage = 2,
 
         /// <summary>
+        /// The no acceptable endpoints
+        /// </summary>
+        NoAcceptableEndpoints = 3,
+
+        /// <summary>
         /// The unhandled error
         /// </summary>
         UnhandledError = 1000,

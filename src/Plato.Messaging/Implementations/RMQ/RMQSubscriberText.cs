@@ -15,19 +15,12 @@ namespace Plato.Messaging.Implementations.RMQ
     /// <seealso cref="Plato.Messaging.Implementations.RMQ.Interfaces.IRMQSubscriberText" />
     public class RMQSubscriberText : RMQSubscriber, IRMQSubscriberText
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RMQSubscriberText"/> class.
-        /// </summary>
-        /// <param name="connectionFactory">The connection factory.</param>
-        /// <param name="connectionName">Name of the connection.</param>
-        /// <param name="exchangeSettings">The exchange settings.</param>
-        /// <param name="queueSettings">The queue settings.</param>
         public RMQSubscriberText(
             IRMQConnectionFactory connectionFactory,
-            string connectionName,
+            RMQConnectionSettings connectionSettings,
             RMQExchangeSettings exchangeSettings,
             RMQQueueSettings queueSettings)
-            : base(connectionFactory, connectionName, exchangeSettings, queueSettings)
+            : base(connectionFactory, connectionSettings, exchangeSettings, queueSettings)
         {
         }
 

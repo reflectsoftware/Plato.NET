@@ -7,7 +7,7 @@ using Plato.Core.Logging.Interfaces;
 using System;
 using System.Threading;
 
-namespace Plato.Threading.Interfaces
+namespace Plato.Interfaces
 {
     /// <summary>
     /// 
@@ -22,14 +22,6 @@ namespace Plato.Threading.Interfaces
         ///   <c>true</c> if disposed; otherwise, <c>false</c>.
         /// </value>
         bool Disposed { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether [process exiting].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [process exiting]; otherwise, <c>false</c>.
-        /// </value>
-        bool ProcessExiting { get; }
 
         /// <summary>
         /// Gets the do work execution count.

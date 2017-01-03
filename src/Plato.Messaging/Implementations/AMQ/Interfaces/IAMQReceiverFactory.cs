@@ -14,25 +14,25 @@ namespace Plato.Messaging.Implementations.AMQ.Interfaces
         /// <summary>
         /// Creates the specified settings.
         /// </summary>
-        /// <param name="settings">The settings.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="destinationSettings">The destination settings.</param>
         /// <returns></returns>
-        IAMQReceiver Create(AMQDestinationSettings settings, string connectionName);
+        IAMQReceiver Create(AMQConnectionSettings connectionSettings, AMQDestinationSettings destinationSettings);
 
         /// <summary>
         /// Creates the text.
         /// </summary>
-        /// <param name="settings">The settings.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="destinationSettings">The destination settings.</param>
         /// <returns></returns>
-        IAMQReceiverText CreateText(AMQDestinationSettings settings, string connectionName);
+        IAMQReceiverText CreateText(AMQConnectionSettings connectionSettings, AMQDestinationSettings destinationSettings);
 
         /// <summary>
         /// Creates the bytes.
         /// </summary>
-        /// <param name="settings">The settings.</param>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="destinationSettings">The destination settings.</param>
         /// <returns></returns>
-        IAMQReceiverBytes CreateBytes(AMQDestinationSettings settings, string connectionName);
+        IAMQReceiverBytes CreateBytes(AMQConnectionSettings connectionSettings, AMQDestinationSettings destinationSettings);
     }
 }

@@ -8,10 +8,6 @@ using System;
 
 namespace Plato.Messaging.Implementations.AMQ.Interfaces
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <seealso cref="Plato.Messaging.Interfaces.IMessageReceiverSender" />
     public interface IAMQSender : IMessageReceiverSender
     {
         /// <summary>
