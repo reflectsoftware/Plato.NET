@@ -109,7 +109,7 @@
     </None>
     <None Include="RMQSettings.Sample.config" />
     <None Include="packages.config" />
-    <None Include="Plato.Messaging.nuspec">
+    <None Include="Plato.Messaging.RMQ.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
