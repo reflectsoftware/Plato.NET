@@ -33,18 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Apache.NMS, Version=1.7.1.3894, Culture=neutral, PublicKeyToken=82756feee3957618, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Apache.NMS.1.7.1\lib\net40\Apache.NMS.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Apache.NMS.ActiveMQ, Version=1.7.2.4108, Culture=neutral, PublicKeyToken=82756feee3957618, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Apache.NMS.ActiveMQ.1.7.2\lib\net40\Apache.NMS.ActiveMQ.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RabbitMQ.Client, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RabbitMQ.Client.4.1.1\lib\net451\RabbitMQ.Client.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -59,85 +47,6 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Enums\MessageExceptionCode.cs" />
-    <Compile Include="Implementations\AMQ\AMQReceiverBytes.cs" />
-    <Compile Include="Implementations\AMQ\AMQReceiverBytesResult.cs" />
-    <Compile Include="Implementations\AMQ\AMQReceiverTextResult.cs" />
-    <Compile Include="Implementations\AMQ\AMQReceiverText.cs" />
-    <Compile Include="Implementations\AMQ\AMQReceiver.cs" />
-    <Compile Include="Implementations\AMQ\AMQSender.cs" />
-    <Compile Include="Implementations\AMQ\AMQSenderBytes.cs" />
-    <Compile Include="Implementations\AMQ\Factories\AMQConnectionFactory.cs" />
-    <Compile Include="Implementations\AMQ\Factories\AMQSenderFactory.cs" />
-    <Compile Include="Implementations\AMQ\Factories\AMQReceiverFactory.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQConfigurationManager.cs" />
-    <Compile Include="Implementations\AMQ\AMQConfigurationManager.cs" />
-    <Compile Include="Implementations\AMQ\AMQReceiverSender.cs" />
-    <Compile Include="Implementations\AMQ\AMQExceptionHandler.cs" />
-    <Compile Include="Implementations\AMQ\AMQSenderText.cs" />
-    <Compile Include="Implementations\AMQ\AMQSenderProperties.cs" />
-    <Compile Include="Implementations\AMQ\AMQReceiverResult.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQConnectionFactory.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQReceiverBytes.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQReceiverText.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQReceiver.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQSender.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQSenderFactory.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQSenderBytes.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQSenderText.cs" />
-    <Compile Include="Implementations\AMQ\Interfaces\IAMQReceiverFactory.cs" />
-    <Compile Include="Implementations\AMQ\Settings\AMQConnectionSettings.cs" />
-    <Compile Include="Implementations\AMQ\Settings\AMQDestinationSettings.cs" />
-    <Compile Include="Implementations\RMQ\Factories\RMQPublisherFactory.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQPublisherFactory.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQReceiverByte.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQReceiverText.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQSubscriberFactory.cs" />
-    <Compile Include="Implementations\RMQ\Factories\RMQConsumerFactory.cs" />
-    <Compile Include="Implementations\RMQ\Factories\RMQSubscriberFactory.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQConsumerFactory.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQProducerFactory.cs" />
-    <Compile Include="Implementations\RMQ\Factories\RMQProducerFactory.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQConfigurationManager.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQConnectionFactory.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQConsumer.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQConsumerByte.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQConsumerText.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQProducerByte.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQProducerText.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQPublisher.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQPublisherText.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQPublisherByte.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQSubscriber.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQSubscriberText.cs" />
-    <Compile Include="Implementations\RMQ\Interfaces\IRMQSubscriberByte.cs" />
-    <Compile Include="Implementations\RMQ\IRMQQueue.cs" />
-    <Compile Include="Implementations\RMQ\RMQBasicConsumer.cs" />
-    <Compile Include="Implementations\RMQ\RMQConsumerText.cs" />
-    <Compile Include="Implementations\RMQ\RMQConfigurationManager.cs" />
-    <Compile Include="Implementations\RMQ\RMQConsumer.cs" />
-    <Compile Include="Implementations\RMQ\RMQExceptionHandler.cs" />
-    <Compile Include="Implementations\RMQ\RMQProducerText.cs" />
-    <Compile Include="Implementations\RMQ\RMQProducerByte.cs" />
-    <Compile Include="Implementations\RMQ\RMQProducer.cs" />
-    <Compile Include="Implementations\RMQ\RMQSubscriberText.cs" />
-    <Compile Include="Implementations\RMQ\RMQSubscriberByte.cs" />
-    <Compile Include="Implementations\RMQ\RMQSubscriber.cs" />
-    <Compile Include="Implementations\RMQ\RMQPublisherText.cs" />
-    <Compile Include="Implementations\RMQ\RMQPublisherByte.cs" />
-    <Compile Include="Implementations\RMQ\RMQPublisher.cs" />
-    <Compile Include="Implementations\RMQ\RMQPublisherSubscriber.cs" />
-    <Compile Include="Implementations\RMQ\RMQReceiverSender.cs" />
-    <Compile Include="Implementations\RMQ\RMQQueue.cs" />
-    <Compile Include="Implementations\RMQ\RMQConsumerByte.cs" />
-    <Compile Include="Implementations\RMQ\RMQReceiverResultBase.cs" />
-    <Compile Include="Implementations\RMQ\RMQReceiverResultByte.cs" />
-    <Compile Include="Implementations\RMQ\RMQReceiverResultText.cs" />
-    <Compile Include="Implementations\RMQ\RMQSenderProperties.cs" />
-    <Compile Include="Implementations\RMQ\Factories\RMQConnectionFactory.cs" />
-    <Compile Include="Implementations\RMQ\Settings\RMQConnectionSettings.cs" />
-    <Compile Include="Implementations\RMQ\Settings\RMQConsumerSettings.cs" />
-    <Compile Include="Implementations\RMQ\Settings\RMQExchangeSettings.cs" />
-    <Compile Include="Implementations\RMQ\Settings\RMQQueueSettings.cs" />
     <Compile Include="Interfaces\IMessageConnectionFactory.cs" />
     <Compile Include="Interfaces\IMessageReceiver.cs" />
     <Compile Include="Interfaces\IMessageReceiveResult.cs" />
@@ -145,37 +54,12 @@
     <Compile Include="Interfaces\IMessageSender.cs" />
     <Compile Include="Exceptions\MessageException.cs" />
     <Compile Include="Interfaces\ISenderProperties.cs" />
-    <Compile Include="MessageListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Plato.NET.licenseheader">
       <Link>Plato.NET.licenseheader</Link>
     </None>
-    <None Include="Implementations\AMQ\AMQSettings.Sample.config" />
-    <None Include="Implementations\RMQ\RMQSettings.Sample.config" />
-    <None Include="packages.config" />
-    <None Include="Plato.Messaging.nuspec">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Plato.Configuration\Plato.Configuration.csproj">
-      <Project>{4e421333-54d9-48ce-ba71-a3ec80e9fa0f}</Project>
-      <Name>Plato.Configuration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plato.Core\Plato.Core.csproj">
-      <Project>{fe8c4552-9ad9-4d4c-b6ec-64bf4fd0e3f4}</Project>
-      <Name>Plato.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plato.Security\Plato.Security.csproj">
-      <Project>{efb05004-b25b-4ad6-90ad-e634d34b2d6f}</Project>
-      <Name>Plato.Security</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plato\Plato.csproj">
-      <Project>{ac558aaf-818f-4d13-b29e-b1a81cdb39f0}</Project>
-      <Name>Plato</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
