@@ -6,10 +6,14 @@
     <title>Plato.Serializers</title>
     <authors>ReflectSoftware Inc.</authors>
     <owners>ReflectSoftware Inc.</owners>
+    <licenseUrl>https://github.com/reflectsoftware/Plato.NET/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/reflectsoftware/Plato.NET</projectUrl>
+    <iconUrl>http://reflectsoftware.com/images/Plato.NET-256.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Plato.Serializers deployment package</description>
+    <summary></summary>
     <copyright>© 2017 ReflectSoftware Inc.</copyright>
+    <tags>plato .net services work-manager exceptions dapper redis RabbitMQ ActiveMQ</tags>
     <releaseNotes></releaseNotes>
   </metadata>
   <files>
