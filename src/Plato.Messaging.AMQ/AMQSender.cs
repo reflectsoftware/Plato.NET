@@ -74,10 +74,7 @@ namespace Plato.Messaging.AMQ
                         Properties = new NameValueCollection()
                     };
 
-                    if (action != null)
-                    {
-                        action(senderProperties);
-                    }
+                    action?.Invoke(senderProperties);
 
                     var request = createMessage(_session);
                     request.NMSCorrelationID = senderProperties.CorrelationId;
