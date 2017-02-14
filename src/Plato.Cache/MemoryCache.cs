@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Plato.Cache.Interfaces;
-using Plato.Core;
 using Plato.Core.Locks;
 using Plato.Core.Miscellaneous;
 using System;
@@ -289,7 +288,7 @@ namespace Plato.Cache
         public Task PurgeExpiredItemsAsync()
         {
             PurgeExpiredItems();
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
         
         /// <summary>
@@ -422,7 +421,7 @@ namespace Plato.Cache
         /// <param name="callbackAsync">The callback asynchronous.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        public Task<T> GetAsync<T>(string name, bool bSlidingTimeWindow, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
+        public async Task<T> GetAsync<T>(string name, bool bSlidingTimeWindow, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
         {
             Guard.AgainstNull(() => callbackAsync);
 
@@ -437,10 +436,10 @@ namespace Plato.Cache
                         result = Get<T>(name);
                         if (result == null)
                         {
-                            var cData = callbackAsync(name, args);
-                            Set(name, cData.Result.NewCacheData, cData.Result.KeepAlive);
+                            var cData = await callbackAsync(name, args);
+                            Set(name, cData.NewCacheData, cData.KeepAlive);
 
-                            result = (T)cData.Result.NewCacheData;
+                            result = (T)cData.NewCacheData;
                         }
                     }
                     finally
@@ -450,7 +449,7 @@ namespace Plato.Cache
                 }
             }
 
-            return Task.FromResult(result);
+            return result;
         }
 
         /// <summary>
@@ -474,9 +473,9 @@ namespace Plato.Cache
         /// <param name="callbackAsync">The callback asynchronous.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        public Task<T> GetAsync<T>(string name, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
+        public async Task<T> GetAsync<T>(string name, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
         {
-            return GetAsync<T>(name, false, callbackAsync, args);
+            return await GetAsync<T>(name, false, callbackAsync, args);
         }
 
         /// <summary>
@@ -517,7 +516,7 @@ namespace Plato.Cache
         public Task SetAsync(string name, object item, TimeSpan keepAlive)
         {
             Set(name, item, keepAlive);
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -539,7 +538,7 @@ namespace Plato.Cache
         public Task SetAsync(string name, object item)
         {
             Set(name, item);
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -557,7 +556,7 @@ namespace Plato.Cache
         Task IMemoryCacheExtension.ClearAsync()
         {
             (this as IMemoryCacheExtension).Clear();
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
     }
 }
