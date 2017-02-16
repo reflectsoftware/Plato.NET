@@ -18,7 +18,7 @@ namespace Plato.Core.Miscellaneous
     /// <seealso cref="Plato.Core.Interfaces.ILogTextFileWriter" />
     public class LogTextFileWriter : ILogTextFileWriter
     {
-        protected ResourceLock _resourceLock;
+        protected ResourceLockAsync _resourceLock;
 
         /// <summary>
         /// Gets the log file path.
@@ -64,7 +64,7 @@ namespace Plato.Core.Miscellaneous
             LogFilePath = MiscHelper.DetermineParameterPath(fileName);
             RecycleNumber = recycleNumber;
             CreateDirectory = forceDirectoryCreation;
-            _resourceLock = new ResourceLock(fileName);
+            _resourceLock = new ResourceLockAsync(fileName);
         }
 
         /// <summary>
@@ -221,8 +221,7 @@ namespace Plato.Core.Miscellaneous
         /// <param name="msg">The MSG.</param>
         public void Write(string msg)
         {
-            _resourceLock.EnterWriteLock();
-            try
+            using (_resourceLock.WriterLock())
             {
                 PerformAutoSaveIfNecessary();
 
@@ -230,10 +229,6 @@ namespace Plato.Core.Miscellaneous
                 {
                     tw.Write(msg);
                 }
-            }
-            finally
-            {
-                _resourceLock.ExitWriteLock();
             }
         }
 
@@ -243,8 +238,7 @@ namespace Plato.Core.Miscellaneous
         /// <param name="msg">The MSG.</param>
         public void WriteLine(string msg)
         {
-            _resourceLock.EnterWriteLock();
-            try
+            using (_resourceLock.WriterLock())
             {
                 PerformAutoSaveIfNecessary();
 
@@ -252,10 +246,6 @@ namespace Plato.Core.Miscellaneous
                 {
                     tw.WriteLine(msg);
                 }
-            }
-            finally
-            {
-                _resourceLock.ExitWriteLock();
             }
         }
     }

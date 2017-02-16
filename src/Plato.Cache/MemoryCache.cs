@@ -324,6 +324,30 @@ namespace Plato.Cache
             return Task.FromResult(result);
         }
 
+        private CacheNode GetCachedNode(string name, bool bSlidingTimeWindow = false)
+        {
+            lock (this)
+            {
+                PurgeExpiredItems();
+
+                var node = GetNode(name);
+                if(node != null)
+                {
+                    if (node.KeepAlive != TimeSpan.Zero && DateTime.Now.Subtract(node.CachedDateTime) > node.KeepAlive)
+                    {
+                        Remove(name);
+                        node = null;
+                    }
+                    else if (bSlidingTimeWindow)
+                    {
+                        node.ResetCachedDateTime();
+                    }
+                }
+
+                return node;
+            }
+        }
+
         /// <summary>
         /// Gets the specified name.
         /// </summary>
@@ -337,22 +361,11 @@ namespace Plato.Cache
             {
                 PurgeExpiredItems();
 
-                var node = GetNode(name);
+                var node = GetCachedNode(name);
                 if (node == null)
                 {
                     return default(T);
-                }
-                
-                if (node.KeepAlive != TimeSpan.Zero && DateTime.Now.Subtract(node.CachedDateTime) > node.KeepAlive)
-                {
-                    Remove(name);
-                    return default(T);
-                }
-
-                if (bSlidingTimeWindow)
-                {
-                    node.ResetCachedDateTime();
-                }
+                }                
 
                 return (T)node.Data;
             }
@@ -385,31 +398,26 @@ namespace Plato.Cache
         {
             Guard.AgainstNull(() => callback);
 
-            var result = Get<T>(name, bSlidingTimeWindow);
-            if (result == null)
+            var node = GetCachedNode(name, bSlidingTimeWindow);
+            if(node == null)
             {
-                using (var rLock = new ResourceLock(name))
+                using (var rLock = new ResourceLockAsync(name))
                 {
-                    rLock.EnterWriteLock();
-                    try
+                    using (rLock.ReaderLock())
                     {
-                        result = Get<T>(name);
-                        if (result == null)
+                        node = GetCachedNode(name, bSlidingTimeWindow);
+                        if (node == null)
                         {
                             var cData = callback(name, args);
                             Set(name, cData.NewCacheData, cData.KeepAlive);
 
-                            result = (T)cData.NewCacheData;
+                            return (T)cData.NewCacheData;
                         }
-                    }
-                    finally
-                    {
-                        rLock.ExitWriteLock();
                     }
                 }
             }
 
-            return result;
+            return (T)node.Data;
         }
 
         /// <summary>
@@ -424,32 +432,27 @@ namespace Plato.Cache
         public async Task<T> GetAsync<T>(string name, bool bSlidingTimeWindow, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
         {
             Guard.AgainstNull(() => callbackAsync);
-
-            var result = Get<T>(name, bSlidingTimeWindow);
-            if (result == null)
+            
+            var node = GetCachedNode(name, bSlidingTimeWindow);
+            if (node == null)
             {
-                using (var rLock = new ResourceLock(name))
+                using (var rLock = new ResourceLockAsync(name))
                 {
-                    rLock.EnterWriteLock();
-                    try
+                    using (await rLock.WriterLockAsync())
                     {
-                        result = Get<T>(name);
-                        if (result == null)
+                        node = GetCachedNode(name, bSlidingTimeWindow);
+                        if (node == null)
                         {
                             var cData = await callbackAsync(name, args);
                             Set(name, cData.NewCacheData, cData.KeepAlive);
 
-                            result = (T)cData.NewCacheData;
+                            return (T)cData.NewCacheData;
                         }
-                    }
-                    finally
-                    {
-                        rLock.ExitWriteLock();
                     }
                 }
             }
 
-            return result;
+            return (T)node.Data;
         }
 
         /// <summary>
@@ -473,9 +476,9 @@ namespace Plato.Cache
         /// <param name="callbackAsync">The callback asynchronous.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        public async Task<T> GetAsync<T>(string name, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
+        public Task<T> GetAsync<T>(string name, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
         {
-            return await GetAsync<T>(name, false, callbackAsync, args);
+            return GetAsync<T>(name, false, callbackAsync, args);
         }
 
         /// <summary>

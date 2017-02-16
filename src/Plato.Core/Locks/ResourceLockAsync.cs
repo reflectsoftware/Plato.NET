@@ -2,6 +2,7 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Nito.AsyncEx;
 using Plato.Core.Locks.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,10 @@ using System.Threading;
 namespace Plato.Core.Locks
 {
     /// <summary>
-    ///
+    /// https://github.com/StephenCleary/AsyncEx/wiki/AsyncReaderWriterLock
     /// </summary>
-    /// <seealso cref="Plato.Core.Locks.Interfaces.IResourceLock"/>
-    public class ResourceLock : IResourceLock
+    /// <seealso cref="Plato.Core.Locks.Interfaces.IResourceLockAsync"/>
+    public class ResourceLockAsync : IResourceLockAsync
     {
         private class ResourceLockInfo : IDisposable
         {
@@ -28,7 +29,7 @@ namespace Plato.Core.Locks
             /// <value>
             /// The lock.
             /// </value>
-            public ReaderWriterLockSlim Lock { get; set; }
+            public AsyncReaderWriterLock Lock { get; set; }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="ResourceLockInfo"/> class.
@@ -52,7 +53,6 @@ namespace Plato.Core.Locks
                         Disposed = true;
                         GC.SuppressFinalize(this);
 
-                        Lock?.Dispose();
                         Lock = null;
                     }
                 }
@@ -99,7 +99,7 @@ namespace Plato.Core.Locks
         }
 
         private static Dictionary<string, ResourceLockInfo> _resources { get; set; }
-        private static ReaderWriterLockSlim _resourcesLock { get; set; }
+        private static AsyncReaderWriterLock _resourcesLock { get; set; }
         private ResourceLockInfo _lockInfo { get; set; }
 
         /// <summary>
@@ -119,19 +119,19 @@ namespace Plato.Core.Locks
         public string Name { get; private set; }
 
         /// <summary>
-        /// Initializes the <see cref="ResourceLock"/> class.
+        /// Initializes the <see cref="ResourceLockAsync"/> class.
         /// </summary>
-        static ResourceLock()
+        static ResourceLockAsync()
         {
             _resources = new Dictionary<string, ResourceLockInfo>();
-            _resourcesLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+            _resourcesLock = new AsyncReaderWriterLock();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResourceLock"/> class.
+        /// Initializes a new instance of the <see cref="ResourceLockAsync"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        public ResourceLock(string name)
+        public ResourceLockAsync(string name)
         {
             Disposed = false;
             Name = name;
@@ -161,8 +161,7 @@ namespace Plato.Core.Locks
         /// <returns></returns>
         private static ResourceLockInfo GetLockInfo(string nameKey)
         {
-            _resourcesLock.EnterReadLock();
-            try
+            using (_resourcesLock.ReaderLock())
             {
                 if (_resources.ContainsKey(nameKey))
                 {
@@ -172,13 +171,8 @@ namespace Plato.Core.Locks
                     return lockInfo;
                 }
             }
-            finally
-            {
-                _resourcesLock.ExitReadLock();
-            }
-            
-            _resourcesLock.EnterWriteLock();
-            try
+
+            using (_resourcesLock.WriterLock())
             {
                 ResourceLockInfo lockInfo;
 
@@ -190,16 +184,12 @@ namespace Plato.Core.Locks
                     return lockInfo;
                 }
 
-                lockInfo = new ResourceLockInfo(nameKey) { Lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion) };
+                lockInfo = new ResourceLockInfo(nameKey) { Lock = new AsyncReaderWriterLock() };
                 lockInfo.IncrementReferenceCount();
 
                 _resources.Add(nameKey, lockInfo);
 
                 return lockInfo;
-            }
-            finally
-            {
-                _resourcesLock.ExitWriteLock();
             }
         }
 
@@ -209,8 +199,7 @@ namespace Plato.Core.Locks
         /// <param name="lockInfo">The lock information.</param>
         private static void DisposeLock(ResourceLockInfo lockInfo)
         {
-            _resourcesLock.EnterWriteLock();
-            try
+            using (_resourcesLock.WriterLock())
             {
                 lockInfo.DecrementReferenceCount();
                 if (lockInfo.CanDispose())
@@ -219,42 +208,81 @@ namespace Plato.Core.Locks
                     lockInfo.Dispose();
                 }
             }
-            finally
-            {
-                _resourcesLock.ExitWriteLock();
-            }
         }
 
         /// <summary>
-        /// Enters the read lock.
+        /// Readers the lock.
         /// </summary>
-        public void EnterReadLock()
+        /// <returns></returns>
+        public IDisposable ReaderLock()
         {
-            _lockInfo.Lock.EnterReadLock();
+            return _lockInfo.Lock.ReaderLock();
+        }
+        /// <summary>
+        /// Readers the lock.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public IDisposable ReaderLock(CancellationToken cancellationToken)
+        {
+            return _lockInfo.Lock.ReaderLock(cancellationToken);
         }
 
         /// <summary>
-        /// Exits the read lock.
+        /// Writers the lock.
         /// </summary>
-        public void ExitReadLock()
+        /// <returns></returns>
+        public IDisposable WriterLock()
         {
-            _lockInfo.Lock.ExitReadLock();
+            return _lockInfo.Lock.WriterLock();
         }
 
         /// <summary>
-        /// Enters the write lock.
+        /// Writers the lock.
         /// </summary>
-        public void EnterWriteLock()
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public IDisposable WriterLock(CancellationToken cancellationToken)
         {
-            _lockInfo.Lock.EnterWriteLock();
+            return _lockInfo.Lock.WriterLock(cancellationToken);
+        }
+        
+        /// <summary>
+        /// Readers the lock asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public AwaitableDisposable<IDisposable> ReaderLockAsync()
+        {
+            return _lockInfo.Lock.ReaderLockAsync();
         }
 
         /// <summary>
-        /// Exits the write lock.
+        /// Readers the lock asynchronous.
         /// </summary>
-        public void ExitWriteLock()
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public AwaitableDisposable<IDisposable> ReaderLockAsync(CancellationToken cancellationToken)
         {
-            _lockInfo.Lock.ExitWriteLock();
+            return _lockInfo.Lock.ReaderLockAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Writers the lock asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public AwaitableDisposable<IDisposable> WriterLockAsync()
+        {
+            return _lockInfo.Lock.WriterLockAsync();
+        }
+
+        /// <summary>
+        /// Writers the lock asynchronous.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public AwaitableDisposable<IDisposable> WriterLockAsync(CancellationToken cancellationToken)
+        {
+            return _lockInfo.Lock.WriterLockAsync(cancellationToken);
         }
     }
 }
