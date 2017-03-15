@@ -7,6 +7,11 @@
     /// <typeparam name="T2">The type of the 2.</typeparam>
     public interface IMapper<T1, T2>
     {
-        T2 Map(T1 source, T2 target);
+        /// <summary>
+        /// Maps the specified source.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="target">The target.</param>
+        void Map(T1 source, T2 target);
     }
 }
