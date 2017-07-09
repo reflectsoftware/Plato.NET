@@ -6,6 +6,7 @@ using Plato.Messaging.AMQ.Interfaces;
 using Plato.Messaging.AMQ.Settings;
 using Plato.Messaging.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace Plato.Messaging.AMQ
 {
@@ -34,6 +35,20 @@ namespace Plato.Messaging.AMQ
         public void Send(byte[] data, Action<ISenderProperties> action = null)
         {
             Send(action, (session) =>
+            {
+                return session.CreateBytesMessage(data);
+            });
+        }
+
+        /// <summary>
+        /// Sends the asynchronous.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="action">The action.</param>
+        /// <returns></returns>
+        public async Task SendAsync(byte[] data, Action<ISenderProperties> action = null)
+        {
+            await SendAsync(action, (session) =>
             {
                 return session.CreateBytesMessage(data);
             });

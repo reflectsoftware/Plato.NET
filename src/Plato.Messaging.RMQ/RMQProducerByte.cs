@@ -6,6 +6,7 @@ using Plato.Messaging.RMQ.Interfaces;
 using Plato.Messaging.RMQ.Settings;
 using Plato.Messaging.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace Plato.Messaging.RMQ
 {
@@ -38,6 +39,18 @@ namespace Plato.Messaging.RMQ
         public void Send(byte[] data, Action<ISenderProperties> action = null)
         {
             _Send(data, action);
+        }
+
+        /// <summary>
+        /// Sends the asynchronous.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="action">The action.</param>
+        /// <returns></returns>
+        public Task SendAsync(byte[] data, Action<ISenderProperties> action = null)
+        {
+            _Send(data, action);
+            return Task.CompletedTask;
         }
     }
 }

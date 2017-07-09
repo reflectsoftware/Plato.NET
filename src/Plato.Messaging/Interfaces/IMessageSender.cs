@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using System;
+using System.Threading.Tasks;
 
 namespace Plato.Messaging.Interfaces
 {
@@ -18,5 +19,13 @@ namespace Plato.Messaging.Interfaces
         /// <param name="data">The data.</param>
         /// <param name="action">The action.</param>
         void Send(TData data, Action<ISenderProperties> action = null);
+
+        /// <summary>
+        /// Sends the asynchronous.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="action">The action.</param>
+        /// <returns></returns>
+        Task SendAsync(TData data, Action<ISenderProperties> action = null);
     }
 }

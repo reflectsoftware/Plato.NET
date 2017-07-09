@@ -122,6 +122,7 @@ namespace Plato.Messaging.RMQ
             var settings = new RMQConnectionSettings()
             {
                 Protocol = Protocols.DefaultProtocol,
+                Name = StringHelper.IfNullOrEmptyUseDefault(attributes["name"], string.Empty),
                 Username = StringHelper.IfNullOrEmptyUseDefault(attributes["username"], string.Empty),
                 Password = StringHelper.IfNullOrEmptyUseDefault(attributes["password"], string.Empty),
                 VirtualHost = StringHelper.IfNullOrEmptyUseDefault(attributes["virtualhost"], string.Empty),

@@ -5,6 +5,7 @@
 using Apache.NMS;
 using Plato.Messaging.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace Plato.Messaging.AMQ.Interfaces
 {
@@ -16,5 +17,13 @@ namespace Plato.Messaging.AMQ.Interfaces
         /// <param name="action">The action.</param>
         /// <param name="createMessage">The create message.</param>
         void Send(Action<ISenderProperties> action, Func<ISession, IMessage> createMessage);
+
+        /// <summary>
+        /// Sends the asynchronous.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="createMessage">The create message.</param>
+        /// <returns></returns>
+        Task SendAsync(Action<ISenderProperties> action, Func<ISession, IMessage> createMessage);
     }
 }

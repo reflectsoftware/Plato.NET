@@ -10,6 +10,7 @@ using Plato.Messaging.Interfaces;
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Plato.Messaging.AMQ
 {
@@ -108,6 +109,18 @@ namespace Plato.Messaging.AMQ
                     throw;
                 }
             }
+        }
+
+        /// <summary>
+        /// Sends the asynchronous.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="createMessage">The create message.</param>
+        /// <returns></returns>
+        public Task SendAsync(Action<ISenderProperties> action, Func<ISession, IMessage> createMessage)
+        {
+            Send(action, createMessage);
+            return Task.CompletedTask;
         }
     }
 }

@@ -6,6 +6,7 @@ using Plato.Messaging.AMQ.Interfaces;
 using Plato.Messaging.AMQ.Settings;
 using Plato.Messaging.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace Plato.Messaging.AMQ
 {
@@ -34,6 +35,14 @@ namespace Plato.Messaging.AMQ
         public void Send(string text, Action<ISenderProperties> action = null)
         {
             Send(action, (session) =>
+            {
+                return session.CreateTextMessage(text);
+            });
+        }
+
+        public async Task SendAsync(string text, Action<ISenderProperties> action = null)
+        {
+            await SendAsync(action, (session) =>
             {
                 return session.CreateTextMessage(text);
             });

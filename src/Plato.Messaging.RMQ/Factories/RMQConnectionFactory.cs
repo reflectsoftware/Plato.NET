@@ -45,7 +45,7 @@ namespace Plato.Messaging.RMQ.Factories
                 try
                 {
                     var connectionFactory = new ConnectionFactory()
-                    {
+                    {                        
                         UserName = settings.Username,
                         Password = settings.Password,
                         VirtualHost = settings.VirtualHost,
