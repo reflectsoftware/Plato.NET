@@ -128,6 +128,7 @@ namespace Plato.Messaging.RMQ
                 VirtualHost = StringHelper.IfNullOrEmptyUseDefault(attributes["virtualhost"], string.Empty),
                 DelayOnReconnect = int.Parse(StringHelper.IfNullOrEmptyUseDefault(attributes["delayOnReconnect"], "1000")),
                 Uri = StringHelper.IfNullOrEmptyUseDefault(attributes["uri"], "amqp://localhost:5672"),
+                ForceReconnectionTime = TimeSpan.FromMinutes(int.Parse(StringHelper.IfNullOrEmptyUseDefault(attributes["forceReconnectionTime"], "0")))
             };
 
             foreach (var uri in settings.Uri.Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))

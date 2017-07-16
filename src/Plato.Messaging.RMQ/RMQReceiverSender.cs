@@ -14,12 +14,13 @@ namespace Plato.Messaging.RMQ
     public abstract class RMQReceiverSender : IMessageReceiverSender
     {
         protected static TimeoutException _TimeoutException;
-
+        
         protected readonly IRMQConnectionFactory _connectionFactory;
         protected readonly RMQConnectionSettings _connectionSettings;
         protected IConnection _connection;
         protected IModel _channel;
-
+        protected DateTime _lastConnectionDateTime;
+        
         public bool Disposed { get; private set; }
 
         /// <summary>
@@ -38,11 +39,15 @@ namespace Plato.Messaging.RMQ
         public RMQReceiverSender(IRMQConnectionFactory connectionFactory, RMQConnectionSettings connectionSettings)
         {
             Disposed = false;
+            _lastConnectionDateTime = DateTime.MinValue;
             _connectionFactory = connectionFactory;
             _connectionSettings = connectionSettings;
             _channel = null;            
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="RMQReceiverSender"/> class.
+        /// </summary>
         ~RMQReceiverSender()
         {
             Dispose(false);
@@ -68,6 +73,23 @@ namespace Plato.Messaging.RMQ
         public void Dispose()
         {
             Dispose(true);
+        }
+
+        /// <summary>
+        /// Forces the reconnection.
+        /// </summary>
+        protected void ForceReconnection()
+        {
+            if(_connectionSettings.ForceReconnectionTime == TimeSpan.Zero)
+            {
+                return;
+            }
+
+            if (DateTime.Now.Subtract(_lastConnectionDateTime) > _connectionSettings.ForceReconnectionTime)
+            {
+                Close();
+                _lastConnectionDateTime = DateTime.Now;
+            }
         }
 
         /// <summary>
@@ -158,6 +180,8 @@ namespace Plato.Messaging.RMQ
         /// <returns></returns>
         public virtual bool IsOpen()
         {
+            ForceReconnection();
+
             return _channel != null && _channel.IsOpen;
         }
 

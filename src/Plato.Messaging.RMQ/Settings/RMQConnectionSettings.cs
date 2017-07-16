@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using RabbitMQ.Client;
+using System;
 using System.Collections.Generic;
 
 namespace Plato.Messaging.RMQ.Settings
@@ -32,6 +33,7 @@ namespace Plato.Messaging.RMQ.Settings
         {
             ActiveEndpointIndex = 0;
             Endpoints = new List<string>();
+            ForceReconnectionTime = TimeSpan.Zero;
         }
 
         /// <summary>
@@ -90,5 +92,13 @@ namespace Plato.Messaging.RMQ.Settings
         /// The delay on reconnect.
         /// </value>
         public int DelayOnReconnect { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reestablish connection.
+        /// </summary>
+        /// <value>
+        /// The reestablish connection.
+        /// </value>
+        public TimeSpan ForceReconnectionTime { get; set; }
     }
 }

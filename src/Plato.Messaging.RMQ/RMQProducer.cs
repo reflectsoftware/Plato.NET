@@ -2,10 +2,9 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using Plato.Messaging.Exceptions;
+using Plato.Messaging.Interfaces;
 using Plato.Messaging.RMQ.Interfaces;
 using Plato.Messaging.RMQ.Settings;
-using Plato.Messaging.Interfaces;
 using RabbitMQ.Client.Exceptions;
 using System;
 using System.IO;
@@ -55,10 +54,7 @@ namespace Plato.Messaging.RMQ
                         Mandatory = false,
                     };
 
-                    if (action != null)
-                    {
-                        action(senderProperties);
-                    }
+                    action?.Invoke(senderProperties);
 
                     _channel.BasicPublish(
                         string.Empty,

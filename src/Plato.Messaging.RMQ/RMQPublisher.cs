@@ -63,6 +63,19 @@ namespace Plato.Messaging.RMQ
         }
 
         /// <summary>
+        /// Closes this instance.
+        /// </summary>
+        public override void Close()
+        {
+            if (_channel != null)
+            {
+                _channel.BasicReturn -= DoOnReturn;
+            }
+
+            base.Close();
+        }
+
+        /// <summary>
         /// Sends the specified data.
         /// </summary>
         /// <param name="data">The data.</param>
@@ -78,7 +91,6 @@ namespace Plato.Messaging.RMQ
 
                 try
                 {
-
                     var senderProperties = new RMQSenderProperties()
                     {
                         Properties = null,
@@ -87,10 +99,7 @@ namespace Plato.Messaging.RMQ
                         Mandatory = false,
                     };
 
-                    if (action != null)
-                    {
-                        action(senderProperties);
-                    }
+                    action?.Invoke(senderProperties);
 
                     _channel.BasicPublish(
                         senderProperties.Exchange,
