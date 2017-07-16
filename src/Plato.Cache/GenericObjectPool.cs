@@ -2,7 +2,6 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using Plato.Core;
 using Plato.Core.Miscellaneous;
 using System;
 using System.Collections.Generic;
@@ -15,12 +14,14 @@ namespace Plato.Cache
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="System.IDisposable"/>
-    public abstract class GenericObjectPool<T> : IDisposable where T: class
+    public abstract class GenericObjectPool<T, TData> : IDisposable where T: class
     {
         private Stack<T> _objectPool;
         private Semaphore _poolSemaphore;
         private long _totalPoolSize;
         private long _availablePoolObjects;
+
+        protected TData Data { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="GenericObjectPool{T}"/> is disposed.
@@ -59,7 +60,7 @@ namespace Plato.Cache
         /// </summary>
         /// <param name="initialPoolSize">Initial size of the pool.</param>
         /// <param name="maxGrowSize">Maximum size of the grow.</param>
-        public GenericObjectPool(int initialPoolSize, int maxGrowSize)
+        public GenericObjectPool(int initialPoolSize, int maxGrowSize, TData data = default(TData))
         {
             _totalPoolSize = 0;
             _availablePoolObjects = 0;
@@ -68,9 +69,10 @@ namespace Plato.Cache
             Disposed = false;
             InitialPoolSize = initialPoolSize;
             MaxGrowSize = maxGrowSize;
+            Data = data;
             _poolSemaphore = new Semaphore(0, maxGrowSize);
 
-            Initialize();
+            Initialize(Data);
             CreateInitialPoolSet();
         }
 
@@ -137,7 +139,8 @@ namespace Plato.Cache
         /// <summary>
         /// Initializes this instance.
         /// </summary>
-        protected virtual void Initialize()
+        /// <param name="data">The data.</param>
+        protected virtual void Initialize(TData data)
         {            
         }
 
@@ -312,9 +315,9 @@ namespace Plato.Cache
         /// Containers this instance.
         /// </summary>
         /// <returns></returns>
-        public PoolInstance<T> Container()
+        public PoolInstance<T, TData> Container()
         {
-            return new PoolInstance<T>(this);
+            return new PoolInstance<T, TData>(this);
         }
 
         /// <summary>

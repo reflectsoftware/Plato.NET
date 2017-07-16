@@ -13,7 +13,7 @@ namespace Plato.Serializers.FormatterPools
     ///
     /// </summary>
     /// <seealso cref="Plato.Cache.GenericObjectPool{Plato.Serializers.FastBinaryFormatter}"/>
-    public class FastFormatterPool : GenericObjectPool<FastBinaryFormatter>
+    public class FastFormatterPool : GenericObjectPool<FastBinaryFormatter, object>
     {
         /// <summary>
         /// Gets the pool.

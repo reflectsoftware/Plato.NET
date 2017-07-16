@@ -11,7 +11,7 @@ namespace Plato.Cache
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="System.IDisposable"/>
-    public class PoolInstance<T> : IDisposable where T: class
+    public class PoolInstance<T, TData> : IDisposable where T: class
     {
         /// <summary>
         /// Gets a value indicating whether this <see cref="PoolInstance{T}"/> is disposed.
@@ -34,13 +34,13 @@ namespace Plato.Cache
         /// <value>
         /// The pool.
         /// </value>
-        public GenericObjectPool<T> Pool { get; private set; }
+        public GenericObjectPool<T, TData> Pool { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PoolInstance{T}"/> class.
         /// </summary>
         /// <param name="pool">The pool.</param>
-        internal PoolInstance(GenericObjectPool<T> pool)
+        internal PoolInstance(GenericObjectPool<T, TData> pool)
         {
             Pool = pool;
             Instance = Pool.Take();
