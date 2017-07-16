@@ -30,10 +30,13 @@ namespace Plato.Messaging.RMQ.Settings
         public List<string> Endpoints { get; private set; }
 
         public RMQConnectionSettings()
-        {
-            ActiveEndpointIndex = 0;
-            Endpoints = new List<string>();
+        {            
+            Name = "default";            
             ForceReconnectionTime = TimeSpan.Zero;
+            DelayOnReconnect = 1000;
+            Protocol = Protocols.DefaultProtocol;
+            Endpoints = new List<string>();
+            ActiveEndpointIndex = 0;
         }
 
         /// <summary>

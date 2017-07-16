@@ -52,7 +52,11 @@ namespace Plato.Messaging.RMQ
         {
             Dispose(false);
         }
-        
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             lock (this)
@@ -185,6 +189,9 @@ namespace Plato.Messaging.RMQ
             return _channel != null && _channel.IsOpen;
         }
 
+        /// <summary>
+        /// Opens this instance.
+        /// </summary>
         public virtual void Open()
         {
             if (IsOpen())
