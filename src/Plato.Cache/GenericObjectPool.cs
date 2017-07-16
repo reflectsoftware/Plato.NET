@@ -70,6 +70,7 @@ namespace Plato.Cache
             MaxGrowSize = maxGrowSize;
             _poolSemaphore = new Semaphore(0, maxGrowSize);
 
+            Initialize();
             CreateInitialPoolSet();
         }
 
@@ -94,18 +95,12 @@ namespace Plato.Cache
                     Disposed = true;
                     GC.SuppressFinalize(this);
 
-                    if (_objectPool != null)
-                    {
-                        Clear();
-                        _objectPool = null;
-                    }
+                    Clear();
+                    _objectPool = null;
 
-                    if (_poolSemaphore != null)
-                    {
-                        _poolSemaphore.Close();
-                        _poolSemaphore.Dispose();
-                        _poolSemaphore = null;
-                    }
+                    _poolSemaphore?.Close();
+                    _poolSemaphore?.Dispose();
+                    _poolSemaphore = null;
                 }
             }
         }
@@ -125,15 +120,25 @@ namespace Plato.Cache
         {
             lock (this)
             {
-                foreach (T poolObject in _objectPool)
+                if (_objectPool != null)
                 {
-                    MiscHelper.DisposeObject(poolObject);
-                }
+                    foreach (T poolObject in _objectPool)
+                    {
+                        MiscHelper.DisposeObject(poolObject);
+                    }
 
-                _objectPool.Clear();
-                Interlocked.Add(ref _totalPoolSize, -_totalPoolSize);
-                Interlocked.Add(ref _availablePoolObjects, -_availablePoolObjects);
+                    _objectPool.Clear();
+                    Interlocked.Add(ref _totalPoolSize, -_totalPoolSize);
+                    Interlocked.Add(ref _availablePoolObjects, -_availablePoolObjects);
+                }
             }
+        }
+
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        protected virtual void Initialize()
+        {            
         }
 
         /// <summary>
