@@ -15,7 +15,7 @@ namespace Plato.Redis.Interfaces
     /// <seealso cref="System.Collections.IEnumerable" />
     /// <seealso cref="System.Collections.ICollection" />
     /// <seealso cref="System.Collections.Generic.IReadOnlyCollection{T}" />
-    public interface IRedisStack<T> : IRedisControl, IEnumerable<T>, IEnumerable, ICollection, IReadOnlyCollection<T>
+    public interface IRedisStack<T> : IEnumerable<T>, IEnumerable, ICollection, IReadOnlyCollection<T>
     {
         /// <summary>
         /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.

@@ -16,16 +16,19 @@ namespace Plato.Redis.Collections
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Plato.Redis.Interfaces.IRedisQueue{T}" />
-    public class RedisQueue<T> : RedisControl, IRedisQueue<T>
+    public class RedisQueue<T> : IRedisCollection, IRedisQueue<T>
     {
+        public IDatabase RedisDb => _redisList.RedisDb;
+        public string RedisKey => _redisList.RedisKey;
+
         private readonly RedisList<T> _redisList;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisQueue{T}"/> class.
         /// </summary>
         /// <param name="redisDb">The redis database.</param>
-        /// <param name="redisKey">The redis key.</param>
-        public RedisQueue(IDatabase redisDb, string redisKey) : base(redisDb, redisKey)
+        /// <param name="_redisKey">The redis key.</param>
+        public RedisQueue(IDatabase redisDb, string redisKey) 
         {
             _redisList = new RedisList<T>(redisDb, redisKey);
         }

@@ -14,18 +14,22 @@ namespace Plato.Redis.Collections
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Plato.Redis.RedisControl" />
+    /// <typeparam name="T"></typeparam>    
     /// <seealso cref="Plato.Redis.Interfaces.IRedisList{T}" />
-    public class RedisList<T> : RedisControl, IRedisList<T>
+    public class RedisList<T> : IRedisCollection, IRedisList<T>
     {
+        public IDatabase RedisDb { get; private set; }
+        public string RedisKey { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisList{T}" /> class.
         /// </summary>
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The key.</param>
-        public RedisList(IDatabase redisDb, string redisKey) : base(redisDb, redisKey)
-        {
+        public RedisList(IDatabase redisDb, string redisKey) 
+        {            
+            RedisDb = redisDb;
+            RedisKey = redisKey;
         }
 
         /// <summary>

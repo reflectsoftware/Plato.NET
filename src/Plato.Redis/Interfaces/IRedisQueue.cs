@@ -11,12 +11,11 @@ namespace Plato.Redis.Interfaces
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Plato.Redis.Interfaces.IRedisControl" />
     /// <seealso cref="System.Collections.Generic.IEnumerable{T}" />
     /// <seealso cref="System.Collections.IEnumerable" />
     /// <seealso cref="System.Collections.ICollection" />
     /// <seealso cref="System.Collections.Generic.IReadOnlyCollection{T}" />
-    public interface IRedisQueue<T> : IRedisControl, IEnumerable<T>, IEnumerable, ICollection, IReadOnlyCollection<T>
+    public interface IRedisQueue<T> : IEnumerable<T>, IEnumerable, ICollection, IReadOnlyCollection<T>
     {
         /// <summary>
         /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1"/>.

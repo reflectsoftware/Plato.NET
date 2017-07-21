@@ -2,16 +2,17 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using System.Collections.Generic;
+using StackExchange.Redis;
 
 namespace Plato.Redis.Interfaces
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <seealso cref="System.Collections.Generic.IList{T}" />
-    public interface IRedisList<T> : IList<T>
+    public interface IRedisCollection
     {
+        IDatabase RedisDb { get; }
+        string RedisKey { get; }
+
     }
 }

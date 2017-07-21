@@ -51,15 +51,14 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Interfaces\IRedisDictionary.cs" />
+    <Compile Include="Interfaces\IRedisCollection.cs" />
     <Compile Include="Interfaces\IRedisList.cs" />
-    <Compile Include="RedisControl.cs" />
     <Compile Include="Collections\RedisDictionary.cs" />
     <Compile Include="Collections\RedisList.cs" />
     <Compile Include="Collections\RedisQueue.cs" />
     <Compile Include="Collections\RedisStack.cs" />
     <Compile Include="ConnectionMultiplexerFactory.cs" />
     <Compile Include="Interfaces\IConnectionMultiplexerFactory.cs" />
-    <Compile Include="Interfaces\IRedisControl.cs" />
     <Compile Include="Interfaces\IRedisQueue.cs" />
     <Compile Include="Interfaces\IRedisStack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

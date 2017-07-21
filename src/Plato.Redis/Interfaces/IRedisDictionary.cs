@@ -12,10 +12,9 @@ namespace Plato.Redis.Interfaces
     /// 
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
-    /// <seealso cref="Plato.Redis.Interfaces.IRedisControl" />
+    /// <typeparam name="TValue">The type of the value.</typeparam>    
     /// <seealso cref="System.Collections.Generic.IDictionary{TKey, TValue}" />
-    public interface IRedisDictionary<TKey, TValue> : IRedisControl, IDictionary<TKey, TValue>
+    public interface IRedisDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         /// <summary>
         /// Gets the or add.

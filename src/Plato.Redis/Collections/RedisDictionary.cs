@@ -17,18 +17,22 @@ namespace Plato.Redis.Collections
     /// 
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
-    /// <seealso cref="Plato.Redis.RedisControl" />
+    /// <typeparam name="TValue">The type of the value.</typeparam>    
     /// <seealso cref="Plato.Redis.Interfaces.IRedisDictionary{TKey, TValue}" />
-    public class RedisDictionary<TKey, TValue> : RedisControl, IRedisDictionary<TKey, TValue>
+    public class RedisDictionary<TKey, TValue> : IRedisCollection, IRedisDictionary<TKey, TValue>
     {
+        public IDatabase RedisDb { get; private set; }
+        public string RedisKey { get; private set; }
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="RedisDictionary{TKey, TValue}"/> class.
+        /// Initializes a new instance of the <see cref="RedisDictionary{TKey, TValue}" /> class.
         /// </summary>
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The redis key.</param>
-        public RedisDictionary(IDatabase redisDb, string redisKey) : base(redisDb, redisKey)
+        public RedisDictionary(IDatabase redisDb, string redisKey)
         {
+            RedisDb = redisDb;
+            RedisKey = redisKey;
         }
 
         /// <summary>
@@ -128,8 +132,7 @@ namespace Plato.Redis.Collections
         /// <returns></returns>
         public TValue GetOrAdd(TKey key, Func<TKey,TValue> addFunction)
         {
-            TValue value;
-            if(!TryGetValue(key, out value))
+            if (!TryGetValue(key, out TValue value))
             {
                 value = addFunction(key);
                 Add(key, value);
