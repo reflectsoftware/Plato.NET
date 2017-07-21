@@ -90,6 +90,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Interfaces\ICache.cs" />
     <Compile Include="Interfaces\IMemoryCacheExtension.cs" />
     <Compile Include="Extensions\MemoryCacheExtension.cs" />
     <Compile Include="GenericObjectPool.cs" />
