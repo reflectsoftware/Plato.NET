@@ -132,7 +132,8 @@ namespace Plato.Redis.Collections
         /// <returns></returns>
         public TValue GetOrAdd(TKey key, Func<TKey,TValue> addFunction)
         {
-            if (!TryGetValue(key, out TValue value))
+            TValue value; 
+            if (!TryGetValue(key, out value))
             {
                 value = addFunction(key);
                 Add(key, value);
