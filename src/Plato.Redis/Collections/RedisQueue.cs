@@ -2,7 +2,6 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using Newtonsoft.Json;
 using Plato.Redis.Interfaces;
 using StackExchange.Redis;
 using System;
@@ -15,33 +14,25 @@ namespace Plato.Redis.Collections
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisCollection" />
     /// <seealso cref="Plato.Redis.Interfaces.IRedisQueue{T}" />
     public class RedisQueue<T> : IRedisCollection, IRedisQueue<T>
     {
+        private readonly RedisList<T> _redisList;
+
         public IDatabase RedisDb => _redisList.RedisDb;
         public string RedisKey => _redisList.RedisKey;
 
-        private readonly RedisList<T> _redisList;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="RedisQueue{T}"/> class.
+        /// Initializes a new instance of the <see cref="RedisQueue{T}" /> class.
         /// </summary>
         /// <param name="redisDb">The redis database.</param>
-        /// <param name="_redisKey">The redis key.</param>
-        public RedisQueue(IDatabase redisDb, string redisKey) 
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="serializer">The serializer.</param>
+        public RedisQueue(IDatabase redisDb, string redisKey, IRedisCollectionSerializer<T> serializer = null) 
         {
-            _redisList = new RedisList<T>(redisDb, redisKey);
-        }
-
-        /// <summary>
-        /// De-serializes the specified serialized.
-        /// </summary>
-        /// <param name="serialized">The serialized.</param>
-        /// <returns></returns>
-        protected virtual T Deserialize(string serialized)
-        {
-            return JsonConvert.DeserializeObject<T>(serialized);
-        }
+            _redisList = new RedisList<T>(redisDb, redisKey, serializer);
+        }     
 
         /// <summary>
         /// Gets a value indicating whether access to the <see cref="T:System.Collections.ICollection" /> is synchronized (thread safe).
@@ -114,7 +105,7 @@ namespace Plato.Redis.Collections
         public T Dequeue()
         {
             var value = _redisList.RedisDb.ListLeftPop(_redisList.RedisKey);
-            return value.HasValue ? Deserialize(value.ToString()) : default(T);
+            return value.HasValue ? _redisList.Serializer.Deserialize(value) : default(T);
         }
 
         /// <summary>
@@ -137,7 +128,7 @@ namespace Plato.Redis.Collections
             {
                 if(value.HasValue)
                 {
-                    array.Add(Deserialize(value.ToString()));
+                    array.Add(_redisList.Serializer.Deserialize(value));
                 }
             }
 

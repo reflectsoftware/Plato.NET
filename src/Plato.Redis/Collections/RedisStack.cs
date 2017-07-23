@@ -2,7 +2,6 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using Newtonsoft.Json;
 using Plato.Redis.Interfaces;
 using StackExchange.Redis;
 using System;
@@ -24,33 +23,14 @@ namespace Plato.Redis.Collections
         private readonly RedisList<T> _redisList;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RedisQueue{T}"/> class.
+        /// Initializes a new instance of the <see cref="RedisQueue{T}" /> class.
         /// </summary>
         /// <param name="redisDb">The redis database.</param>
         /// <param name="_redisKey">The redis key.</param>
-        public RedisStack(IDatabase redisDb, string _redisKey) 
+        /// <param name="serializer">The serializer.</param>
+        public RedisStack(IDatabase redisDb, string _redisKey, IRedisCollectionSerializer<T> serializer = null) 
         {
-            _redisList = new RedisList<T>(redisDb, _redisKey);
-        }
-
-        /// <summary>
-        /// Serializes the specified object.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns></returns>
-        protected virtual string Serialize(object obj)
-        {
-            return JsonConvert.SerializeObject(obj);
-        }
-
-        /// <summary>
-        /// De-serializes the specified serialized.
-        /// </summary>
-        /// <param name="serialized">The serialized.</param>
-        /// <returns></returns>
-        protected virtual T Deserialize(string serialized)
-        {
-            return JsonConvert.DeserializeObject<T>(serialized);
+            _redisList = new RedisList<T>(redisDb, _redisKey, serializer);
         }
 
         /// <summary>
@@ -114,7 +94,7 @@ namespace Plato.Redis.Collections
         /// <param name="item">The item.</param>
         public void Push(T item)
         {
-            _redisList.RedisDb.ListLeftPush(_redisList.RedisKey, Serialize(item));
+            _redisList.RedisDb.ListLeftPush(_redisList.RedisKey, _redisList.Serializer.Serialize(item));
         }
 
         /// <summary>
@@ -124,7 +104,7 @@ namespace Plato.Redis.Collections
         public T Pop()
         {
             var value = _redisList.RedisDb.ListLeftPop(_redisList.RedisKey);
-            return value.HasValue ? Deserialize(value.ToString()) : default(T);
+            return value.HasValue ? _redisList.Serializer.Deserialize(value) : default(T);
         }
 
         /// <summary>
@@ -147,7 +127,7 @@ namespace Plato.Redis.Collections
             {
                 if(value.HasValue)
                 {
-                    array.Add(Deserialize(value.ToString()));
+                    array.Add(_redisList.Serializer.Deserialize(value));
                 }
             }
 

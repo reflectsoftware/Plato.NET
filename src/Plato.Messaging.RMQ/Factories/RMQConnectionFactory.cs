@@ -50,7 +50,7 @@ namespace Plato.Messaging.RMQ.Factories
                         Password = settings.Password,
                         VirtualHost = settings.VirtualHost,
                         Protocol = settings.Protocol,
-                        Uri = settings.Endpoints[settings.ActiveEndpointIndex]
+                        Uri = new Uri(settings.Endpoints[settings.ActiveEndpointIndex]),
                     };
 
                     var connection = connectionFactory.CreateConnection();

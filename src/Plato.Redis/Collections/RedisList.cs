@@ -2,8 +2,8 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using Newtonsoft.Json;
 using Plato.Redis.Interfaces;
+using Plato.Redis.Serializers;
 using StackExchange.Redis;
 using System;
 using System.Collections;
@@ -14,42 +14,26 @@ namespace Plato.Redis.Collections
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="T"></typeparam>    
+    /// <typeparam name="T"></typeparam>
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisCollection" />
     /// <seealso cref="Plato.Redis.Interfaces.IRedisList{T}" />
     public class RedisList<T> : IRedisCollection, IRedisList<T>
     {
         public IDatabase RedisDb { get; private set; }
         public string RedisKey { get; private set; }
+        public IRedisCollectionSerializer<T> Serializer { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisList{T}" /> class.
         /// </summary>
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The key.</param>
-        public RedisList(IDatabase redisDb, string redisKey) 
-        {            
+        /// <param name="serializer">The serializer.</param>
+        public RedisList(IDatabase redisDb, string redisKey, IRedisCollectionSerializer<T> serializer = null)
+        {
             RedisDb = redisDb;
             RedisKey = redisKey;
-        }
-
-        /// <summary>
-        /// Serializes the specified object.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns></returns>
-        protected virtual string Serialize(object obj)
-        {
-            return JsonConvert.SerializeObject(obj);
-        }
-
-        /// <summary>
-        /// De-serializes the specified serialized.
-        /// </summary>
-        /// <param name="serialized">The serialized.</param>
-        /// <returns></returns>
-        protected virtual T Deserialize(string serialized)
-        {
-            return JsonConvert.DeserializeObject<T>(serialized);
+            Serializer = serializer ?? new JsonRedisCollectionSerializer<T>();
         }
 
         /// <summary>
@@ -62,7 +46,7 @@ namespace Plato.Redis.Collections
             if (RedisDb.ListLength(RedisKey) > index)
             {
                 var before = RedisDb.ListGetByIndex(RedisKey, index);
-                RedisDb.ListInsertBefore(RedisKey, before, Serialize(item));
+                RedisDb.ListInsertBefore(RedisKey, before, Serializer.Serialize(item));
             }
             else
             {
@@ -75,7 +59,7 @@ namespace Plato.Redis.Collections
         /// </summary>
         /// <param name="index">The zero-based index of the item to remove.</param>
         public void RemoveAt(int index)
-        {            
+        {
             var value = RedisDb.ListGetByIndex(RedisKey, index);
             if (!value.IsNull)
             {
@@ -96,11 +80,11 @@ namespace Plato.Redis.Collections
             get
             {
                 var value = RedisDb.ListGetByIndex(RedisKey, index);
-                return value.HasValue ? Deserialize(value.ToString()) : default(T);
+                return value.HasValue ? Serializer.Deserialize(value) : default(T);
             }
             set
             {
-                RedisDb.ListSetByIndex(RedisKey, index, Serialize(value));
+                RedisDb.ListSetByIndex(RedisKey, index, Serializer.Serialize(value));
             }
         }
 
@@ -110,7 +94,7 @@ namespace Plato.Redis.Collections
         /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
         public void Add(T item)
         {
-            RedisDb.ListRightPush(RedisKey, Serialize(item));
+            RedisDb.ListRightPush(RedisKey, Serializer.Serialize(item));
         }
 
         /// <summary>
@@ -133,13 +117,13 @@ namespace Plato.Redis.Collections
             for (int i = 0; i < Count; i++)
             {
                 var value = RedisDb.ListGetByIndex(RedisKey, i);
-                if(!value.HasValue)
+                if (!value.HasValue)
                 {
                     // we reached an are of the list where there are no longer values.
                     break;
                 }
 
-                if(value.ToString().Equals(Serialize(item)))
+                if (value.ToString().Equals(Serializer.Serialize(item)))
                 {
                     return true;
                 }
@@ -156,9 +140,9 @@ namespace Plato.Redis.Collections
         public void CopyTo(T[] array, int index)
         {
             var values = RedisDb.ListRange(RedisKey);
-            for(var i=0; i< values.Length; i++)
+            for (var i = 0; i < values.Length; i++)
             {
-                array[index + i] = values[i].HasValue ? Deserialize(values[i].ToString()) : default(T);
+                array[index + i] = values[i].HasValue ? Serializer.Deserialize(values[i]) : default(T);
             }
         }
 
@@ -174,12 +158,12 @@ namespace Plato.Redis.Collections
             for (int i = 0; i < Count; i++)
             {
                 var value = RedisDb.ListGetByIndex(RedisKey, i);
-                if(!value.HasValue)
+                if (!value.HasValue)
                 {
                     return -1;
                 }
 
-                if (value.ToString().Equals(Serialize(item)))
+                if (value.ToString().Equals(Serializer.Serialize(item)))
                 {
                     return i;
                 }
@@ -216,7 +200,7 @@ namespace Plato.Redis.Collections
         /// </returns>
         public bool Remove(T item)
         {
-            return RedisDb.ListRemove(RedisKey, Serialize(item)) > 0;
+            return RedisDb.ListRemove(RedisKey, Serializer.Serialize(item)) > 0;
         }
 
         /// <summary>
@@ -230,7 +214,7 @@ namespace Plato.Redis.Collections
             for (int i = 0; i < Count; i++)
             {
                 var value = RedisDb.ListGetByIndex(RedisKey, i);
-                yield return value.HasValue ? Deserialize(value.ToString()) : default(T);
+                yield return value.HasValue ? Serializer.Deserialize(value) : default(T);
             }
         }
 
@@ -245,4 +229,5 @@ namespace Plato.Redis.Collections
             return GetEnumerator();
         }
     }
+
 }
