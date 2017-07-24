@@ -53,7 +53,7 @@ namespace Plato.Cache.Interfaces
         /// <param name="name">The name.</param>
         /// <param name="item">The item.</param>
         /// <param name="keepAlive">The keep alive.</param>
-        void Set(string name, object item, TimeSpan keepAlive);
+        void Set(string name, object item, TimeSpan? keepAlive = null);
 
         /// <summary>
         /// Sets the asynchronous.
@@ -62,21 +62,6 @@ namespace Plato.Cache.Interfaces
         /// <param name="item">The item.</param>
         /// <param name="keepAlive">The keep alive.</param>
         /// <returns></returns>
-        Task SetAsync(string name, object item, TimeSpan keepAlive);
-
-        /// <summary>
-        /// Sets the specified name.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="item">The item.</param>
-        void Set(string name, object item);
-
-        /// <summary>
-        /// Sets the asynchronous.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="item">The item.</param>
-        /// <returns></returns>
-        Task SetAsync(string name, object item);
+        Task SetAsync(string name, object item, TimeSpan? keepAlive = null);
     }
 }

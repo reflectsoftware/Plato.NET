@@ -487,16 +487,18 @@ namespace Plato.Cache
         /// <param name="name">The name.</param>
         /// <param name="item">The item.</param>
         /// <param name="keepAlive">The keep alive.</param>
-        public void Set(string name, object item, TimeSpan keepAlive)
+        public void Set(string name, object item, TimeSpan? keepAlive = null)
         {
             lock (this)
             {
                 PurgeExpiredItems();
 
+                keepAlive = keepAlive ?? TimeSpan.Zero;
+
                 var node = GetNode(name);
                 if (node != null && ReferenceEquals(node.Data, item))
                 {
-                    node.KeepAlive = keepAlive;
+                    node.KeepAlive = keepAlive.Value;
                     node.ResetCachedDateTime();
                 }
                 else
@@ -504,7 +506,7 @@ namespace Plato.Cache
                     Remove(name);
 
                     var preName = PrepareObjectName(name);
-                    CacheContainer[preName] = new CacheNode(preName, item, keepAlive);
+                    CacheContainer[preName] = new CacheNode(preName, item, keepAlive.Value);
                 }
             }
         }
@@ -516,31 +518,9 @@ namespace Plato.Cache
         /// <param name="item">The item.</param>
         /// <param name="keepAlive">The keep alive.</param>
         /// <returns></returns>
-        public Task SetAsync(string name, object item, TimeSpan keepAlive)
+        public Task SetAsync(string name, object item, TimeSpan? keepAlive = null)
         {
             Set(name, item, keepAlive);
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Sets the specified name.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="item">The item.</param>
-        public void Set(string name, object item)
-        {
-            Set(name, item, TimeSpan.Zero);
-        }
-
-        /// <summary>
-        /// Sets the asynchronous.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="item">The item.</param>
-        /// <returns></returns>
-        public Task SetAsync(string name, object item)
-        {
-            Set(name, item);
             return Task.CompletedTask;
         }
 

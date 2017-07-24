@@ -20,7 +20,7 @@ namespace Plato.Redis.Collections
     public class RedisList<T> : IRedisCollection, IRedisList<T>
     {
         public IDatabase RedisDb { get; private set; }
-        public string RedisKey { get; private set; }
+        public RedisKey RedisKey { get; private set; }
         public IRedisCollectionSerializer<T> Serializer { get; private set; }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Plato.Redis.Collections
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The key.</param>
         /// <param name="serializer">The serializer.</param>
-        public RedisList(IDatabase redisDb, string redisKey, IRedisCollectionSerializer<T> serializer = null)
+        public RedisList(IDatabase redisDb, RedisKey redisKey, IRedisCollectionSerializer<T> serializer = null)
         {
             RedisDb = redisDb;
             RedisKey = redisKey;

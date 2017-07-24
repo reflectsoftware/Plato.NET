@@ -12,7 +12,6 @@ namespace Plato.Redis.Interfaces
     public interface IRedisCollection
     {
         IDatabase RedisDb { get; }
-        string RedisKey { get; }
-
+        RedisKey RedisKey { get; }
     }
 }
