@@ -6,10 +6,9 @@ namespace Plato.Redis.Serializers
 {
     /// <summary>
     /// 
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Plato.Redis.Interfaces.IRedisCollectionSerializer{T}" />
-    public class JsonRedisCollectionSerializer<T> : IRedisCollectionSerializer<T>
+    /// </summary>    
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisCollectionSerializer" />
+    public class JsonRedisCollectionSerializer : IRedisCollectionSerializer
     {
         /// <summary>
         /// Serializes the specified data.
@@ -24,9 +23,10 @@ namespace Plato.Redis.Serializers
         /// <summary>
         /// Deserializes the specified data.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="data">The data.</param>
         /// <returns></returns>
-        public T Deserialize(RedisValue data)
+        public T Deserialize<T>(RedisValue data)
         {
             return JsonConvert.DeserializeObject<T>(data);
         }

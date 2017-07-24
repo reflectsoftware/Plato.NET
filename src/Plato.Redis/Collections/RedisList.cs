@@ -21,7 +21,7 @@ namespace Plato.Redis.Collections
     {
         public IDatabase RedisDb { get; private set; }
         public RedisKey RedisKey { get; private set; }
-        public IRedisCollectionSerializer<T> Serializer { get; private set; }
+        public IRedisCollectionSerializer Serializer { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisList{T}" /> class.
@@ -29,11 +29,11 @@ namespace Plato.Redis.Collections
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The key.</param>
         /// <param name="serializer">The serializer.</param>
-        public RedisList(IDatabase redisDb, RedisKey redisKey, IRedisCollectionSerializer<T> serializer = null)
+        public RedisList(IDatabase redisDb, RedisKey redisKey, IRedisCollectionSerializer serializer = null)
         {
             RedisDb = redisDb;
             RedisKey = redisKey;
-            Serializer = serializer ?? new JsonRedisCollectionSerializer<T>();
+            Serializer = serializer ?? new JsonRedisCollectionSerializer();
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Plato.Redis.Collections
             get
             {
                 var value = RedisDb.ListGetByIndex(RedisKey, index);
-                return value.HasValue ? Serializer.Deserialize(value) : default(T);
+                return value.HasValue ? Serializer.Deserialize<T>(value) : default(T);
             }
             set
             {
@@ -142,7 +142,7 @@ namespace Plato.Redis.Collections
             var values = RedisDb.ListRange(RedisKey);
             for (var i = 0; i < values.Length; i++)
             {
-                array[index + i] = values[i].HasValue ? Serializer.Deserialize(values[i]) : default(T);
+                array[index + i] = values[i].HasValue ? Serializer.Deserialize<T>(values[i]) : default(T);
             }
         }
 
@@ -214,7 +214,7 @@ namespace Plato.Redis.Collections
             for (int i = 0; i < Count; i++)
             {
                 var value = RedisDb.ListGetByIndex(RedisKey, i);
-                yield return value.HasValue ? Serializer.Deserialize(value) : default(T);
+                yield return value.HasValue ? Serializer.Deserialize<T>(value) : default(T);
             }
         }
 

@@ -24,8 +24,8 @@ namespace Plato.Redis.Collections
     {
         public IDatabase RedisDb { get; private set; }
         public RedisKey RedisKey { get; private set; }
-        public IRedisCollectionSerializer<TValue> ValueSerializer { get; private set; }
-        public IRedisCollectionSerializer<TKey> KeySerializer { get; private set; }
+        public IRedisCollectionSerializer ValueSerializer { get; private set; }
+        public IRedisCollectionSerializer KeySerializer { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisDictionary{TKey, TValue}" /> class.
@@ -33,22 +33,15 @@ namespace Plato.Redis.Collections
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The redis key.</param>
         /// <param name="valueSerializer">The value serializer.</param>
-        public RedisDictionary(IDatabase redisDb, RedisKey redisKey, IRedisCollectionSerializer<TValue> valueSerializer = null)
+        public RedisDictionary(
+            IDatabase redisDb, 
+            RedisKey redisKey,      
+            IRedisCollectionSerializer valueSerializer = null)
         {
             RedisDb = redisDb;
             RedisKey = redisKey;
-            ValueSerializer = valueSerializer ?? new JsonRedisCollectionSerializer<TValue>();
-            KeySerializer = new JsonRedisCollectionSerializer<TKey>();
-        }
-
-        /// <summary>
-        /// Adds an element with the provided key and value to the <see cref="T:System.Collections.Generic.IDictionary`2" />.
-        /// </summary>
-        /// <param name="key">The object to use as the key of the element to add.</param>
-        /// <param name="value">The object to use as the value of the element to add.</param>
-        public void Add(TKey key, TValue value)
-        {
-            RedisDb.HashSet(RedisKey, KeySerializer.Serialize(key), ValueSerializer.Serialize(value));
+            ValueSerializer = valueSerializer ?? new JsonRedisCollectionSerializer();
+            KeySerializer = new JsonRedisCollectionSerializer();            
         }
 
         /// <summary>
@@ -63,6 +56,16 @@ namespace Plato.Redis.Collections
             return RedisDb.HashSet(RedisKey, KeySerializer.Serialize(key), ValueSerializer.Serialize(value), when: when);
         }
 
+        /// <summary>
+        /// Adds an element with the provided key and value to the <see cref="T:System.Collections.Generic.IDictionary`2" />.
+        /// </summary>
+        /// <param name="key">The object to use as the key of the element to add.</param>
+        /// <param name="value">The object to use as the value of the element to add.</param>
+        public void Add(TKey key, TValue value)
+        {
+            Add(key, value, When.Always);            
+        }
+        
         /// <summary>
         /// Determines whether the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key.
         /// </summary>
@@ -104,9 +107,8 @@ namespace Plato.Redis.Collections
                 return false;
             }
 
-            value = ValueSerializer.Deserialize(redisValue);
+            value = ValueSerializer.Deserialize<TValue>(redisValue);
             return true;
-
         }
 
         /// <summary>
@@ -132,7 +134,7 @@ namespace Plato.Redis.Collections
         /// </summary>
         public ICollection<TValue> Values
         {
-            get { return new Collection<TValue>(RedisDb.HashValues(RedisKey).Select(h => ValueSerializer.Deserialize(h)).ToList()); }
+            get { return new Collection<TValue>(RedisDb.HashValues(RedisKey).Select(h => ValueSerializer.Deserialize<TValue>(h)).ToList()); }
         }
 
         /// <summary>
@@ -140,7 +142,7 @@ namespace Plato.Redis.Collections
         /// </summary>
         public ICollection<TKey> Keys
         {
-            get { return new Collection<TKey>(RedisDb.HashKeys(RedisKey).Select(h => KeySerializer.Deserialize(h)).ToList()); }
+            get { return new Collection<TKey>(RedisDb.HashKeys(RedisKey).Select(h => KeySerializer.Deserialize<TKey>(h)).ToList()); }
         }
 
         /// <summary>
@@ -156,7 +158,7 @@ namespace Plato.Redis.Collections
             get
             {
                 var redisValue = RedisDb.HashGet(RedisKey, KeySerializer.Serialize(key));
-                return redisValue.IsNull ? default(TValue) : ValueSerializer.Deserialize(redisValue);
+                return redisValue.IsNull ? default(TValue) : ValueSerializer.Deserialize<TValue>(redisValue);
             }
             set
             {
@@ -203,8 +205,8 @@ namespace Plato.Redis.Collections
             var values = RedisDb.HashGetAll(RedisKey);
             for (var i = 0; i < values.Length; i++)
             {
-                var key = KeySerializer.Deserialize(values[i].Name);
-                var value = ValueSerializer.Deserialize(values[i].Value);
+                var key = KeySerializer.Deserialize<TKey>(values[i].Name);
+                var value = ValueSerializer.Deserialize<TValue>(values[i].Value);
 
                 array[i + arrayIndex] = new KeyValuePair<TKey, TValue>(key, value);
             }
@@ -249,7 +251,7 @@ namespace Plato.Redis.Collections
             foreach (var hashKey in RedisDb.HashKeys(RedisKey))
             {
                 var redisValue = RedisDb.HashGet(RedisKey, hashKey);
-                yield return new KeyValuePair<TKey, TValue>(KeySerializer.Deserialize(hashKey), ValueSerializer.Deserialize(redisValue));
+                yield return new KeyValuePair<TKey, TValue>(KeySerializer.Deserialize<TKey>(hashKey), ValueSerializer.Deserialize<TValue>(redisValue));
             }
         }
 

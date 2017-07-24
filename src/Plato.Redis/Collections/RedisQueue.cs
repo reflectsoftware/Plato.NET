@@ -29,7 +29,7 @@ namespace Plato.Redis.Collections
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The redis key.</param>
         /// <param name="serializer">The serializer.</param>
-        public RedisQueue(IDatabase redisDb, RedisKey redisKey, IRedisCollectionSerializer<T> serializer = null) 
+        public RedisQueue(IDatabase redisDb, RedisKey redisKey, IRedisCollectionSerializer serializer = null) 
         {
             _redisList = new RedisList<T>(redisDb, redisKey, serializer);
         }     
@@ -105,7 +105,7 @@ namespace Plato.Redis.Collections
         public T Dequeue()
         {
             var value = _redisList.RedisDb.ListLeftPop(_redisList.RedisKey);
-            return value.HasValue ? _redisList.Serializer.Deserialize(value) : default(T);
+            return value.HasValue ? _redisList.Serializer.Deserialize<T>(value) : default(T);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Plato.Redis.Collections
             {
                 if(value.HasValue)
                 {
-                    array.Add(_redisList.Serializer.Deserialize(value));
+                    array.Add(_redisList.Serializer.Deserialize<T>(value));
                 }
             }
 

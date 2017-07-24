@@ -2,10 +2,9 @@
 
 namespace Plato.Redis.Interfaces
 {
-    public interface IRedisCollectionSerializer<T>
+    public interface IRedisCollectionSerializer
     {
         RedisValue Serialize(object data);
-        T Deserialize(RedisValue value);
-
+        T Deserialize<T>(RedisValue value);
     }
 }
