@@ -9,6 +9,8 @@ namespace Plato.Cache.Interfaces
 {
     public interface ICacheKeyLock : IDisposable
     {
+        bool Disposed { get; }
+
         void Unlock();
         Task UnlockAsync();
     }
