@@ -13,9 +13,8 @@ namespace Plato.Redis
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="Plato.Cache.Interfaces.ICacheKeyLock" />
-    /// <seealso cref="System.IDisposable" />
-    public class RedisCacheKeyLock : ICacheKeyLock, IDisposable
+    /// <seealso cref="Plato.Cache.Interfaces.ICacheKeyLock" />    
+    public class RedisCacheKeyLock : ICacheKeyLock
     {
         internal IDatabase Db { get; private set; }
         internal RedisKey LockKey { get; private set; }
