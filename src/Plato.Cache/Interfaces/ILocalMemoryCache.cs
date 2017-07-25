@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Plato.Cache.Interfaces
 {
-    public interface IMemoryCache : ICache
+    public interface ILocalMemoryCache : ICache
     {
         /// <summary>
         /// Purges the expired items.
@@ -47,7 +47,7 @@ namespace Plato.Cache.Interfaces
         /// <param name="callback">The callback.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        T Get<T>(string name, bool bSlidingTimeWindow, Func<string, object[], ObtainCacheDataInfo> callback, params object[] args);
+        T Get<T>(string name, bool bSlidingTimeWindow, Func<string, object[], CacheDataInfo<T>> callback = null, params object[] args);
 
         /// <summary>
         /// Gets the asynchronous.
@@ -58,6 +58,6 @@ namespace Plato.Cache.Interfaces
         /// <param name="callbackAsync">The callback asynchronous.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        Task<T> GetAsync<T>(string name, bool bSlidingTimeWindow, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args);
+        Task<T> GetAsync<T>(string name, bool bSlidingTimeWindow, Func<string, object[], Task<CacheDataInfo<T>>> callbackAsync = null, params object[] args);
     }
 }

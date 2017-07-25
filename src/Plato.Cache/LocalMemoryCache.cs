@@ -15,31 +15,9 @@ namespace Plato.Cache
     /// <summary>
     ///
     /// </summary>
-    public class ObtainCacheDataInfo
-    {
-        /// <summary>
-        /// Gets or sets the new cache data.
-        /// </summary>
-        /// <value>
-        /// The new cache data.
-        /// </value>
-        public object NewCacheData { get; set; }
-
-        /// <summary>
-        /// Gets or sets the keep alive.
-        /// </summary>
-        /// <value>
-        /// The keep alive.
-        /// </value>
-        public TimeSpan KeepAlive { get; set; }
-    }
-
-    /// <summary>
-    ///
-    /// </summary>
-    /// <seealso cref="Plato.Cache.Interfaces.IMemoryCache"/>
+    /// <seealso cref="Plato.Cache.Interfaces.ILocalMemoryCache"/>
     /// <seealso cref="Plato.Cache.Interfaces.IMemoryCacheExtension"/>
-    public class MemoryCache : IMemoryCache, IMemoryCacheExtension
+    public class LocalMemoryCache : ILocalMemoryCache, IMemoryCacheExtension
     {
         private const int DISPOSE_OBJECT_TIME = 5;
 
@@ -123,7 +101,7 @@ namespace Plato.Cache
         private DateTime LastExpiredCheck { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="MemoryCache"/> is disposed.
+        /// Gets a value indicating whether this <see cref="LocalMemoryCache"/> is disposed.
         /// </summary>
         /// <value>
         /// <c>true</c> if disposed; otherwise, <c>false</c>.
@@ -131,9 +109,9 @@ namespace Plato.Cache
         public bool Disposed { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryCache"/> class.
+        /// Initializes a new instance of the <see cref="LocalMemoryCache"/> class.
         /// </summary>
-        public MemoryCache()
+        public LocalMemoryCache()
         {
             Disposed = false;
             LastExpiredScanWindow = new TimeSpan(0, DISPOSE_OBJECT_TIME, 0);
@@ -144,9 +122,9 @@ namespace Plato.Cache
 
         #region Dispose
         /// <summary>
-        /// Finalizes an instance of the <see cref="MemoryCache"/> class.
+        /// Finalizes an instance of the <see cref="LocalMemoryCache"/> class.
         /// </summary>
-        ~MemoryCache()
+        ~LocalMemoryCache()
         {
             Dispose(false);
         }
@@ -394,7 +372,7 @@ namespace Plato.Cache
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">callback</exception>
-        public T Get<T>(string name, bool bSlidingTimeWindow, Func<string, object[], ObtainCacheDataInfo> callback, params object[] args)
+        public T Get<T>(string name, bool bSlidingTimeWindow, Func<string, object[], CacheDataInfo<T>> callback = null, params object[] args)
         {
             Guard.AgainstNull(() => callback);
 
@@ -411,7 +389,7 @@ namespace Plato.Cache
                             var cData = callback(name, args);
                             Set(name, cData.NewCacheData, cData.KeepAlive);
 
-                            return (T)cData.NewCacheData;
+                            return cData.NewCacheData;
                         }
                     }
                 }
@@ -429,7 +407,7 @@ namespace Plato.Cache
         /// <param name="callbackAsync">The callback asynchronous.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        public async Task<T> GetAsync<T>(string name, bool bSlidingTimeWindow, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
+        public async Task<T> GetAsync<T>(string name, bool bSlidingTimeWindow, Func<string, object[], Task<CacheDataInfo<T>>> callbackAsync = null, params object[] args)
         {
             Guard.AgainstNull(() => callbackAsync);
             
@@ -446,7 +424,7 @@ namespace Plato.Cache
                             var cData = await callbackAsync(name, args);
                             Set(name, cData.NewCacheData, cData.KeepAlive);
 
-                            return (T)cData.NewCacheData;
+                            return cData.NewCacheData;
                         }
                     }
                 }
@@ -463,7 +441,7 @@ namespace Plato.Cache
         /// <param name="callback">The callback.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        public T Get<T>(string name, Func<string, object[], ObtainCacheDataInfo> callback, params object[] args)
+        public T Get<T>(string name, Func<string, object[], CacheDataInfo<T>> callback = null, params object[] args)
         {
             return Get<T>(name, false, callback, args);
         }
@@ -476,7 +454,7 @@ namespace Plato.Cache
         /// <param name="callbackAsync">The callback asynchronous.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        public Task<T> GetAsync<T>(string name, Func<string, object[], Task<ObtainCacheDataInfo>> callbackAsync, params object[] args)
+        public Task<T> GetAsync<T>(string name, Func<string, object[], Task<CacheDataInfo<T>>> callbackAsync = null, params object[] args)
         {
             return GetAsync<T>(name, false, callbackAsync, args);
         }
