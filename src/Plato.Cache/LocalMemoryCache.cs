@@ -373,12 +373,15 @@ namespace Plato.Cache
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">callback</exception>
         public T Get<T>(string name, bool bSlidingTimeWindow, Func<string, object[], CacheDataInfo<T>> callback = null, params object[] args)
-        {
-            Guard.AgainstNull(() => callback);
-
+        {            
             var node = GetCachedNode(name, bSlidingTimeWindow);
             if(node == null)
             {
+                if(callback == null)
+                {
+                    return default(T);
+                }
+
                 using (var rLock = new ResourceLockAsync(name))
                 {
                     using (rLock.ReaderLock())
@@ -408,12 +411,15 @@ namespace Plato.Cache
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
         public async Task<T> GetAsync<T>(string name, bool bSlidingTimeWindow, Func<string, object[], Task<CacheDataInfo<T>>> callbackAsync = null, params object[] args)
-        {
-            Guard.AgainstNull(() => callbackAsync);
-            
+        {                        
             var node = GetCachedNode(name, bSlidingTimeWindow);
             if (node == null)
             {
+                if (callbackAsync == null)
+                {
+                    return default(T);
+                }
+
                 using (var rLock = new ResourceLockAsync(name))
                 {
                     using (await rLock.WriterLockAsync())
@@ -443,7 +449,7 @@ namespace Plato.Cache
         /// <returns></returns>
         public T Get<T>(string name, Func<string, object[], CacheDataInfo<T>> callback = null, params object[] args)
         {
-            return Get<T>(name, false, callback, args);
+            return Get(name, false, callback, args);
         }
 
         /// <summary>
@@ -456,7 +462,7 @@ namespace Plato.Cache
         /// <returns></returns>
         public Task<T> GetAsync<T>(string name, Func<string, object[], Task<CacheDataInfo<T>>> callbackAsync = null, params object[] args)
         {
-            return GetAsync<T>(name, false, callbackAsync, args);
+            return GetAsync(name, false, callbackAsync, args);
         }
 
         /// <summary>

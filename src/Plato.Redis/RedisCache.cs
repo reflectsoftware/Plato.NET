@@ -116,7 +116,7 @@ namespace Plato.Redis
         /// <param name="callback">The callback.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        public T Get<T>(string name, Func<string, object[], CacheDataInfo<T>> callback, params object[] args)
+        public T Get<T>(string name, Func<string, object[], CacheDataInfo<T>> callback = null, params object[] args)
         {
             var key = SuffixName(name);
             var value = _redisDb.StringGet(key);
@@ -153,7 +153,7 @@ namespace Plato.Redis
         /// <param name="callbackAsync">The callback asynchronous.</param>
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
-        public async Task<T> GetAsync<T>(string name, Func<string, object[], Task<CacheDataInfo<T>>> callbackAsync, params object[] args)
+        public async Task<T> GetAsync<T>(string name, Func<string, object[], Task<CacheDataInfo<T>>> callbackAsync = null, params object[] args)
         {
             var key = SuffixName(name);
             var value = await _redisDb.StringGetAsync(key);
