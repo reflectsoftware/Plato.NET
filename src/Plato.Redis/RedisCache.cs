@@ -23,7 +23,8 @@ namespace Plato.Redis
         private readonly IRedisCacheKeyLockAcquisition _cacheKeyLockAcquisition;        
         private readonly IRedisCollectionSerializer _valueSerializer;
         private readonly IDatabase _redisDb;
-        
+        private readonly string _suffixName;
+
         /// <summary>
         /// Gets a value indicating whether this <see cref="RedisCache"/> is disposed.
         /// </summary>
@@ -33,15 +34,17 @@ namespace Plato.Redis
         public bool Disposed { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RedisCache"/> class.
+        /// Initializes a new instance of the <see cref="RedisCache" /> class.
         /// </summary>
         /// <param name="connection">The connection.</param>
-        /// <param name="cacheKeyLocker">The cache key locker.</param>        
+        /// <param name="cacheKeyLockAcquisition">The cache key lock acquisition.</param>
         /// <param name="serializer">The serializer.</param>
+        /// <param name="suffixName">Name of the suffix.</param>
         public RedisCache(
             IRedisConnection connection,
             IRedisCacheKeyLockAcquisition cacheKeyLockAcquisition,             
-            IRedisCollectionSerializer serializer = null)
+            IRedisCollectionSerializer serializer = null,
+            string suffixName = "RedisCache")
         {        
             Guard.AgainstNull(() => connection);
             Guard.AgainstNull(() => cacheKeyLockAcquisition);            
@@ -52,6 +55,7 @@ namespace Plato.Redis
             _cacheKeyLockAcquisition = cacheKeyLockAcquisition;            
             _redisDb = connection.GetDatabase();            
             _valueSerializer = serializer ?? new JsonRedisCollectionSerializer();
+            _suffixName = string.IsNullOrWhiteSpace(suffixName) ? "RedisCache" : suffixName;
         }
 
         #region Dispose
@@ -105,7 +109,7 @@ namespace Plato.Redis
         /// <returns></returns>
         protected string SuffixName(string name)
         {
-            return $"RedisCache:{name}";
+            return $"{_suffixName}:{name}";
         }
 
         /// <summary>
