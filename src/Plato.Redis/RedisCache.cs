@@ -23,7 +23,7 @@ namespace Plato.Redis
         private readonly IRedisCacheKeyLockAcquisition _cacheKeyLockAcquisition;        
         private readonly IRedisCollectionSerializer _valueSerializer;
         private readonly IDatabase _redisDb;
-        private readonly string _suffixName;
+        private readonly string _prefixName;
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="RedisCache"/> is disposed.
@@ -39,12 +39,12 @@ namespace Plato.Redis
         /// <param name="connection">The connection.</param>
         /// <param name="cacheKeyLockAcquisition">The cache key lock acquisition.</param>
         /// <param name="serializer">The serializer.</param>
-        /// <param name="suffixName">Name of the suffix.</param>
+        /// <param name="prefixName">Name of the prefix.</param>
         public RedisCache(
             IRedisConnection connection,
             IRedisCacheKeyLockAcquisition cacheKeyLockAcquisition,             
             IRedisCollectionSerializer serializer = null,
-            string suffixName = "RedisCache")
+            string prefixName = "RedisCache")
         {        
             Guard.AgainstNull(() => connection);
             Guard.AgainstNull(() => cacheKeyLockAcquisition);            
@@ -55,7 +55,7 @@ namespace Plato.Redis
             _cacheKeyLockAcquisition = cacheKeyLockAcquisition;            
             _redisDb = connection.GetDatabase();            
             _valueSerializer = serializer ?? new JsonRedisCollectionSerializer();
-            _suffixName = string.IsNullOrWhiteSpace(suffixName) ? "RedisCache" : suffixName;
+            _prefixName = string.IsNullOrWhiteSpace(prefixName) ? "RedisCache" : prefixName;
         }
 
         #region Dispose
@@ -107,9 +107,9 @@ namespace Plato.Redis
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        protected string SuffixName(string name)
+        protected string PrefixName(string name)
         {
-            return $"{_suffixName}:{name}";
+            return $"{_prefixName}:{name}";
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Plato.Redis
         /// <returns></returns>
         public T Get<T>(string name, Func<string, object[], CacheDataInfo<T>> callback = null, params object[] args)
         {
-            var key = SuffixName(name);
+            var key = PrefixName(name);
             var value = _redisDb.StringGet(key);
             if(value.HasValue)
             {
@@ -159,7 +159,7 @@ namespace Plato.Redis
         /// <returns></returns>
         public async Task<T> GetAsync<T>(string name, Func<string, object[], Task<CacheDataInfo<T>>> callbackAsync = null, params object[] args)
         {
-            var key = SuffixName(name);
+            var key = PrefixName(name);
             var value = await _redisDb.StringGetAsync(key);
             if (value.HasValue)
             {
@@ -193,7 +193,7 @@ namespace Plato.Redis
         /// <returns></returns>
         public bool Remove(string name)
         {
-            return _redisDb.KeyDelete(SuffixName(name));
+            return _redisDb.KeyDelete(PrefixName(name));
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace Plato.Redis
         /// <returns></returns>
         public async Task<bool> RemoveAsync(string name)
         {
-            return await _redisDb.KeyDeleteAsync(SuffixName(name));
+            return await _redisDb.KeyDeleteAsync(PrefixName(name));
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Plato.Redis
         /// <param name="keepAlive">The keep alive.</param>
         public void Set(string name, object item, TimeSpan? keepAlive)
         {            
-            _redisDb.StringSet(SuffixName(name), _valueSerializer.Serialize(item), GetTimeToLive(keepAlive));        
+            _redisDb.StringSet(PrefixName(name), _valueSerializer.Serialize(item), GetTimeToLive(keepAlive));        
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace Plato.Redis
         /// <returns></returns>
         public async Task SetAsync(string name, object item, TimeSpan? keepAlive)
         {
-            await _redisDb.StringSetAsync(SuffixName(name), _valueSerializer.Serialize(item), GetTimeToLive(keepAlive));
+            await _redisDb.StringSetAsync(PrefixName(name), _valueSerializer.Serialize(item), GetTimeToLive(keepAlive));
         }
     }
 }
