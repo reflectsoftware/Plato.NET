@@ -6,7 +6,7 @@ using StackExchange.Redis;
 
 namespace Plato.Redis.Interfaces
 {
-    public interface IRedisCollectionSerializer
+    public interface IRedisSerializer
     {
         RedisValue Serialize(object data);
         T Deserialize<T>(RedisValue value);

@@ -21,7 +21,7 @@ namespace Plato.Redis
     {        
         private readonly IRedisConnection _connection;
         private readonly IRedisCacheKeyLockAcquisition _cacheKeyLockAcquisition;        
-        private readonly IRedisCollectionSerializer _valueSerializer;
+        private readonly IRedisSerializer _valueSerializer;
         private readonly IDatabase _redisDb;
         private readonly string _prefixName;
 
@@ -43,7 +43,7 @@ namespace Plato.Redis
         public RedisCache(
             IRedisConnection connection,
             IRedisCacheKeyLockAcquisition cacheKeyLockAcquisition,             
-            IRedisCollectionSerializer serializer = null,
+            IRedisSerializer serializer = null,
             string prefixName = "RedisCache")
         {        
             Guard.AgainstNull(() => connection);
@@ -54,7 +54,7 @@ namespace Plato.Redis
             _connection = connection;
             _cacheKeyLockAcquisition = cacheKeyLockAcquisition;            
             _redisDb = connection.GetDatabase();            
-            _valueSerializer = serializer ?? new JsonRedisCollectionSerializer();
+            _valueSerializer = serializer ?? new JsonRedisSerializer();
             _prefixName = string.IsNullOrWhiteSpace(prefixName) ? "RedisCache" : prefixName;
         }
 
@@ -124,7 +124,7 @@ namespace Plato.Redis
         {
             var key = PrefixName(name);
             var value = _redisDb.StringGet(key);
-            if(value.HasValue)
+            if(!value.IsNull)
             {
                 return _valueSerializer.Deserialize<T>(value);
             }
@@ -137,7 +137,7 @@ namespace Plato.Redis
             using (var cacheLock = _cacheKeyLockAcquisition.AcquireLock(_redisDb, key))
             {
                 value = _redisDb.StringGet(key);
-                if(!value.HasValue)
+                if(value.IsNull)
                 {
                     var cData = callback(name, args);
                     Set(name, cData.NewCacheData, cData.KeepAlive);
@@ -161,8 +161,8 @@ namespace Plato.Redis
         {
             var key = PrefixName(name);
             var value = await _redisDb.StringGetAsync(key);
-            if (value.HasValue)
-            {
+            if (!value.IsNull)
+            {                
                 return _valueSerializer.Deserialize<T>(value);
             }
 
@@ -174,7 +174,7 @@ namespace Plato.Redis
             using (var cacheLock = await _cacheKeyLockAcquisition.AcquireLockAsync(_redisDb, key))
             {
                 value = await _redisDb.StringGetAsync(key);
-                if (!value.HasValue)
+                if (value.IsNull)
                 {
                     var cData = await callbackAsync(name, args);
                     await SetAsync(name, cData.NewCacheData, cData.KeepAlive);
@@ -212,7 +212,7 @@ namespace Plato.Redis
         /// <param name="name">The name.</param>
         /// <param name="item">The item.</param>
         /// <param name="keepAlive">The keep alive.</param>
-        public void Set(string name, object item, TimeSpan? keepAlive)
+        public void Set(string name, object item, TimeSpan? keepAlive = null)
         {            
             _redisDb.StringSet(PrefixName(name), _valueSerializer.Serialize(item), GetTimeToLive(keepAlive));        
         }
@@ -224,7 +224,7 @@ namespace Plato.Redis
         /// <param name="item">The item.</param>
         /// <param name="keepAlive">The keep alive.</param>
         /// <returns></returns>
-        public async Task SetAsync(string name, object item, TimeSpan? keepAlive)
+        public async Task SetAsync(string name, object item, TimeSpan? keepAlive = null)
         {
             await _redisDb.StringSetAsync(PrefixName(name), _valueSerializer.Serialize(item), GetTimeToLive(keepAlive));
         }

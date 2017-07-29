@@ -66,7 +66,7 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Interfaces\IRedisCacheKeyLockAcquisition.cs" />
-    <Compile Include="Interfaces\IRedisCollectionSerializer.cs" />
+    <Compile Include="Interfaces\IRedisSerializer.cs" />
     <Compile Include="Interfaces\IRedisConnection.cs" />
     <Compile Include="Interfaces\IRedisDictionary.cs" />
     <Compile Include="Interfaces\IRedisCollection.cs" />
@@ -84,8 +84,8 @@
     <Compile Include="RedisConnection.cs" />
     <Compile Include="RedisDatabaseProxy.cs" />
     <Compile Include="RedisDatabaseProxyConfiguration.cs" />
-    <Compile Include="Serializers\MsgPackRedisCollectionSerializer.cs" />
-    <Compile Include="Serializers\JsonRedisCollectionSerializer.cs" />
+    <Compile Include="Serializers\MsgPackRedisSerializer.cs" />
+    <Compile Include="Serializers\JsonRedisSerializer.cs" />
     <Compile Include="StackExchangeRedisExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

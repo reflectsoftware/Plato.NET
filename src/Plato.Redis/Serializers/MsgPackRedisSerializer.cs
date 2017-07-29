@@ -12,8 +12,8 @@ namespace Plato.Redis.Serializers
     /// <summary>
     /// 
     /// </summary>    
-    /// <seealso cref="Plato.Redis.Interfaces.IRedisCollectionSerializer" />
-    public class MsgPackRedisCollectionSerializer : IRedisCollectionSerializer
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisSerializer" />
+    public class MsgPackRedisSerializer : IRedisSerializer
     {
         /// <summary>
         /// Serializes the specified data.
@@ -22,11 +22,16 @@ namespace Plato.Redis.Serializers
         /// <returns></returns>
         public RedisValue Serialize(object data)
         {
-            using (var ms = new MemoryStream())
+            if (data != null)
             {
-                MessagePackSerializer.Get(data.GetType()).Pack(ms, data);
-                return ms.ToArray();
+                using (var ms = new MemoryStream())
+                {
+                    MessagePackSerializer.Get(data.GetType()).Pack(ms, data);
+                    return ms.ToArray();
+                }
             }
+
+            return RedisValue.EmptyString;
         }
 
         /// <summary>
@@ -37,10 +42,15 @@ namespace Plato.Redis.Serializers
         /// <returns></returns>
         public T Deserialize<T>(RedisValue data)
         {
-            using (var ms = new MemoryStream(data))
+            if (data.HasValue)
             {
-                return MessagePackSerializer.Get<T>().Unpack(ms);
+                using (var ms = new MemoryStream(data))
+                {
+                    return MessagePackSerializer.Get<T>().Unpack(ms);
+                }
             }
+
+            return default(T);
         }
     }
 }

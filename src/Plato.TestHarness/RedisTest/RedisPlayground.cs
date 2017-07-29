@@ -166,7 +166,7 @@ namespace Plato.TestHarness.RedisTest
 
         static void Test4(RedisConnection redisConnection)
         {
-            var mpSerializer = new MsgPackRedisCollectionSerializer();
+            var mpSerializer = new MsgPackRedisSerializer();
 
             try
             {
@@ -228,8 +228,8 @@ namespace Plato.TestHarness.RedisTest
                     });
                 }
 
-                var jsonSerializer = new JsonRedisCollectionSerializer();
-                var mpSerializer = new MsgPackRedisCollectionSerializer();
+                var jsonSerializer = new JsonRedisSerializer();
+                var mpSerializer = new MsgPackRedisSerializer();
 
                 //var r1 = jsonSerializer.Serialize(myData2);
                 //var r2 = mpSerializer.Serialize(myData2);                
@@ -450,8 +450,25 @@ namespace Plato.TestHarness.RedisTest
             {
                 using (var redisConnection = new RedisConnection(connectionStrings, configuration))
                 {
-                    CacheThreadTest(redisConnection);
+                    var lockAcquisition = new RedisCacheKeyLockAcquisition();
+                    var cache = new RedisCache(redisConnection, lockAcquisition, new MsgPackRedisSerializer());
 
+
+                    var db = redisConnection.GetDatabase();
+                    //db.StringSet("test", RedisValue.EmptyString);
+                    //var x = db.StringGet("test");
+                    
+                    var xxx = cache.Get("test", (name, args) =>
+                    {
+                        return new CacheDataInfo<string>
+                        {
+                            KeepAlive= TimeSpan.FromMinutes(1),
+                            NewCacheData = null,
+                        };
+                    });
+
+
+                    //CacheThreadTest(redisConnection);
                     //LockThreadTest(redisConnection);
                     //SerializerTests(redisConnection);
                     //Test4(redisConnection);

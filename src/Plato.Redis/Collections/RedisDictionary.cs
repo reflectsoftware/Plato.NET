@@ -24,8 +24,8 @@ namespace Plato.Redis.Collections
     {
         public IDatabase RedisDb { get; private set; }
         public RedisKey RedisKey { get; private set; }
-        public IRedisCollectionSerializer ValueSerializer { get; private set; }
-        public IRedisCollectionSerializer KeySerializer { get; private set; }
+        public IRedisSerializer ValueSerializer { get; private set; }
+        public IRedisSerializer KeySerializer { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisDictionary{TKey, TValue}" /> class.
@@ -36,12 +36,12 @@ namespace Plato.Redis.Collections
         public RedisDictionary(
             IDatabase redisDb, 
             RedisKey redisKey,      
-            IRedisCollectionSerializer valueSerializer = null)
+            IRedisSerializer valueSerializer = null)
         {
             RedisDb = redisDb;
             RedisKey = redisKey;
-            ValueSerializer = valueSerializer ?? new JsonRedisCollectionSerializer();
-            KeySerializer = new JsonRedisCollectionSerializer();            
+            ValueSerializer = valueSerializer ?? new JsonRedisSerializer();
+            KeySerializer = new JsonRedisSerializer();            
         }
 
         /// <summary>

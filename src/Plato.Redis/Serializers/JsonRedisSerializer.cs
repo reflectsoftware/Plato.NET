@@ -11,8 +11,8 @@ namespace Plato.Redis.Serializers
     /// <summary>
     /// 
     /// </summary>    
-    /// <seealso cref="Plato.Redis.Interfaces.IRedisCollectionSerializer" />
-    public class JsonRedisCollectionSerializer : IRedisCollectionSerializer
+    /// <seealso cref="Plato.Redis.Interfaces.IRedisSerializer" />
+    public class JsonRedisSerializer : IRedisSerializer
     {
         /// <summary>
         /// Serializes the specified data.
@@ -21,7 +21,7 @@ namespace Plato.Redis.Serializers
         /// <returns></returns>
         public RedisValue Serialize(object data)
         {
-            return JsonConvert.SerializeObject(data);
+            return data != null ? (RedisValue)JsonConvert.SerializeObject(data) : RedisValue.EmptyString;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Plato.Redis.Serializers
         /// <returns></returns>
         public T Deserialize<T>(RedisValue data)
         {
-            return JsonConvert.DeserializeObject<T>(data);
+            return data.HasValue ? JsonConvert.DeserializeObject<T>(data) : default(T);
         }
     }
 }

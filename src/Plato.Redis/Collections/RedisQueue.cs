@@ -29,7 +29,7 @@ namespace Plato.Redis.Collections
         /// <param name="redisDb">The redis database.</param>
         /// <param name="redisKey">The redis key.</param>
         /// <param name="serializer">The serializer.</param>
-        public RedisQueue(IDatabase redisDb, RedisKey redisKey, IRedisCollectionSerializer serializer = null) 
+        public RedisQueue(IDatabase redisDb, RedisKey redisKey, IRedisSerializer serializer = null) 
         {
             _redisList = new RedisList<T>(redisDb, redisKey, serializer);
         }     
