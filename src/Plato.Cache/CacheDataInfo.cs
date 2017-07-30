@@ -7,17 +7,17 @@ using System;
 namespace Plato.Cache
 {
     /// <summary>
-    ///
+    /// 
     /// </summary>
-    public class CacheDataInfo<T>
-    {        
+    public class CacheDataInfo
+    {
         /// <summary>
-        /// Gets or sets the new cache data.
+        /// Gets or sets the cached date time.
         /// </summary>
         /// <value>
-        /// The new cache data.
+        /// The cached date time.
         /// </value>
-        public T NewCacheData { get; set; }
+        public DateTime CachedDateTime { get; set; }
 
         /// <summary>
         /// Gets or sets the keep alive.
@@ -26,5 +26,20 @@ namespace Plato.Cache
         /// The keep alive.
         /// </value>
         public TimeSpan KeepAlive { get; set; }
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    public class CacheDataInfo<T> : CacheDataInfo
+    {
+        /// <summary>
+        /// Gets or sets the new cache data.
+        /// </summary>
+        /// <value>
+        /// The new cache data.
+        /// </value>
+        public T NewCacheData { get; set; }
+
     }
 }

@@ -30,7 +30,7 @@ namespace Plato.Redis
             var now = DateTime.Now;
             var rnd = new Random((int)now.Ticks);
 
-            expiry = expiry ?? TimeSpan.FromMinutes(5);
+            expiry = expiry ?? TimeSpan.FromMinutes(2);
             retryTimeout = retryTimeout ?? TimeSpan.MaxValue;
 
             while (true)

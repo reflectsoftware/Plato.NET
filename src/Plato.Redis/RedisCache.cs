@@ -5,6 +5,7 @@
 using Plato.Cache;
 using Plato.Cache.Interfaces;
 using Plato.Core.Miscellaneous;
+using Plato.Redis.Containers;
 using Plato.Redis.Interfaces;
 using Plato.Redis.Serializers;
 using StackExchange.Redis;
@@ -18,12 +19,12 @@ namespace Plato.Redis
     /// </summary>
     /// <seealso cref="Plato.Cache.Interfaces.IGlobalCache" />
     public class RedisCache : IGlobalCache
-    {        
+    {
         private readonly IRedisConnection _connection;
-        private readonly IRedisCacheKeyLockAcquisition _cacheKeyLockAcquisition;        
-        private readonly IRedisSerializer _valueSerializer;
+        private readonly IRedisCacheKeyLockAcquisition _cacheKeyLockAcquisition;
+        private readonly IRedisCacheContainer _container;
+        private readonly IRedisSerializer _serialier;
         private readonly IDatabase _redisDb;
-        private readonly string _prefixName;
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="RedisCache"/> is disposed.
@@ -38,24 +39,24 @@ namespace Plato.Redis
         /// </summary>
         /// <param name="connection">The connection.</param>
         /// <param name="cacheKeyLockAcquisition">The cache key lock acquisition.</param>
+        /// <param name="container">The container.</param>
         /// <param name="serializer">The serializer.</param>
-        /// <param name="prefixName">Name of the prefix.</param>
         public RedisCache(
             IRedisConnection connection,
-            IRedisCacheKeyLockAcquisition cacheKeyLockAcquisition,             
-            IRedisSerializer serializer = null,
-            string prefixName = "RedisCache")
-        {        
+            IRedisCacheKeyLockAcquisition cacheKeyLockAcquisition,
+            IRedisCacheContainer container = null,
+            IRedisSerializer serializer = null)
+        {
             Guard.AgainstNull(() => connection);
-            Guard.AgainstNull(() => cacheKeyLockAcquisition);            
-            
+            Guard.AgainstNull(() => cacheKeyLockAcquisition);
+
             Disposed = false;
 
             _connection = connection;
-            _cacheKeyLockAcquisition = cacheKeyLockAcquisition;            
-            _redisDb = connection.GetDatabase();            
-            _valueSerializer = serializer ?? new JsonRedisSerializer();
-            _prefixName = string.IsNullOrWhiteSpace(prefixName) ? "RedisCache" : prefixName;
+            _cacheKeyLockAcquisition = cacheKeyLockAcquisition;
+            _redisDb = connection.GetDatabase();
+            _container = container ?? new StringRedisCacheContainer(_connection);
+            _serialier = serializer ?? new JsonRedisSerializer();
         }
 
         #region Dispose
@@ -73,12 +74,12 @@ namespace Plato.Redis
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            lock(this)
+            lock (this)
             {
-                if(!Disposed)
+                if (!Disposed)
                 {
                     Disposed = true;
-                    GC.SuppressFinalize(this);                    
+                    GC.SuppressFinalize(this);
                 }
             }
         }
@@ -93,25 +94,17 @@ namespace Plato.Redis
         #endregion
 
         /// <summary>
-        /// Gets the time span.
+        /// Determines whether the specified c information has expired.
         /// </summary>
-        /// <param name="keepAlive">The keep alive.</param>
-        /// <returns></returns>
-        protected TimeSpan? GetTimeToLive(TimeSpan? keepAlive)
-        {            
-            return keepAlive = keepAlive == TimeSpan.Zero ? null : keepAlive;
-        }
-
-        /// <summary>
-        /// Suffixes the name.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        protected string PrefixName(string name)
+        /// <param name="cInfo">The c information.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified c information has expired; otherwise, <c>false</c>.
+        /// </returns>
+        private bool HasExpired(CacheDataInfo cInfo)
         {
-            return $"{_prefixName}:{name}";
+            return cInfo.KeepAlive != TimeSpan.Zero && DateTime.Now.Subtract(cInfo.CachedDateTime) >= cInfo.KeepAlive;
         }
-
+        
         /// <summary>
         /// Gets the specified name.
         /// </summary>
@@ -121,23 +114,28 @@ namespace Plato.Redis
         /// <param name="args">The arguments.</param>
         /// <returns></returns>
         public T Get<T>(string name, Func<string, object[], CacheDataInfo<T>> callback = null, params object[] args)
-        {
-            var key = PrefixName(name);
-            var value = _redisDb.StringGet(key);
-            if(!value.IsNull)
+        {            
+            var value = _container.Get(name);
+            if(value.HasValue)
             {
-                return _valueSerializer.Deserialize<T>(value);
+                var cInfo = _serialier.Deserialize<CacheDataInfo<T>>(value);
+                if(_container.SupportsExpiration || !HasExpired(cInfo))
+                {
+                    return cInfo.NewCacheData;
+                }
+
+                Remove(name);
             }
 
-            if(callback == null)
+            if (callback == null)
             {
                 return default(T);
             }
 
-            using (var cacheLock = _cacheKeyLockAcquisition.AcquireLock(_redisDb, key))
+            using (var cacheLock = _cacheKeyLockAcquisition.AcquireLock(_redisDb, name))
             {
-                value = _redisDb.StringGet(key);
-                if(value.IsNull)
+                value = _container.Get(name);
+                if (!value.HasValue)
                 {
                     var cData = callback(name, args);
                     if (cData == null)
@@ -148,9 +146,10 @@ namespace Plato.Redis
                     Set(name, cData.NewCacheData, cData.KeepAlive);
                     return cData.NewCacheData;
                 }
-
-                return _valueSerializer.Deserialize<T>(value);
-            }            
+                
+                var cInfo = _serialier.Deserialize<CacheDataInfo<T>>(value);
+                return cInfo.NewCacheData;
+            }
         }
 
         /// <summary>
@@ -163,11 +162,16 @@ namespace Plato.Redis
         /// <returns></returns>
         public async Task<T> GetAsync<T>(string name, Func<string, object[], Task<CacheDataInfo<T>>> callbackAsync = null, params object[] args)
         {
-            var key = PrefixName(name);
-            var value = await _redisDb.StringGetAsync(key);
-            if (!value.IsNull)
-            {                
-                return _valueSerializer.Deserialize<T>(value);
+            var value = await _container.GetAsync(name);
+            if (value.HasValue)
+            {
+                var cInfo = _serialier.Deserialize<CacheDataInfo<T>>(value);
+                if (_container.SupportsExpiration || !HasExpired(cInfo))
+                {
+                    return cInfo.NewCacheData;
+                }
+
+                await RemoveAsync(name);
             }
 
             if (callbackAsync == null)
@@ -175,13 +179,13 @@ namespace Plato.Redis
                 return default(T);
             }
 
-            using (var cacheLock = await _cacheKeyLockAcquisition.AcquireLockAsync(_redisDb, key))
+            using (var cacheLock = await _cacheKeyLockAcquisition.AcquireLockAsync(_redisDb, name))
             {
-                value = await _redisDb.StringGetAsync(key);
-                if (value.IsNull)
+                value = await _container.GetAsync(name);
+                if (!value.HasValue)
                 {
                     var cData = await callbackAsync(name, args);
-                    if(cData == null)
+                    if (cData == null)
                     {
                         return default(T);
                     }
@@ -190,7 +194,8 @@ namespace Plato.Redis
                     return cData.NewCacheData;
                 }
 
-                return _valueSerializer.Deserialize<T>(value);
+                var cInfo = _serialier.Deserialize<CacheDataInfo<T>>(value);
+                return cInfo.NewCacheData;
             }
         }
 
@@ -201,7 +206,7 @@ namespace Plato.Redis
         /// <returns></returns>
         public bool Remove(string name)
         {
-            return _redisDb.KeyDelete(PrefixName(name));
+            return _container.Remove(name);
         }
 
         /// <summary>
@@ -211,7 +216,7 @@ namespace Plato.Redis
         /// <returns></returns>
         public async Task<bool> RemoveAsync(string name)
         {
-            return await _redisDb.KeyDeleteAsync(PrefixName(name));
+            return await _container.RemoveAsync(name);
         }
 
         /// <summary>
@@ -221,8 +226,17 @@ namespace Plato.Redis
         /// <param name="item">The item.</param>
         /// <param name="keepAlive">The keep alive.</param>
         public void Set(string name, object item, TimeSpan? keepAlive = null)
-        {            
-            _redisDb.StringSet(PrefixName(name), _valueSerializer.Serialize(item), GetTimeToLive(keepAlive));        
+        {
+            var cInfo = new CacheDataInfo<object>
+            {
+                CachedDateTime = DateTime.Now,
+                KeepAlive = keepAlive ?? TimeSpan.Zero,
+                NewCacheData = item,
+            };
+
+            _container.Set(name, _serialier.Serialize(cInfo), keepAlive);
+
+            // _container.Set(name, _serialier.Serialize(item), keepAlive);            
         }
 
         /// <summary>
@@ -234,7 +248,7 @@ namespace Plato.Redis
         /// <returns></returns>
         public async Task SetAsync(string name, object item, TimeSpan? keepAlive = null)
         {
-            await _redisDb.StringSetAsync(PrefixName(name), _valueSerializer.Serialize(item), GetTimeToLive(keepAlive));
+            await _container.SetAsync(name, _serialier.Serialize(item), keepAlive);            
         }
     }
 }

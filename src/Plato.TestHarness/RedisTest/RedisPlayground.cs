@@ -1,6 +1,7 @@
 ﻿using Plato.Cache;
 using Plato.Redis;
 using Plato.Redis.Collections;
+using Plato.Redis.Containers;
 using Plato.Redis.Serializers;
 using StackExchange.Redis;
 using System;
@@ -361,7 +362,7 @@ namespace Plato.TestHarness.RedisTest
                 var rnd = new Random((int)DateTime.Now.Ticks);
                 var json = File.ReadAllText($"{AppDomain.CurrentDomain.BaseDirectory}sample.json");
                 var lockAcquisition = new RedisCacheKeyLockAcquisition();
-                var cache = new RedisCache(redisConnection, lockAcquisition, prefixName: "crapper");
+                var cache = new RedisCache(redisConnection, lockAcquisition);
 
                 while (!TerminateTestCacheAsync)
                 {
@@ -447,27 +448,27 @@ namespace Plato.TestHarness.RedisTest
             };
 
             try
-            {
+            {             
                 using (var redisConnection = new RedisConnection(connectionStrings, configuration))
                 {
+
                     var lockAcquisition = new RedisCacheKeyLockAcquisition();
-                    var cache = new RedisCache(redisConnection, lockAcquisition, new MsgPackRedisSerializer());
+                    var cacheContainer = new HashRedisCacheContainer(redisConnection); //new StringRedisCacheContainer(redisConnection);
+                    var cacheSeriizer = new MsgPackRedisSerializer(); // new JsonRedisSerializer();
+                    var cache = new RedisCache(redisConnection, lockAcquisition, cacheContainer, cacheSeriizer);
 
-
-                    var db = redisConnection.GetDatabase();
-                    //db.StringSet("test", RedisValue.EmptyString);
-                    //var x = db.StringGet("test");
-                    
                     var xxx = cache.Get("test", (name, args) =>
                     {
-                        //return new CacheDataInfo<string>
-                        //{
-                        //    KeepAlive= TimeSpan.FromMinutes(1),
-                        //    NewCacheData = null,
-                        //};
+                        return new CacheDataInfo<string>
+                        {
+                            KeepAlive = TimeSpan.FromMinutes(0.5),
+                            NewCacheData = "Hello, Ross"
+                        };
 
-                        return (CacheDataInfo<string>)null;
+                        // return (CacheDataInfo<string>)null;
                     });
+
+                    cache.Remove("test");
 
 
                     //CacheThreadTest(redisConnection);
