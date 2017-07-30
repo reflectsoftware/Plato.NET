@@ -390,8 +390,12 @@ namespace Plato.Cache
                         if (node == null)
                         {
                             var cData = callback(name, args);
-                            Set(name, cData.NewCacheData, cData.KeepAlive);
+                            if (cData == null)
+                            {
+                                return default(T);
+                            }
 
+                            Set(name, cData.NewCacheData, cData.KeepAlive);
                             return cData.NewCacheData;
                         }
                     }
@@ -428,8 +432,12 @@ namespace Plato.Cache
                         if (node == null)
                         {
                             var cData = await callbackAsync(name, args);
-                            Set(name, cData.NewCacheData, cData.KeepAlive);
+                            if (cData == null)
+                            {
+                                return default(T);
+                            }
 
+                            Set(name, cData.NewCacheData, cData.KeepAlive);
                             return cData.NewCacheData;
                         }
                     }

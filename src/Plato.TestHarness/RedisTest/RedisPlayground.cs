@@ -460,11 +460,13 @@ namespace Plato.TestHarness.RedisTest
                     
                     var xxx = cache.Get("test", (name, args) =>
                     {
-                        return new CacheDataInfo<string>
-                        {
-                            KeepAlive= TimeSpan.FromMinutes(1),
-                            NewCacheData = null,
-                        };
+                        //return new CacheDataInfo<string>
+                        //{
+                        //    KeepAlive= TimeSpan.FromMinutes(1),
+                        //    NewCacheData = null,
+                        //};
+
+                        return (CacheDataInfo<string>)null;
                     });
 
 

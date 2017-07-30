@@ -10,7 +10,7 @@ namespace Plato.Cache
     ///
     /// </summary>
     public class CacheDataInfo<T>
-    {
+    {        
         /// <summary>
         /// Gets or sets the new cache data.
         /// </summary>

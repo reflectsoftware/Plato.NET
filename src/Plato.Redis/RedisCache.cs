@@ -140,8 +140,12 @@ namespace Plato.Redis
                 if(value.IsNull)
                 {
                     var cData = callback(name, args);
-                    Set(name, cData.NewCacheData, cData.KeepAlive);
+                    if (cData == null)
+                    {
+                        return default(T);
+                    }
 
+                    Set(name, cData.NewCacheData, cData.KeepAlive);
                     return cData.NewCacheData;
                 }
 
@@ -177,8 +181,12 @@ namespace Plato.Redis
                 if (value.IsNull)
                 {
                     var cData = await callbackAsync(name, args);
-                    await SetAsync(name, cData.NewCacheData, cData.KeepAlive);
+                    if(cData == null)
+                    {
+                        return default(T);
+                    }
 
+                    await SetAsync(name, cData.NewCacheData, cData.KeepAlive);
                     return cData.NewCacheData;
                 }
 
