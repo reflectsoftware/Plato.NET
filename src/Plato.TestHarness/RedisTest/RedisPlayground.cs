@@ -437,7 +437,42 @@ namespace Plato.TestHarness.RedisTest
             t4.Join();
         }
 
-        static public void Run()
+        public partial class IntegrationEntity
+        {
+            public Guid IntegrationId { get; set; }
+            public Guid AppId { get; set; }
+            public int IntegrationTypeId { get; set; }
+            public int ChannelId { get; set; }
+            public string Name { get; set; }
+            public DateTime CreatedDateTime { get; set; }
+            public DateTime? ModifiedDateTime { get; set; }
+            public DateTime? DeletedDateTime { get; set; }
+            public string Configuration { get; set; }
+            public bool Enabled { get; set; }
+            public AppEntity App { get; set; }
+        }
+
+
+        public partial class AppEntity
+        {
+            public AppEntity()
+            {
+                Integrations = new HashSet<IntegrationEntity>();
+            }
+
+            public Guid AppId { get; set; }
+            public Guid TenantId { get; set; }
+            public string Name { get; set; }
+            public string Description { get; set; }
+            public DateTime CreatedDateTime { get; set; }
+            public DateTime? ModifiedDateTime { get; set; }
+            public DateTime? DeletedDateTime { get; set; }
+            public bool Enabled { get; set; }            
+            public ICollection<IntegrationEntity> Integrations { get; set; }
+        }
+        
+
+        static public async Task RunAsync()
         {
             // string connectionString = "127.0.0.1:30001,127.0.0.1:30002,127.0.0.1:30003,127.0.0.1:30004,127.0.0.1:30005,127.0.0.1:30006";
             string connectionStrings = "localhost:6379";
@@ -453,22 +488,35 @@ namespace Plato.TestHarness.RedisTest
                 {
 
                     var lockAcquisition = new RedisCacheKeyLockAcquisition();
-                    var cacheContainer = new HashRedisCacheContainer(redisConnection); //new StringRedisCacheContainer(redisConnection);
+                    var cacheContainer = new StringRedisCacheContainer(redisConnection, "RedisCache"); // new HashRedisCacheContainer(redisConnection);
                     var cacheSeriizer = new MsgPackRedisSerializer(); // new JsonRedisSerializer();
                     var cache = new RedisCache(redisConnection, lockAcquisition, cacheContainer, cacheSeriizer);
 
-                    var xxx = cache.Get("test", (name, args) =>
+                    var xxx = await cache.GetAsync("app:app:00000000-0000-0000-0000-0000000000a1", async (name, args) =>
                     {
-                        return new CacheDataInfo<string>
+                        var app = new AppEntity
                         {
-                            KeepAlive = TimeSpan.FromMinutes(0.5),
-                            NewCacheData = "Hello, Ross"
+                            AppId = Guid.NewGuid(),
+                            CreatedDateTime = DateTime.Now,
+                            ModifiedDateTime = DateTime.Now,
+                            Description = "Hello",
+                            Enabled = true,
+                            Name = "test",
+                            TenantId = Guid.Empty,
+                        };
+
+                        await Task.Delay(0);
+
+                        return new CacheDataInfo<AppEntity>
+                        {
+                            KeepAlive = TimeSpan.FromHours(1),
+                            NewCacheData = app, //"Hello, Ross"
                         };
 
                         // return (CacheDataInfo<string>)null;
                     });
 
-                    cache.Remove("test");
+                    // cache.Remove("test");
 
 
                     //CacheThreadTest(redisConnection);

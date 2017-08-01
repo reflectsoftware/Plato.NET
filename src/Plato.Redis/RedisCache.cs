@@ -235,8 +235,6 @@ namespace Plato.Redis
             };
 
             _container.Set(name, _serialier.Serialize(cInfo), keepAlive);
-
-            // _container.Set(name, _serialier.Serialize(item), keepAlive);            
         }
 
         /// <summary>
@@ -248,7 +246,14 @@ namespace Plato.Redis
         /// <returns></returns>
         public async Task SetAsync(string name, object item, TimeSpan? keepAlive = null)
         {
-            await _container.SetAsync(name, _serialier.Serialize(item), keepAlive);            
+            var cInfo = new CacheDataInfo<object>
+            {
+                CachedDateTime = DateTime.Now,
+                KeepAlive = keepAlive ?? TimeSpan.Zero,
+                NewCacheData = item,
+            };
+
+            await _container.SetAsync(name, _serialier.Serialize(cInfo), keepAlive);            
         }
     }
 }

@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            RedisTest.RedisPlayground.Run();
+            RedisTest.RedisPlayground.RunAsync().Wait();
         }
     }
 }
