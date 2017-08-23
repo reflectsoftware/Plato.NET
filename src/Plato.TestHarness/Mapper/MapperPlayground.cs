@@ -19,7 +19,11 @@ namespace Plato.TestHarness.Mapper
         public string TheAddress { get; set; }
     }
 
-    public class MyMapper : IMapper<MapperTestClass1, MapperTestClass2>
+    public interface IMyMapper : IMapper<MapperTestClass1, MapperTestClass2>
+    {
+    }
+
+    public class MyMapper : IMyMapper
     {
         public void Map(MapperTestClass1 source, MapperTestClass2 target)
         {
@@ -34,7 +38,7 @@ namespace Plato.TestHarness.Mapper
         {
             var class1 = new MapperTestClass1 { Name = "Ross", Address = "123 Main" };
 
-            var mapper = new MyMapper();
+            var mapper = new MyMapper() as IMyMapper;
             var class2a = mapper.Map(class1);
             var class2b = mapper.Map(class1, (source, target) =>
             {
