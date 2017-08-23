@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Plato.Configuration;
+using Plato.Configuration.Enums;
 using Plato.Configuration.Interfaces;
 using System;
 
@@ -41,7 +42,7 @@ namespace Plato.Threading.WorkManagement
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="changeType">Type of the change.</param>
-        private static void DoConfigFileChanged(IConfigContainer configuration, Plato.Configuration.Enums.OnChangeType changeType)
+        private static void DoConfigFileChanged(IConfigContainer configuration, OnChangeType changeType)
         {
             if (OnConfigChange != null)
             {

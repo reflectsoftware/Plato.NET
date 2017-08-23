@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using Plato.Configuration.Enums;
 
 namespace Plato.ExceptionManagement
 {
@@ -195,7 +196,7 @@ namespace Plato.ExceptionManagement
         /// </summary>
         /// <param name="container">The container.</param>
         /// <param name="cType">Type of the c.</param>
-        protected void OnConfigChange(IConfigContainer container, Plato.Configuration.Enums.OnChangeType cType)
+        protected void OnConfigChange(IConfigContainer container, OnChangeType cType)
         {
             LoadPublishers();
         }

@@ -4,6 +4,7 @@
 
 using Plato.ClassFactory.Interfaces;
 using Plato.Configuration;
+using Plato.Configuration.Enums;
 using Plato.Configuration.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -121,7 +122,7 @@ namespace Plato.ClassFactory
         /// </summary>
         /// <param name="configContainer">The configuration container.</param>
         /// <param name="cType">Type of the c.</param>
-        private void OnConfigChange(IConfigContainer configContainer, Plato.Configuration.Enums.OnChangeType cType)
+        private void OnConfigChange(IConfigContainer configContainer, OnChangeType cType)
         {
             (this as IProviderClassFactoryExtension).RefreshAttributes();
         }

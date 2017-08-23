@@ -7,6 +7,7 @@ using Plato.Core.Miscellaneous;
 using Plato.Core.Strings;
 using System;
 using System.Collections.Specialized;
+using Plato.Core.Logging.Enums;
 
 namespace Plato.Threading.WorkManagement
 {
@@ -59,7 +60,7 @@ namespace Plato.Threading.WorkManagement
         /// </summary>
         /// <param name="msg">The MSG.</param>
         /// <param name="nType">Type of the n.</param>
-        public override void SendMessage(string msg, Core.Logging.Enums.NotificationType nType)
+        public override void SendMessage(string msg, NotificationType nType)
         {
             Console.WriteLine("{0}: [{1}]", msg, nType);
         }
