@@ -29,12 +29,30 @@ namespace Plato.Messaging.RMQ
 
             try
             {
+                // see if we need to create a DLQ
+                if (_queueSettings.Arguments != null && _queueSettings.Arguments.ContainsKey("x-dead-letter-routing-key"))
+                {
+                    var queueName = (string)_queueSettings.Arguments["x-dead-letter-routing-key"];
+                    if (string.IsNullOrWhiteSpace(queueName))
+                    {
+                        queueName = $"{_queueSettings.QueueName}.DLQ";
+                        _queueSettings.Arguments["x-dead-letter-routing-key"] = queueName;
+                    }
+
+                    _channel.QueueDeclare(
+                        queue: queueName,
+                        durable: true,
+                        exclusive: false,
+                        autoDelete: false);
+                }
+
                 _channel.QueueDeclare(
                     queue: _queueSettings.QueueName,
                     durable: _queueSettings.Durable,
                     exclusive: _queueSettings.Exclusive,
                     autoDelete: _queueSettings.AutoDelete,
                     arguments: _queueSettings.Arguments);
+
             }
             catch (Exception ex)
             {

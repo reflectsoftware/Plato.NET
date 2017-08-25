@@ -66,10 +66,11 @@ namespace Plato.Messaging.RMQ
         internal RMQReceiverResult(IConnection connection, IModel channel, BasicDeliverEventArgs args, string queueName)
         {
             Channel = channel;
-            Connection = connection;
-            DeliverEventArgs = args;
+            Connection = connection;            
             HasAcknowledged = false;
             QueueName = queueName;
+            DeliverEventArgs = args;
+            DeliverEventArgs.BasicProperties.Headers = args.BasicProperties.Headers ?? new Dictionary<string, object>();
         }
 
         /// <summary>

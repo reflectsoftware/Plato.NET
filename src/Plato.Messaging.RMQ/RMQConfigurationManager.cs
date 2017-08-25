@@ -178,17 +178,32 @@ namespace Plato.Messaging.RMQ
                 AutoDelete = StringHelper.IfNullOrEmptyUseDefault(attributes["autoDelete"], "false") == "true",
                 Persistent = StringHelper.IfNullOrEmptyUseDefault(attributes["persistent"], "true") == "true",
                 RoutingKeys = routingKeys,
-                Arguments = arguments
+                Arguments = arguments ?? new Dictionary<string, object>()
             };
 
             var sRoutingKeys = StringHelper.IfNullOrEmptyUseDefault(attributes["routingKeys"], string.Empty);
             foreach(var routingKey in sRoutingKeys.Split(new char[] {','}))
             {
                 routingKeys.Add(routingKey.Trim());
-            }
+            }            
 
             if(_configNode != null)
             {
+                // get arguments if they exist
+                var argsNode = _configNode.GetConfigNode($"./queue[@name='{name}']/arguments");
+                if(argsNode != null)
+                {
+                    attributes = argsNode.GetAttributes();
+                    foreach(var key in attributes.AllKeys)
+                    {                        
+                        if(!queueSettings.Arguments.ContainsKey(key))
+                        {
+                            queueSettings.Arguments[key] = attributes[key];
+                        }
+                    }
+                }
+                
+                // get consumer info if it exists
                 var consumerNode = _configNode.GetConfigNode($"./queue[@name='{name}']/consumer");
                 if(consumerNode != null)
                 {
