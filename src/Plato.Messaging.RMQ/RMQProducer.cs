@@ -7,9 +7,7 @@ using Plato.Messaging.Exceptions;
 using Plato.Messaging.Interfaces;
 using Plato.Messaging.RMQ.Interfaces;
 using Plato.Messaging.RMQ.Settings;
-using RabbitMQ.Client.Exceptions;
 using System;
-using System.IO;
 
 namespace Plato.Messaging.RMQ
 {
@@ -40,67 +38,58 @@ namespace Plato.Messaging.RMQ
         /// <param name="action">The action.</param>
         protected void _Send(byte[] data, Action<ISenderProperties> action = null)
         {
-            while (true)
+            try
             {
+                if (!IsOpen())
+                {
+                    Open();
+                }
+
                 try
                 {
-                    if (!IsOpen())
+                    var props = _channel.CreateBasicProperties();
+                    props.Persistent = _queueSettings.Persistent;
+
+                    var senderProperties = new RMQSenderProperties()
                     {
-                        Open();
-                    }
+                        Properties = props,
+                        Exchange = string.Empty,
+                        RoutingKey = _queueSettings.QueueName,
+                        Mandatory = false,
+                    };
 
-                    try
-                    {
-                        var props = _channel.CreateBasicProperties();
-                        props.Persistent = _queueSettings.Persistent;
+                    action?.Invoke(senderProperties);
 
-                        var senderProperties = new RMQSenderProperties()
-                        {
-                            Properties = props,
-                            Exchange = string.Empty,
-                            RoutingKey = _queueSettings.QueueName,
-                            Mandatory = false,
-                        };
+                    _channel.BasicPublish(
+                        string.Empty,
+                        _queueSettings.QueueName,
+                        senderProperties.Mandatory,
+                        props,
+                        data);
 
-                        action?.Invoke(senderProperties);
-
-                        _channel.BasicPublish(
-                            string.Empty,
-                            _queueSettings.QueueName,
-                            senderProperties.Mandatory,
-                            props,
-                            data);
-
-                        return;
-                    }
-                    catch (Exception ex)
-                    {
-                        if ((ex is AlreadyClosedException) || (ex is IOException))
-                        {
-                            // retry
-                            continue;
-                        }
-
-                        var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
-                        if (newException != null)
-                        {
-                            throw newException;
-                        }
-
-                        throw;
-                    }
+                    return;
                 }
-                catch (MessageException ex)
+                catch (Exception ex)
                 {
-                    switch (ex.ExceptionCode)
+                    var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
+                    if (newException != null)
                     {
-                        case MessageExceptionCode.LostConnection:
-                            Close();
-                            break;
+                        throw newException;
                     }
 
                     throw;
                 }
+            }
+            catch (MessageException ex)
+            {
+                switch (ex.ExceptionCode)
+                {
+                    case MessageExceptionCode.LostConnection:
+                        Close();
+                        break;
+                }
+
+                throw;
             }
         }
     }
