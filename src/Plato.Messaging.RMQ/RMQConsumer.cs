@@ -2,6 +2,8 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Plato.Messaging.Enums;
+using Plato.Messaging.Exceptions;
 using Plato.Messaging.RMQ.Interfaces;
 using Plato.Messaging.RMQ.Settings;
 using RabbitMQ.Client.Events;
@@ -96,10 +98,7 @@ namespace Plato.Messaging.RMQ
         {
             try
             {
-                if (IsOpen())
-                {
-                    CloseChannel();
-                }
+                Close();
             }
             catch (Exception ex)
             {
@@ -122,27 +121,41 @@ namespace Plato.Messaging.RMQ
         {
             try
             {
-                Open();
-
-                var deliverArgs = (BasicDeliverEventArgs)null;
-                var status = _queueingConsumer.Queue.Dequeue(msecTimeout, out deliverArgs);
-                if (status)
+                try
                 {
-                    return deliverArgs; 
+                    Open();
+
+                    var deliverArgs = (BasicDeliverEventArgs)null;
+                    var status = _queueingConsumer.Queue.Dequeue(msecTimeout, out deliverArgs);
+                    if (status)
+                    {
+                        return deliverArgs;
+                    }
+
+                    throw _TimeoutException;
                 }
-
-                throw _TimeoutException;
-            }
-            catch(TimeoutException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
-                if (newException != null)
+                catch (TimeoutException)
                 {
-                    throw newException;
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
+                    if (newException != null)
+                    {
+                        throw newException;
+                    }
+
+                    throw;
+                }
+            }
+            catch (MessageException ex)
+            {
+                switch (ex.ExceptionCode)
+                {
+                    case MessageExceptionCode.LostConnection:
+                        Close();
+                        break;
                 }
 
                 throw;

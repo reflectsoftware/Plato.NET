@@ -1,8 +1,12 @@
-﻿using Plato.Messaging.RMQ;
+﻿using Plato.Messaging.Enums;
+using Plato.Messaging.Exceptions;
+using Plato.Messaging.RMQ;
 using Plato.Messaging.RMQ.Factories;
 using Plato.Messaging.RMQ.Settings;
+using Plato.SqlServer;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,11 +39,8 @@ namespace Plato.TestHarness.RMQ
             return connectionSettings;
         }
 
-        static private void Producer()
+        static private Task ProducerAsync()
         {
-            //var xxx = new RMQConfigurationManager();
-            //var qs = xxx.GetQueueSettings("My.Queue");
-            
             var args = new Dictionary<string, object>
             {
                 { "x-dead-letter-exchange", "" },
@@ -48,7 +49,7 @@ namespace Plato.TestHarness.RMQ
 
             var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());
             var connectionSettings = GetRMQConnectionSettings();
-            var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue1", true, false, false, true, arguments: args);                        
+            var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue", true, false, false, true, arguments: args);                        
 
             using (var producer = procuderFactory.CreateText(connectionSettings, queueSettings))
             {
@@ -57,9 +58,11 @@ namespace Plato.TestHarness.RMQ
                 producer.Send("test3");
                 producer.Send("test4");
             }
+
+            return Task.CompletedTask;
         }
 
-        static private void Consumer()
+        static private Task ConsumerAsync()
         {
             var args = new Dictionary<string, object>
             {
@@ -69,7 +72,7 @@ namespace Plato.TestHarness.RMQ
 
             var consumerFactory = new RMQConsumerFactory(new RMQConnectionFactory());
             var connectionSettings = GetRMQConnectionSettings();
-            var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue2", true, false, false, true, arguments: args);
+            var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue", true, false, false, true, arguments: args);
 
             using (var consumer = consumerFactory.CreateText(connectionSettings, queueSettings))
             {
@@ -77,33 +80,58 @@ namespace Plato.TestHarness.RMQ
                 {
                     try
                     {
-                        var message = consumer.Receive(1000);
+                        try
+                        {
+                            var message = consumer.Receive(1000);
 
-                        message.Reject(true);
+                            //message.Reject(true);
+                            //message.Reject();
 
-                        message.Reject();
+                            message.Acknowledge();
+                        }
+                        catch (TimeoutException)
+                        {
+                        }
+                        catch (MessageException ex)
+                        {
+                            switch (ex.ExceptionCode)
+                            {
+                                case MessageExceptionCode.ExclusiveLock:
+                                    //await Task.Delay(5000);
+                                    break;
 
-                        message.Acknowledge();
+                                case MessageExceptionCode.LostConnection:
+                                    //await Task.Delay(5000);
+                                    throw;
 
-                    }
-                    catch (TimeoutException)
-                    {
+                                default:
+                                    throw;
+                            }
+                        }
+                        catch (SqlException ex)
+                        {
+                            if (SQLErrors.IsSevereErrorCode(ex.Number))
+                            {
+                                // issue connecting with SQL server
+                                //await Task.Delay(5000);
+                            }
+
+                            throw;
+                        }
                     }
                     catch (Exception ex)
                     {
+                        consumer.ClearCacheBuffer();
                         Console.WriteLine(ex);
                     }
                 }
             }
         }
 
-
-        static public Task RunAsync()
+        static public async Task RunAsync()
         {
-            // Producer();
-            // Consumer();
-
-            return Task.CompletedTask;
+            // await ProducerAsync();
+            await ConsumerAsync();
         }
     }
 }

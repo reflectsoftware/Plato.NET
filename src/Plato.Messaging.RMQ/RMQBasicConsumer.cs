@@ -5,6 +5,7 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Util;
+using System.IO;
 
 namespace Plato.Messaging.RMQ
 {
@@ -70,7 +71,14 @@ namespace Plato.Messaging.RMQ
                 Body = body
             };
 
-            Queue.Enqueue(eventArgs);
+            try
+            {
+                Queue.Enqueue(eventArgs);
+            }
+            catch(EndOfStreamException)
+            {
+                Queue.Close();
+            }
         }
 
         /// <summary> 

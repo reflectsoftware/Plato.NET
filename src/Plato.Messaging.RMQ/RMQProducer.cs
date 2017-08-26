@@ -2,6 +2,8 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Plato.Messaging.Enums;
+using Plato.Messaging.Exceptions;
 using Plato.Messaging.Interfaces;
 using Plato.Messaging.RMQ.Interfaces;
 using Plato.Messaging.RMQ.Settings;
@@ -11,6 +13,10 @@ using System.IO;
 
 namespace Plato.Messaging.RMQ
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.RMQ.RMQQueue" />
     public abstract class RMQProducer : RMQQueue
     {
         /// <summary>
@@ -36,47 +42,61 @@ namespace Plato.Messaging.RMQ
         {
             while (true)
             {
-                if (!IsOpen())
-                {
-                    Open();
-                }
-
                 try
                 {
-                    var props = _channel.CreateBasicProperties();
-                    props.Persistent = _queueSettings.Persistent;
-
-                    var senderProperties = new RMQSenderProperties()
+                    if (!IsOpen())
                     {
-                        Properties = props,
-                        Exchange = string.Empty,
-                        RoutingKey = _queueSettings.QueueName,
-                        Mandatory = false,
-                    };
-
-                    action?.Invoke(senderProperties);
-
-                    _channel.BasicPublish(
-                        string.Empty,
-                        _queueSettings.QueueName,
-                        senderProperties.Mandatory,
-                        props,
-                        data);
-
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    if ((ex is AlreadyClosedException) || (ex is IOException))
-                    {
-                        // retry
-                        continue;
+                        Open();
                     }
 
-                    var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
-                    if (newException != null)
+                    try
                     {
-                        throw newException;
+                        var props = _channel.CreateBasicProperties();
+                        props.Persistent = _queueSettings.Persistent;
+
+                        var senderProperties = new RMQSenderProperties()
+                        {
+                            Properties = props,
+                            Exchange = string.Empty,
+                            RoutingKey = _queueSettings.QueueName,
+                            Mandatory = false,
+                        };
+
+                        action?.Invoke(senderProperties);
+
+                        _channel.BasicPublish(
+                            string.Empty,
+                            _queueSettings.QueueName,
+                            senderProperties.Mandatory,
+                            props,
+                            data);
+
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        if ((ex is AlreadyClosedException) || (ex is IOException))
+                        {
+                            // retry
+                            continue;
+                        }
+
+                        var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
+                        if (newException != null)
+                        {
+                            throw newException;
+                        }
+
+                        throw;
+                    }
+                }
+                catch (MessageException ex)
+                {
+                    switch (ex.ExceptionCode)
+                    {
+                        case MessageExceptionCode.LostConnection:
+                            Close();
+                            break;
                     }
 
                     throw;

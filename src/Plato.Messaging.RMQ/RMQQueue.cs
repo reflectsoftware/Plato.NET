@@ -10,10 +10,21 @@ using System;
 
 namespace Plato.Messaging.RMQ
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.RMQ.RMQReceiverSender" />
+    /// <seealso cref="Plato.Messaging.RMQ.Interfaces.IRMQQueue" />
     public abstract class RMQQueue : RMQReceiverSender, IRMQQueue
     {
         protected readonly RMQQueueSettings _queueSettings;
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQQueue"/> class.
+        /// </summary>
+        /// <param name="connectionFactory">The connection factory.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="queueSettings">The queue settings.</param>
         public RMQQueue(
             IRMQConnectionFactory connectionFactory,
             RMQConnectionSettings connectionSettings,
@@ -21,8 +32,11 @@ namespace Plato.Messaging.RMQ
             : base(connectionFactory, connectionSettings)
         {
             _queueSettings = queueSettings;
-        }       
+        }
 
+        /// <summary>
+        /// Opens the channel.
+        /// </summary>
         protected override void OpenChannel()
         {
             base.OpenChannel();
