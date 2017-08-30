@@ -1,4 +1,6 @@
-﻿using Plato.Cache;
+﻿using MsgPack;
+using MsgPack.Serialization;
+using Plato.Cache;
 using Plato.Redis;
 using Plato.Redis.Collections;
 using Plato.Redis.Containers;
@@ -471,7 +473,6 @@ namespace Plato.TestHarness.RedisTest
             public ICollection<IntegrationEntity> Integrations { get; set; }
         }
         
-
         static public async Task RunAsync()
         {
             // string connectionString = "127.0.0.1:30001,127.0.0.1:30002,127.0.0.1:30003,127.0.0.1:30004,127.0.0.1:30005,127.0.0.1:30006";
@@ -486,6 +487,16 @@ namespace Plato.TestHarness.RedisTest
             {             
                 using (var redisConnection = new RedisConnection(connectionStrings, configuration))
                 {
+                    var d = new RedisDictionary<string, object>(redisConnection.GetDatabase(), "ABC", new JsonRedisSerializer()); // new MsgPackRedisSerializer());
+
+                    var result = d.GetOrAdd("test", (keyname) =>
+                    {
+                        return new TestClass { Id = 10, Name = "Ross" };
+                    });
+
+                    var x = d.ValueSerializer.Deserialize<TestClass>(result);
+                    
+                    return;
 
                     var lockAcquisition = new RedisCacheKeyLockAcquisition();
                     var cacheContainer = new StringRedisCacheContainer(redisConnection, "RedisCache"); // new HashRedisCacheContainer(redisConnection);

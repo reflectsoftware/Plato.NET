@@ -10,5 +10,6 @@ namespace Plato.Redis.Interfaces
     {
         RedisValue Serialize(object data);
         T Deserialize<T>(RedisValue value);
+        T Deserialize<T>(object data);
     }
 }

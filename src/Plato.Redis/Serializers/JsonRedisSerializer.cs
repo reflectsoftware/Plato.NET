@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Plato.Redis.Interfaces;
 using StackExchange.Redis;
 
@@ -33,6 +34,27 @@ namespace Plato.Redis.Serializers
         public T Deserialize<T>(RedisValue data)
         {
             return data.HasValue ? JsonConvert.DeserializeObject<T>(data) : default(T);
+        }
+
+        /// <summary>
+        /// Deserializes the specified data.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data">The data.</param>
+        /// <returns></returns>
+        public T Deserialize<T>(object data)
+        {
+            if (data is JObject)
+            {
+                return JObject.FromObject(data).ToObject<T>();
+            }
+
+            if (data is T)
+            {
+                return (T)data;
+            }
+
+            return default(T);
         }
     }
 }

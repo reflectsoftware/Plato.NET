@@ -2,6 +2,7 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using MsgPack;
 using MsgPack.Serialization;
 using Plato.Redis.Interfaces;
 using StackExchange.Redis;
@@ -48,6 +49,27 @@ namespace Plato.Redis.Serializers
                 {
                     return MessagePackSerializer.Get<T>().Unpack(ms);
                 }
+            }
+
+            return default(T);
+        }
+
+        /// <summary>
+        /// Deserializes the specified data.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data">The data.</param>
+        /// <returns></returns>
+        public T Deserialize<T>(object data)
+        {
+            if (data is MessagePackObject)
+            {
+                return MessagePackSerializer.Get<T>().FromMessagePackObject((MessagePackObject)data);
+            }
+
+            if (data is T)
+            {
+                return (T)data;
             }
 
             return default(T);
