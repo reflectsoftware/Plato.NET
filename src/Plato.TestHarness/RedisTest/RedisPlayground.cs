@@ -487,16 +487,21 @@ namespace Plato.TestHarness.RedisTest
             {             
                 using (var redisConnection = new RedisConnection(connectionStrings, configuration))
                 {
-                    var d = new RedisDictionary<string, object>(redisConnection.GetDatabase(), "ABC", new JsonRedisSerializer()); // new MsgPackRedisSerializer());
+                    //var d = new RedisDictionary<string, object>(redisConnection.GetDatabase(), "ABC", new JsonRedisSerializer()); // new MsgPackRedisSerializer());
+                    //var l = new RedisList<string>(redisConnection.GetDatabase(), "LIST", new MsgPackRedisSerializer());
 
-                    var result = d.GetOrAdd("test", (keyname) =>
-                    {
-                        return new TestClass { Id = 10, Name = "Ross" };
-                    });
+                    //l.Add("ross1");
+                    //l.Add("ross2");
+                    //l.Add("ross3");
+                    //l.Add("ross4");
 
-                    var x = d.ValueSerializer.Deserialize<TestClass>(result);
-                    
-                    return;
+                    //var x = l.Values;
+                    //foreach(var s in x)
+                    //{
+                    //    Console.WriteLine(s);
+                    //}
+
+                    //return;
 
                     var lockAcquisition = new RedisCacheKeyLockAcquisition();
                     var cacheContainer = new StringRedisCacheContainer(redisConnection, "RedisCache"); // new HashRedisCacheContainer(redisConnection);

@@ -8,6 +8,7 @@ using StackExchange.Redis;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Plato.Redis.Collections
 {
@@ -201,6 +202,21 @@ namespace Plato.Redis.Collections
         public bool Remove(T item)
         {
             return RedisDb.ListRemove(RedisKey, Serializer.Serialize(item)) > 0;
+        }
+
+        /// <summary>
+        /// Gets the values.
+        /// </summary>
+        /// <value>
+        /// The values.
+        /// </value>
+        public IEnumerable<T> Values
+        {
+            get
+            {
+                var values = RedisDb.ListRange(RedisKey);
+                return values.Where(x => x.HasValue).Select(x => Serializer.Deserialize<T>(x));
+            }
         }
 
         /// <summary>

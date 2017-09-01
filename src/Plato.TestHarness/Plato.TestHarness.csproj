@@ -44,7 +44,7 @@
       <HintPath>..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
     <Reference Include="MsgPack, Version=0.9.0.0, Culture=neutral, PublicKeyToken=a2625990d5dc0167, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MsgPack.Cli.0.9.0\lib\net46\MsgPack.dll</HintPath>
+      <HintPath>..\..\packages\MsgPack.Cli.0.9.1\lib\net46\MsgPack.dll</HintPath>
     </Reference>
     <Reference Include="StackExchange.Redis, Version=1.2.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\StackExchange.Redis.1.2.6\lib\net46\StackExchange.Redis.dll</HintPath>

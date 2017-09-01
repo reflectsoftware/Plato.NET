@@ -13,5 +13,6 @@ namespace Plato.Redis.Interfaces
     /// <seealso cref="System.Collections.Generic.IList{T}" />
     public interface IRedisList<T> : IList<T>
     {
+        IEnumerable<T> Values { get; }
     }
 }

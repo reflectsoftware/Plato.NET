@@ -7,6 +7,7 @@ using StackExchange.Redis;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Plato.Redis.Collections
 {
@@ -123,16 +124,7 @@ namespace Plato.Redis.Collections
         /// <returns></returns>
         public T[] ToArray()
         {
-            var array = new List<T>();
-            foreach (var value in _redisList.RedisDb.ListRange(_redisList.RedisKey))
-            {
-                if(value.HasValue)
-                {
-                    array.Add(_redisList.Serializer.Deserialize<T>(value));
-                }
-            }
-
-            return array.ToArray();
+            return _redisList.Values.ToArray();
         }
 
         /// <summary>
