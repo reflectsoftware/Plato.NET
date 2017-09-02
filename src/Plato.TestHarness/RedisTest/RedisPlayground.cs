@@ -510,6 +510,30 @@ namespace Plato.TestHarness.RedisTest
             return Task.CompletedTask;
         }
 
+        public static Task<TValue> GetAsyncX<TValue>(RedisDictionary<string, object> _dictionary, string key, Func<string, TValue> onAdd = null)
+        {
+            var result = _dictionary.GetOrAdd(key, (keyname) =>
+            {
+                var value = default(TValue);
+                if (onAdd != null)
+                {
+                    value = onAdd.Invoke(keyname);
+                }
+
+                return value;
+            });
+
+            var xxx = _dictionary.ValueSerializer.Deserialize<TValue>(result);
+
+            return Task.FromResult(xxx);
+        }
+
+        public static Task SetAsyncX<TValue>(RedisDictionary<string, object> _dictionary, string key, TValue value)
+        {
+            _dictionary.Add(key, value);
+
+            return Task.CompletedTask;
+        }
 
         static public async Task RunAsync()
         {
@@ -525,16 +549,24 @@ namespace Plato.TestHarness.RedisTest
             {             
                 using (var redisConnection = new RedisConnection(connectionStrings, configuration))
                 {
-                    var d = new RedisDictionary<string, Crap>(redisConnection.GetDatabase(), "test", new MsgPackRedisSerializer()); // new MsgPackRedisSerializer());        
+                    var d = new RedisDictionary<string, Crap>(redisConnection.GetDatabase(), "test", new JsonRedisSerializer()); // new MsgPackRedisSerializer());        
+                    var dtest = new Dictionary<int, string>();
+                    dtest.Add(1, "Ross");
+                    dtest.Add(2, "Tammy");
+
+                    var v1 = await GetAsync(d, "age", name => 2);
+                    await SetAsync(d, "age", (v1 + 2));
+                    v1 = await GetAsync(d, "age", name => 3);
+
+                    var v2 = await GetAsync(d, "dtest", name => dtest);                    
+                    v2 = await GetAsync(d, "dtest", name => dtest);
                     
-                    //var v1 = await GetAsync(d, "age", name => (decimal)2);
-                    //await SetAsync(d, "age", (decimal)(v1 + 2));
-                    //v1 = await GetAsync(d, "age", name => (decimal)3);
+
 
                     ////var v1 = await GetAsync(d, "age", name => (decimal)2);
                     ////await SetAsync(d, "age", (v1 + 2));
                     ////v1 = await GetAsync(d, "age", name => (decimal)3);
-                    
+
                     //return;
 
                     var lockAcquisition = new RedisCacheKeyLockAcquisition();
