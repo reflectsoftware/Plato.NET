@@ -62,17 +62,7 @@ namespace Plato.Redis.Serializers
         /// <returns></returns>
         public T Deserialize<T>(object data)
         {
-            if (data is MessagePackObject)
-            {
-                return MessagePackSerializer.Get<T>().FromMessagePackObject((MessagePackObject)data);
-            }
-
-            if (data is T)
-            {
-                return (T)data;
-            }
-
-            return default(T);
+            return MessagePackSerializer.Get<T>().FromMessagePackObject((MessagePackObject)data);
         }
     }
 }

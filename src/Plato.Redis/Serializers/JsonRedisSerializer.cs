@@ -44,17 +44,7 @@ namespace Plato.Redis.Serializers
         /// <returns></returns>
         public T Deserialize<T>(object data)
         {
-            if (data is JObject)
-            {
-                return JObject.FromObject(data).ToObject<T>();
-            }
-
-            if (data is T)
-            {
-                return (T)data;
-            }
-
-            return default(T);
+            return JObject.FromObject(data).ToObject<T>();
         }
     }
 }

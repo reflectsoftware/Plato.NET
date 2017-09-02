@@ -1,5 +1,6 @@
 ﻿using MsgPack;
 using MsgPack.Serialization;
+using Newtonsoft.Json.Linq;
 using Plato.Cache;
 using Plato.Redis;
 using Plato.Redis.Collections;
@@ -472,7 +473,44 @@ namespace Plato.TestHarness.RedisTest
             public bool Enabled { get; set; }            
             public ICollection<IntegrationEntity> Integrations { get; set; }
         }
-        
+
+
+        public class Crap<TValue>
+        {
+            public TValue Value { get; set; }
+        }
+
+        public class Crap: Crap<object>
+        { 
+        }
+
+
+        public static Task<TValue> GetAsync<TValue>(RedisDictionary<string, Crap> _dictionary, string key, Func<string, TValue> onAdd = null)
+        {            
+            var result = _dictionary.GetOrAdd(key, (keyname) =>
+            {
+                var value = default(TValue);
+                if (onAdd != null)
+                {
+                    value = onAdd.Invoke(keyname);
+                }
+
+                return new Crap { Value = value };
+            });
+
+            var xxx = _dictionary.ValueSerializer.Deserialize<Crap<TValue>>(result);
+
+            return Task.FromResult(xxx.Value);
+        }
+
+        public static Task SetAsync<TValue>(RedisDictionary<string, Crap> _dictionary, string key, TValue value)
+        {
+            _dictionary.Add(key, new Crap { Value = value });
+
+            return Task.CompletedTask;
+        }
+
+
         static public async Task RunAsync()
         {
             // string connectionString = "127.0.0.1:30001,127.0.0.1:30002,127.0.0.1:30003,127.0.0.1:30004,127.0.0.1:30005,127.0.0.1:30006";
@@ -487,20 +525,16 @@ namespace Plato.TestHarness.RedisTest
             {             
                 using (var redisConnection = new RedisConnection(connectionStrings, configuration))
                 {
-                    //var d = new RedisDictionary<string, object>(redisConnection.GetDatabase(), "ABC", new JsonRedisSerializer()); // new MsgPackRedisSerializer());
-                    //var l = new RedisList<string>(redisConnection.GetDatabase(), "LIST", new MsgPackRedisSerializer());
+                    var d = new RedisDictionary<string, Crap>(redisConnection.GetDatabase(), "test", new MsgPackRedisSerializer()); // new MsgPackRedisSerializer());        
+                    
+                    //var v1 = await GetAsync(d, "age", name => (decimal)2);
+                    //await SetAsync(d, "age", (decimal)(v1 + 2));
+                    //v1 = await GetAsync(d, "age", name => (decimal)3);
 
-                    //l.Add("ross1");
-                    //l.Add("ross2");
-                    //l.Add("ross3");
-                    //l.Add("ross4");
-
-                    //var x = l.Values;
-                    //foreach(var s in x)
-                    //{
-                    //    Console.WriteLine(s);
-                    //}
-
+                    ////var v1 = await GetAsync(d, "age", name => (decimal)2);
+                    ////await SetAsync(d, "age", (v1 + 2));
+                    ////v1 = await GetAsync(d, "age", name => (decimal)3);
+                    
                     //return;
 
                     var lockAcquisition = new RedisCacheKeyLockAcquisition();
