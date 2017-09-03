@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Plato.Redis.Interfaces;
 using StackExchange.Redis;
+using System;
 
 namespace Plato.Redis.Serializers
 {
@@ -45,6 +46,17 @@ namespace Plato.Redis.Serializers
         public T Deserialize<T>(object data)
         {
             return JObject.FromObject(data).ToObject<T>();
+        }
+
+        /// <summary>
+        /// Deserializes the specified data.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        public object Deserialize(object data, Type type)
+        {
+            return JObject.FromObject(data).ToObject(type);
         }
     }
 }

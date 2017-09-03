@@ -6,6 +6,7 @@ using MsgPack;
 using MsgPack.Serialization;
 using Plato.Redis.Interfaces;
 using StackExchange.Redis;
+using System;
 using System.IO;
 
 namespace Plato.Redis.Serializers
@@ -63,6 +64,17 @@ namespace Plato.Redis.Serializers
         public T Deserialize<T>(object data)
         {
             return MessagePackSerializer.Get<T>().FromMessagePackObject((MessagePackObject)data);
+        }
+
+        /// <summary>
+        /// Deserializes the specified data.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        public object Deserialize(object data, Type type)
+        {
+            return MessagePackSerializer.Get(type).FromMessagePackObject((MessagePackObject)data);
         }
     }
 }
