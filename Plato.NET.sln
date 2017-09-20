@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.Cache", "src\Plato.Cache\Plato.Cache.csproj", "{96E1C168-23CA-4423-96F9-46E547561F3C}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -54,6 +54,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. TestHarness", "03. TestHarness", "{E2F58635-15F5-42E3-9E8F-1D38C41B1340}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.TestHarness", "src\Plato.TestHarness\Plato.TestHarness.csproj", "{F123A6AA-5C4F-4606-A9ED-4DDD653B906E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.Async", "src\Plato.Async\Plato.Async.csproj", "{7C044EA5-26BB-474B-910B-B689D2496F6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +115,10 @@ Global
 		{F123A6AA-5C4F-4606-A9ED-4DDD653B906E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F123A6AA-5C4F-4606-A9ED-4DDD653B906E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F123A6AA-5C4F-4606-A9ED-4DDD653B906E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C044EA5-26BB-474B-910B-B689D2496F6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C044EA5-26BB-474B-910B-B689D2496F6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C044EA5-26BB-474B-910B-B689D2496F6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C044EA5-26BB-474B-910B-B689D2496F6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -131,5 +137,9 @@ Global
 		{B45BE972-503F-4B61-A4BD-0AA2E8444DFC} = {28D2CB15-FCC1-44A6-B2CC-E78887774870}
 		{2D674644-2484-4B93-BE95-879A94740FE6} = {28D2CB15-FCC1-44A6-B2CC-E78887774870}
 		{F123A6AA-5C4F-4606-A9ED-4DDD653B906E} = {E2F58635-15F5-42E3-9E8F-1D38C41B1340}
+		{7C044EA5-26BB-474B-910B-B689D2496F6F} = {28D2CB15-FCC1-44A6-B2CC-E78887774870}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9AF11053-C023-4610-A219-15005072A624}
 	EndGlobalSection
 EndGlobal

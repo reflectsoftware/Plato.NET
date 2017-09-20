@@ -122,20 +122,17 @@ namespace Plato.Cache
         /// </summary>
         private void Clear()
         {
-            using (_asyncLock.Lock())
+            if (_objectPool != null)
             {
-                if (_objectPool != null)
+                foreach (T poolObject in _objectPool)
                 {
-                    foreach (T poolObject in _objectPool)
-                    {
-                        MiscHelper.DisposeObject(poolObject);
-                    }
-
-                    _objectPool.Clear();
-
-                    _totalPoolSize -= _totalPoolSize;
-                    _availablePoolObjects -= _availablePoolObjects;
+                    MiscHelper.DisposeObject(poolObject);
                 }
+
+                _objectPool.Clear();
+
+                _totalPoolSize -= _totalPoolSize;
+                _availablePoolObjects -= _availablePoolObjects;
             }
         }
 
