@@ -91,6 +91,7 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="CacheDataInfo.cs" />
+    <Compile Include="GenericObjectPoolAsync.cs" />
     <Compile Include="Interfaces\ICacheKeyLock.cs" />
     <Compile Include="Interfaces\IGlobalCache.cs" />
     <Compile Include="Interfaces\ICache.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="GenericObjectPool.cs" />
     <Compile Include="Interfaces\ILocalMemoryCache.cs" />
     <Compile Include="LocalMemoryCache.cs" />
+    <Compile Include="PoolInstanceAsync.cs" />
     <Compile Include="PoolInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

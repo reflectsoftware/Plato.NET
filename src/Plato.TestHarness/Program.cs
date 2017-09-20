@@ -4,7 +4,8 @@
     {
         static void Main(string[] args)
         {
-            RedisTest.RedisPlayground.RunAsync().Wait();
+            Cache.CachePlaygorund.RunAsync().Wait();
+            //RedisTest.RedisPlayground.RunAsync().Wait();
             // Mapper.MapperPlayground.RunAsync().Wait();
             // RMQ.RMQPlayground.RunAsync().Wait();
         }
