@@ -13,6 +13,7 @@ Making .NET apps awesome!
 Package name  | .NET Framework
 ------------- | ---------------
 [Plato](http://www.nuget.org/packages/Plato/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.svg?style=flat)](http://www.nuget.org/packages/Plato/) 
+[Plato.Async](http://www.nuget.org/packages/Plato.Async/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.Async.svg?style=flat)](http://www.nuget.org/packages/Plato.Async/)
 [Plato.Cache](http://www.nuget.org/packages/Plato.Cache/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.Cache.svg?style=flat)](http://www.nuget.org/packages/Plato.Cache/)
 [Plato.Configuration](http://www.nuget.org/packages/Plato.Configuration/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.Configuration.svg?style=flat)](http://www.nuget.org/packages/Plato.Configuration/)
 [Plato.Core](http://www.nuget.org/packages/Plato.Core/) | [![NuGet Version](http://img.shields.io/nuget/v/Plato.Core.svg?style=flat)](http://www.nuget.org/packages/Plato.Core/)
