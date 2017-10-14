@@ -22,6 +22,14 @@ namespace Plato.Messaging.RMQ
         protected RMQBasicConsumer _queueingConsumer;
 
         /// <summary>
+        /// Gets or sets the mode.
+        /// </summary>
+        /// <value>
+        /// The mode.
+        /// </value>
+        public ConsumerMode Mode { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RMQConsumer"/> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
@@ -33,6 +41,7 @@ namespace Plato.Messaging.RMQ
             RMQQueueSettings queueSettings) 
             : base(connectionFactory, connectionSettings, queueSettings)
         {
+            Mode = ConsumerMode.OnNoMessage_Timeout;
         }
 
         /// <summary>
@@ -127,7 +136,7 @@ namespace Plato.Messaging.RMQ
 
                     var deliverArgs = (BasicDeliverEventArgs)null;
                     var status = _queueingConsumer.Queue.Dequeue(msecTimeout, out deliverArgs);
-                    if (status)
+                    if (status || Mode == ConsumerMode.OnNoMessage_ReturnNull)
                     {
                         return deliverArgs;
                     }

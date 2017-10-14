@@ -61,6 +61,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Enums\ConsumerMode.cs" />
     <Compile Include="Enums\MessageExceptionCode.cs" />
     <Compile Include="Interfaces\IMessageConnectionFactory.cs" />
     <Compile Include="Interfaces\IMessageReceiver.cs" />

@@ -1,14 +1,11 @@
 ﻿using Plato.Messaging.Enums;
 using Plato.Messaging.Exceptions;
-using Plato.Messaging.RMQ;
 using Plato.Messaging.RMQ.Factories;
 using Plato.Messaging.RMQ.Settings;
 using Plato.SqlServer;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Plato.TestHarness.RMQ
@@ -76,6 +73,8 @@ namespace Plato.TestHarness.RMQ
 
             using (var consumer = consumerFactory.CreateText(connectionSettings, queueSettings))
             {
+                consumer.Mode = ConsumerMode.OnNoMessage_ReturnNull;
+
                 while (true)
                 {
                     try
@@ -83,11 +82,13 @@ namespace Plato.TestHarness.RMQ
                         try
                         {
                             var message = consumer.Receive(1000);
+                            if (message != null)
+                            {
+                                //message.Reject(true);
+                                //message.Reject();
 
-                            //message.Reject(true);
-                            //message.Reject();
-
-                            message.Acknowledge();
+                                message.Acknowledge();
+                            }
                         }
                         catch (TimeoutException)
                         {

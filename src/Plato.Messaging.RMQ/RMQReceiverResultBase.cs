@@ -56,6 +56,7 @@ namespace Plato.Messaging.RMQ
         /// </value>
         public string QueueName { get; private set; }
 
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQReceiverResult"/> class.
         /// </summary>
@@ -69,7 +70,7 @@ namespace Plato.Messaging.RMQ
             Connection = connection;            
             HasAcknowledged = false;
             QueueName = queueName;
-            DeliverEventArgs = args;
+            DeliverEventArgs = args ?? new BasicDeliverEventArgs();
             DeliverEventArgs.BasicProperties.Headers = args.BasicProperties.Headers ?? new Dictionary<string, object>();
         }
 

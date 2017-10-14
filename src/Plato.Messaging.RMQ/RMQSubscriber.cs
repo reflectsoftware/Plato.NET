@@ -2,6 +2,7 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Plato.Messaging.Enums;
 using Plato.Messaging.RMQ.Interfaces;
 using Plato.Messaging.RMQ.Settings;
 using RabbitMQ.Client.Events;
@@ -20,6 +21,14 @@ namespace Plato.Messaging.RMQ
         protected RMQBasicConsumer _queueingConsumer;
 
         /// <summary>
+        /// Gets or sets the mode.
+        /// </summary>
+        /// <value>
+        /// The mode.
+        /// </value>
+        public ConsumerMode Mode { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RMQSubscriber"/> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
@@ -33,6 +42,7 @@ namespace Plato.Messaging.RMQ
             RMQQueueSettings queueSettings)
             : base(connectionFactory, connectionSettings, exchangeSettings, queueSettings)
         {
+            Mode = ConsumerMode.OnNoMessage_Timeout;
         }
 
         /// <summary>
@@ -128,7 +138,7 @@ namespace Plato.Messaging.RMQ
 
                 var deliverArgs = (BasicDeliverEventArgs)null;
                 var status = _queueingConsumer.Queue.Dequeue(msecTimeout, out deliverArgs);
-                if (status)
+                if (status || Mode == ConsumerMode.OnNoMessage_ReturnNull)
                 {
                     return deliverArgs;
                 }
