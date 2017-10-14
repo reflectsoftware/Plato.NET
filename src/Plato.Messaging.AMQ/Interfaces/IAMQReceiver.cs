@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using Apache.NMS;
+using Plato.Messaging.Enums;
 using Plato.Messaging.Interfaces;
 using System.Threading;
 
@@ -14,6 +15,14 @@ namespace Plato.Messaging.AMQ.Interfaces
     /// <seealso cref="Plato.Messaging.Interfaces.IMessageReceiverSender" />
     public interface IAMQReceiver: IMessageReceiverSender
     {
+        /// <summary>
+        /// Gets or sets the mode.
+        /// </summary>
+        /// <value>
+        /// The mode.
+        /// </value>
+        ConsumerMode Mode { get; set; }
+
         /// <summary>
         /// Clears the cache buffer.
         /// </summary>

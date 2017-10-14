@@ -6,6 +6,7 @@ using Apache.NMS;
 using Apache.NMS.Util;
 using Plato.Messaging.AMQ.Interfaces;
 using Plato.Messaging.AMQ.Settings;
+using Plato.Messaging.Enums;
 using System;
 using System.Threading;
 
@@ -23,6 +24,14 @@ namespace Plato.Messaging.AMQ
         private IMessageConsumer _consumer;
 
         /// <summary>
+        /// Gets or sets the mode.
+        /// </summary>
+        /// <value>
+        /// The mode.
+        /// </value>
+        public ConsumerMode Mode { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AMQReceiver" /> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
@@ -30,9 +39,10 @@ namespace Plato.Messaging.AMQ
         /// <param name="destination">The destination.</param>
         public AMQReceiver(IAMQConnectionFactory connectionFactory, AMQConnectionSettings connectionSettings, AMQDestinationSettings destination) : base(connectionFactory, connectionSettings)
         {
+            Mode = ConsumerMode.OnNoMessage_Timeout;
             _timeoutException = new TimeoutException();
             _destination = destination;
-            _consumer = null;
+            _consumer = null;            
         }
 
         /// <summary>
@@ -121,7 +131,7 @@ namespace Plato.Messaging.AMQ
                     message = _consumer.Receive();
                 }
 
-                if (message == null)
+                if (message == null && Mode == ConsumerMode.OnNoMessage_Timeout)
                 {
                     throw _timeoutException;
                 }
@@ -153,7 +163,8 @@ namespace Plato.Messaging.AMQ
         /// <returns></returns>
         public AMQReceiverResult ReceiveResult(int msecTimeout = Timeout.Infinite)
         {
-            return new AMQReceiverResult(ReceiveMessage(msecTimeout));
+            var message = ReceiveMessage(msecTimeout);
+            return message != null ? new AMQReceiverResult(message) : null;
         }
     }
 }

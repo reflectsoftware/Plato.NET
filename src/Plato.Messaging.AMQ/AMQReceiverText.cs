@@ -34,7 +34,8 @@ namespace Plato.Messaging.AMQ
         /// <returns></returns>
         public IMessageReceiveResult<string> Receive(int msecTimeout = Timeout.Infinite)
         {
-            return new AMQReceiverTextResult((ITextMessage)ReceiveMessage(msecTimeout));
+            var message = ReceiveMessage(msecTimeout);
+            return message != null ?new AMQReceiverTextResult((ITextMessage)message) : null;
         }
     }
 }
