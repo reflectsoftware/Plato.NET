@@ -26,10 +26,12 @@ namespace Plato.Core.Miscellaneous
                 Array.Reverse(idArray);
             }
 
-            guidArray[0] = idArray[0];
-            guidArray[1] = idArray[1];
-            guidArray[2] = idArray[2];
-            guidArray[3] = idArray[3];
+            guidArray[10] = idArray[5];
+            guidArray[11] = idArray[4];
+            guidArray[12] = idArray[3];
+            guidArray[13] = idArray[2];
+            guidArray[14] = idArray[1];
+            guidArray[15] = idArray[0];
 
             return new Guid(guidArray);
         }
