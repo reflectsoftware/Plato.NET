@@ -538,16 +538,11 @@ namespace Plato.TestHarness.RedisTest
         static public async Task RunAsync()
         {
             // string connectionString = "127.0.0.1:30001,127.0.0.1:30002,127.0.0.1:30003,127.0.0.1:30004,127.0.0.1:30005,127.0.0.1:30006";
-            string connectionStrings = "localhost:6379";
-
-            var configuration = new ConfigurationOptions
-            {
-                AbortOnConnectFail = false
-            };
+            string connectionStrings = "localhost:6379,abortConnect=False";
 
             try
             {             
-                using (var redisConnection = new RedisConnection(connectionStrings, configuration))
+                using (var redisConnection = new RedisConnection(connectionStrings))
                 {
                     var d = new RedisDictionary<string, Crap>(redisConnection.GetDatabase(), "test", new JsonRedisSerializer()); // new MsgPackRedisSerializer());        
                     var dtest = new Dictionary<int, string>();
