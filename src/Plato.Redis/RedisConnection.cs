@@ -43,7 +43,7 @@ namespace Plato.Redis
 
             var configOptions = options ?? new ConfigurationOptions();
             
-            foreach (var url in connectionString.Split(','))
+            foreach (var url in connectionString.Split(';'))
             {
                 configOptions.EndPoints.Add(url);
             }
