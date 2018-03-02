@@ -32,23 +32,25 @@ namespace Plato.Redis
         public IConnectionMultiplexer Connection { get; private set; }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="RedisConnection" /> class.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="logger">The logger.</param>
+        public RedisConnection(ConfigurationOptions options, TextWriter logger = null)
+        {
+            Disposed = false;
+            Connection = ConnectionMultiplexer.Connect(options, logger);
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RedisConnection"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
-        /// <param name="options">The options.</param>
         /// <param name="logger">The logger.</param>
-        public RedisConnection(string connectionString, ConfigurationOptions options, TextWriter logger = null)
+        public RedisConnection(string connectionString, TextWriter logger = null)
         {
             Disposed = false;
-
-            var configOptions = options ?? new ConfigurationOptions();
-            
-            foreach (var url in connectionString.Split(';'))
-            {
-                configOptions.EndPoints.Add(url);
-            }
-
-            Connection = ConnectionMultiplexer.Connect(configOptions, logger);
+            Connection = ConnectionMultiplexer.Connect(connectionString, logger);
         }
 
         #region IDisposable
