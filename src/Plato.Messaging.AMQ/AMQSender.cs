@@ -55,7 +55,7 @@ namespace Plato.Messaging.AMQ
         /// Creates the map.
         /// </summary>
         /// <returns></returns>
-        public IMessage CreateMap()
+        public IMapMessage CreateMapMessage()
         {
             while (true)
             {

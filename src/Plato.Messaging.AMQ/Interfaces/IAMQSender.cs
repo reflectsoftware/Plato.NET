@@ -12,10 +12,10 @@ namespace Plato.Messaging.AMQ.Interfaces
     public interface IAMQSender : IMessageReceiverSender
     {
         /// <summary>
-        /// Creates the map.
+        /// Creates the map message.
         /// </summary>
         /// <returns></returns>
-        IMessage CreateMap();
+        IMapMessage CreateMapMessage();
 
         /// <summary>
         /// Sends the specified action.
