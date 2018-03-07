@@ -52,6 +52,41 @@ namespace Plato.Messaging.AMQ
         }
 
         /// <summary>
+        /// Creates the map.
+        /// </summary>
+        /// <returns></returns>
+        public IMessage CreateMap()
+        {
+            while (true)
+            {
+                Open();
+
+                try
+                {
+                    return _session.CreateMapMessage();
+                }
+                catch (Exception ex)
+                {
+                    Close();
+
+                    if ((ex is NMSConnectionException) || (ex is IOException))
+                    {
+                        // retry
+                        continue;
+                    }
+
+                    var newException = AMQExceptionHandler.ExceptionHandler(_connection, ex);
+                    if (newException != null)
+                    {
+                        throw newException;
+                    }
+
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
         /// Sends the specified data.
         /// </summary>
         /// <param name="action">The action.</param>
@@ -121,6 +156,27 @@ namespace Plato.Messaging.AMQ
         {
             Send(action, createMessage);
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Sends the specified action.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="message">The message.</param>
+        public void Send(Action<ISenderProperties> action, IMessage message)
+        {
+            Send(action, (session) => message);
+        }
+
+        /// <summary>
+        /// Sends the asynchronous.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
+        public Task SendAsync(Action<ISenderProperties> action, IMessage message)
+        {
+            return SendAsync(action, (session) => message);
         }
     }
 }

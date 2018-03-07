@@ -12,6 +12,12 @@ namespace Plato.Messaging.AMQ.Interfaces
     public interface IAMQSender : IMessageReceiverSender
     {
         /// <summary>
+        /// Creates the map.
+        /// </summary>
+        /// <returns></returns>
+        IMessage CreateMap();
+
+        /// <summary>
         /// Sends the specified action.
         /// </summary>
         /// <param name="action">The action.</param>
@@ -25,5 +31,20 @@ namespace Plato.Messaging.AMQ.Interfaces
         /// <param name="createMessage">The create message.</param>
         /// <returns></returns>
         Task SendAsync(Action<ISenderProperties> action, Func<ISession, IMessage> createMessage);
+
+        /// <summary>
+        /// Sends the specified action.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="message">The message.</param>
+        void Send(Action<ISenderProperties> action, IMessage message);
+
+        /// <summary>
+        /// Sends the asynchronous.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
+        Task SendAsync(Action<ISenderProperties> action, IMessage message);
     }
 }
