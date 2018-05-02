@@ -51,7 +51,7 @@ namespace Plato.Redis
         public RedisConnection(string connectionString, ConfigurationOptions options, TextWriter logger = null)
         {
             Disposed = false;
-            var configOptions = options ?? new ConfigurationOptions();
+            var configOptions = options ?? new ConfigurationOptions { AbortOnConnectFail = false };
 
             foreach (var url in connectionString.Split(';'))
             {
