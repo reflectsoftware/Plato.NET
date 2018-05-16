@@ -6,6 +6,7 @@ using Plato.SqlServer;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Plato.TestHarness.RMQ
@@ -59,6 +60,58 @@ namespace Plato.TestHarness.RMQ
             return Task.CompletedTask;
         }
 
+        static private async Task ProducerPerformanceTestAsync()
+        {
+            var args = new Dictionary<string, object>
+            {
+                { "x-dead-letter-exchange", "" },
+                { "x-dead-letter-routing-key", "My.DLQ" }
+            };
+
+            var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());
+            var connectionSettings = GetRMQConnectionSettings();
+            var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue", true, false, false, true, arguments: args);
+
+            using (var producer = procuderFactory.CreateText(connectionSettings, queueSettings))
+            {
+                while(true)
+                {
+                    Console.WriteLine("Provide a command: quit, clear or a number");
+
+                    var command = Console.ReadLine();
+                    if (command == "quit" || command == "exit")
+                    {
+                        break;
+                    }
+
+                    if (command == "clear")
+                    {
+                        Console.Clear();
+                        continue;
+                    }
+
+                    if (!int.TryParse(command, out int count) || count < 0)
+                    {
+                        Console.WriteLine("Invalid iteration number");
+                        continue;
+                    }
+
+                    var sw = new Stopwatch();
+                    sw.Reset();
+                    sw.Start();
+
+                    for (var i = 0; i < count; i++)
+                    {
+                        var data = $"Message from Ross: {i}";
+                        await producer.SendAsync(data);
+                    }
+
+                    sw.Stop();
+                    Console.WriteLine($"Done sending: {sw.ElapsedMilliseconds}");
+                }
+            }
+        }
+
         static private Task ConsumerAsync()
         {
             var args = new Dictionary<string, object>
@@ -86,6 +139,8 @@ namespace Plato.TestHarness.RMQ
                             {
                                 //message.Reject(true);
                                 //message.Reject();
+
+                                ReflectSoftware.Insight.GReflectInsight.SendMessage(message.Data);
 
                                 message.Acknowledge();
                             }
@@ -131,6 +186,8 @@ namespace Plato.TestHarness.RMQ
 
         static public async Task RunAsync()
         {
+            // await ProducerPerformanceTestAsync();
+
             // await ProducerAsync();
             await ConsumerAsync();
         }
