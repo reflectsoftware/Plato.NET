@@ -22,7 +22,7 @@ namespace Plato.Messaging.RMQ
         /// <param name="connection">The connection.</param>
         /// <param name="ex">The ex.</param>
         /// <returns></returns>
-        public static Exception ExceptionHandler(IConnection connection, Exception ex)
+        public static MessageException ExceptionHandler(IConnection connection, Exception ex)
         {
             if (ex is NullReferenceException)
             {

@@ -2,13 +2,13 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using Plato.Messaging.Enums;
+using Plato.Messaging.Exceptions;
+using Plato.Messaging.Interfaces;
 using Plato.Messaging.RMQ.Interfaces;
 using Plato.Messaging.RMQ.Settings;
-using Plato.Messaging.Interfaces;
 using RabbitMQ.Client.Events;
-using RabbitMQ.Client.Exceptions;
 using System;
-using System.IO;
 
 namespace Plato.Messaging.RMQ
 {
@@ -82,50 +82,67 @@ namespace Plato.Messaging.RMQ
         /// <param name="action">The action.</param>
         protected void _Send(byte[] data, Action<ISenderProperties> action = null)
         {
-            while (true)
+            try
             {
-                if (!IsOpen())
+                var connectionRetry = true;
+                while (true)
                 {
-                    Open();
-                }
-
-                try
-                {
-                    var senderProperties = new RMQSenderProperties()
+                    if (!IsOpen())
                     {
-                        Properties = null,
-                        Exchange = _exchangeSettings.ExchangeName,
-                        RoutingKey = string.Empty,
-                        Mandatory = false,
-                    };
-
-                    action?.Invoke(senderProperties);
-
-                    _channel.BasicPublish(
-                        senderProperties.Exchange,
-                        senderProperties.RoutingKey,
-                        senderProperties.Mandatory,
-                        null,
-                        data);
-
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    if ((ex is AlreadyClosedException) || (ex is IOException))
-                    {
-                        // retry
-                        continue;
+                        Open();
                     }
 
-                    var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
-                    if (newException != null)
+                    try
                     {
-                        throw newException;
-                    }
+                        var senderProperties = new RMQSenderProperties()
+                        {
+                            Properties = null,
+                            Exchange = _exchangeSettings.ExchangeName,
+                            RoutingKey = string.Empty,
+                            Mandatory = false,
+                        };
 
-                    throw;
+                        action?.Invoke(senderProperties);
+
+                        _channel.BasicPublish(
+                            senderProperties.Exchange,
+                            senderProperties.RoutingKey,
+                            senderProperties.Mandatory,
+                            null,
+                            data);
+
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
+                        if (newException != null)
+                        {
+                            if (newException.ExceptionCode == MessageExceptionCode.LostConnection
+                            && connectionRetry)
+                            {
+                                // try the reconnection cycle
+                                connectionRetry = false;
+                                continue;
+                            }
+
+                            throw newException;
+                        }
+
+                        throw;
+                    }
                 }
+            }
+            catch (MessageException ex)
+            {
+                switch (ex.ExceptionCode)
+                {
+                    case MessageExceptionCode.LostConnection:
+                        Close();
+                        break;
+                }
+
+                throw;
             }
         }
     }

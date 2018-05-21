@@ -134,8 +134,16 @@ namespace Plato.Messaging.RMQ
                 {
                     Open();
 
+                    // there's a possibility that the _queueingConsumer may be set to null on a different thread if the connection is closed
+                    // by assigning to a variable at the point of state, we must have a valid queueingConsumer even though the connection is closed.
+                    var queueingConsumer = _queueingConsumer;
+                    if(queueingConsumer == null)
+                    {                        
+                        return null;
+                    }
+
                     var deliverArgs = (BasicDeliverEventArgs)null;
-                    var status = _queueingConsumer.Queue.Dequeue(msecTimeout, out deliverArgs);
+                    var status = queueingConsumer.Queue.Dequeue(msecTimeout, out deliverArgs);
                     if (status || Mode == ConsumerMode.OnNoMessage_ReturnNull)
                     {
                         return deliverArgs;

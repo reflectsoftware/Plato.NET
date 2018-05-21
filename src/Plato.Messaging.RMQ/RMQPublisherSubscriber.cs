@@ -8,20 +8,18 @@ using System;
 
 namespace Plato.Messaging.RMQ
 {
-    public abstract class RMQPublisherSubscriber : RMQReceiverSender
+    public abstract class RMQPublisherSubscriber : RMQConsumer
     {
-        protected readonly RMQExchangeSettings _exchangeSettings;
-        protected readonly RMQQueueSettings _queueSettings;
+        protected readonly RMQExchangeSettings _exchangeSettings;        
         
         public RMQPublisherSubscriber(
             IRMQConnectionFactory connectionFactory,
             RMQConnectionSettings connectionSettings,
             RMQExchangeSettings exchangeSettings,
             RMQQueueSettings queueSettings = null)
-            : base(connectionFactory, connectionSettings)
+            : base(connectionFactory, connectionSettings, queueSettings)
         {
-            _exchangeSettings = exchangeSettings;
-            _queueSettings = queueSettings;
+            _exchangeSettings = exchangeSettings;            
         }
         
         protected override void OpenChannel()

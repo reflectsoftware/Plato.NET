@@ -1,5 +1,6 @@
 ﻿using Plato.Messaging.Enums;
 using Plato.Messaging.Exceptions;
+using Plato.Messaging.RMQ;
 using Plato.Messaging.RMQ.Factories;
 using Plato.Messaging.RMQ.Settings;
 using Plato.SqlServer;
@@ -45,8 +46,10 @@ namespace Plato.TestHarness.RMQ
                 { "x-dead-letter-routing-key", "My.DLQ" }
             };
 
+            
+            var configManager = new RMQConfigurationManager();
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
             var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());
-            var connectionSettings = GetRMQConnectionSettings();
             var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue", true, false, false, true, arguments: args);                        
 
             using (var producer = procuderFactory.CreateText(connectionSettings, queueSettings))
@@ -68,46 +71,54 @@ namespace Plato.TestHarness.RMQ
                 { "x-dead-letter-routing-key", "My.DLQ" }
             };
 
-            var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());
-            var connectionSettings = GetRMQConnectionSettings();
+            var configManager = new RMQConfigurationManager();
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());            
             var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue", true, false, false, true, arguments: args);
 
             using (var producer = procuderFactory.CreateText(connectionSettings, queueSettings))
             {
-                while(true)
+                while (true)
                 {
-                    Console.WriteLine("Provide a command: quit, clear or a number");
-
-                    var command = Console.ReadLine();
-                    if (command == "quit" || command == "exit")
+                    try
                     {
-                        break;
-                    }
+                        Console.WriteLine("Provide a command: quit, clear or a number");
 
-                    if (command == "clear")
+                        var command = Console.ReadLine();
+                        if (command == "quit" || command == "exit")
+                        {
+                            break;
+                        }
+
+                        if (command == "clear")
+                        {
+                            Console.Clear();
+                            continue;
+                        }
+
+                        if (!int.TryParse(command, out int count) || count < 0)
+                        {
+                            Console.WriteLine("Invalid iteration number");
+                            continue;
+                        }
+
+                        var sw = new Stopwatch();
+                        sw.Reset();
+                        sw.Start();
+
+                        for (var i = 0; i < count; i++)
+                        {
+                            var data = $"Message from Ross: {i}";
+                            await producer.SendAsync(data);
+                        }
+
+                        sw.Stop();
+                        Console.WriteLine($"Done sending: {sw.ElapsedMilliseconds}");
+                    }
+                    catch (Exception ex)
                     {
-                        Console.Clear();
-                        continue;
+                        Console.WriteLine(ex.Message);
                     }
-
-                    if (!int.TryParse(command, out int count) || count < 0)
-                    {
-                        Console.WriteLine("Invalid iteration number");
-                        continue;
-                    }
-
-                    var sw = new Stopwatch();
-                    sw.Reset();
-                    sw.Start();
-
-                    for (var i = 0; i < count; i++)
-                    {
-                        var data = $"Message from Ross: {i}";
-                        await producer.SendAsync(data);
-                    }
-
-                    sw.Stop();
-                    Console.WriteLine($"Done sending: {sw.ElapsedMilliseconds}");
                 }
             }
         }
@@ -119,9 +130,10 @@ namespace Plato.TestHarness.RMQ
                 { "x-dead-letter-exchange", "" },
                 { "x-dead-letter-routing-key", "My.DLQ" }
             };
-
+               
+            var configManager = new RMQConfigurationManager();
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
             var consumerFactory = new RMQConsumerFactory(new RMQConnectionFactory());
-            var connectionSettings = GetRMQConnectionSettings();
             var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue", true, false, false, true, arguments: args);
 
             using (var consumer = consumerFactory.CreateText(connectionSettings, queueSettings))
@@ -141,7 +153,6 @@ namespace Plato.TestHarness.RMQ
                                 //message.Reject();
 
                                 ReflectSoftware.Insight.GReflectInsight.SendMessage(message.Data);
-
                                 message.Acknowledge();
                             }
                         }

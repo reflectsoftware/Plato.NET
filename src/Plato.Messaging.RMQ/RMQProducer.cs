@@ -40,44 +40,56 @@ namespace Plato.Messaging.RMQ
         {
             try
             {
-                if (!IsOpen())
+                var connectionRetry = true;
+                while (true)
                 {
-                    Open();
-                }
-
-                try
-                {
-                    var props = _channel.CreateBasicProperties();
-                    props.Persistent = _queueSettings.Persistent;
-
-                    var senderProperties = new RMQSenderProperties()
+                    if (!IsOpen())
                     {
-                        Properties = props,
-                        Exchange = string.Empty,
-                        RoutingKey = _queueSettings.QueueName,
-                        Mandatory = false,
-                    };
-
-                    action?.Invoke(senderProperties);
-
-                    _channel.BasicPublish(
-                        string.Empty,
-                        _queueSettings.QueueName,
-                        senderProperties.Mandatory,
-                        props,
-                        data);
-
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
-                    if (newException != null)
-                    {
-                        throw newException;
+                        Open();
                     }
 
-                    throw;
+                    try
+                    {
+                        var props = _channel.CreateBasicProperties();
+                        props.Persistent = _queueSettings.Persistent;
+
+                        var senderProperties = new RMQSenderProperties()
+                        {
+                            Properties = props,
+                            Exchange = string.Empty,
+                            RoutingKey = _queueSettings.QueueName,
+                            Mandatory = false,
+                        };
+
+                        action?.Invoke(senderProperties);
+
+                        _channel.BasicPublish(
+                            string.Empty,
+                            _queueSettings.QueueName,
+                            senderProperties.Mandatory,
+                            props,
+                            data);
+
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        var newException = RMQExceptionHandler.ExceptionHandler(_connection, ex);
+                        if (newException != null)
+                        {
+                            if(newException.ExceptionCode == MessageExceptionCode.LostConnection
+                            && connectionRetry)
+                            {
+                                // try the reconnection cycle
+                                connectionRetry = false;
+                                continue;
+                            }
+                            
+                            throw newException;
+                        }
+
+                        throw;
+                    }
                 }
             }
             catch (MessageException ex)
