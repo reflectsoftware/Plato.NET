@@ -382,9 +382,10 @@ namespace Plato.Cache
                     return default(T);
                 }
 
-                using (var rLock = new ResourceLockAsync(name))
+                using (var rLock = new ResourceLock(name))
                 {
-                    using (rLock.ReaderLock())
+                    rLock.EnterWriteLock();
+                    try
                     {
                         node = GetCachedNode(name, bSlidingTimeWindow);
                         if (node == null)
@@ -398,6 +399,10 @@ namespace Plato.Cache
                             Set(name, cData.NewCacheData, cData.KeepAlive);
                             return cData.NewCacheData;
                         }
+                    }
+                    finally
+                    {
+                        rLock.ExitWriteLock();
                     }
                 }
             }

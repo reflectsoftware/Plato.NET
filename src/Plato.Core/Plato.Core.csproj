@@ -98,6 +98,8 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Interfaces\IDisposer.cs" />
+    <Compile Include="Locks\Interfaces\IResourceLock.cs" />
+    <Compile Include="Locks\ResourceLock.cs" />
     <Compile Include="Locks\Interfaces\IResourceLockAsync.cs" />
     <Compile Include="Locks\ResourceLockAsync.cs" />
     <Compile Include="Mapper\IMapper.cs" />
