@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Plato.TestHarness.RMQ
+namespace Plato.TestHarness.Messenging
 {
     public class RMQPlayground
     {
@@ -169,7 +169,7 @@ namespace Plato.TestHarness.RMQ
 
                                 case MessageExceptionCode.LostConnection:
                                     //await Task.Delay(5000);
-                                    throw;
+                                    break;
 
                                 default:
                                     throw;

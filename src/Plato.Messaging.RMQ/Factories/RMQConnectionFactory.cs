@@ -34,7 +34,7 @@ namespace Plato.Messaging.RMQ.Factories
         {            
             if(settings.Endpoints.Count == 0)
             {
-                throw new MessageException(MessageExceptionCode.NoAcceptableEndpoints, "There are no acceptable endpoints to connect any RabbitMQ Broker.");
+                throw new MessageException(MessageExceptionCode.NoAcceptableEndpoints, "There are no acceptable endpoints to connect to any RabbitMQ Broker.");
             }
 
             var exceptionList = new List<Exception>();

@@ -21,8 +21,13 @@ namespace Plato.Messaging.AMQ
         /// <param name="connection">The connection.</param>
         /// <param name="ex">The ex.</param>
         /// <returns></returns>
-        public static Exception ExceptionHandler(IConnection connection, Exception ex)
+        public static MessageException ExceptionHandler(IConnection connection, Exception ex)
         {
+            if (ex is MessageException)
+            {
+                return ex as MessageException;
+            }
+
             var eMsg = $"Unable to connect, or the connection to the ActiveMQ Broker is no longer available for the following reason: '{ex.Message}'";
 
             if (ex is NullReferenceException)

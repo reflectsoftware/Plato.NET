@@ -31,7 +31,7 @@ namespace Plato.Messaging.AMQ.Factories
         {
             if (settings.Endpoints.Count == 0)
             {
-                throw new MessageException(MessageExceptionCode.NoAcceptableEndpoints, "There are no acceptable endpoints to connect any ActiveMQ Broker.");
+                throw new MessageException(MessageExceptionCode.NoAcceptableEndpoints, "There are no acceptable endpoints to connect to any ActiveMQ Broker.");
             }
 
             var exceptionList = new List<Exception>();

@@ -121,7 +121,7 @@ namespace Plato.Messaging.AMQ
                     }
                 }
 
-                IMessage message;
+                var message = (IMessage)null;
                 if (msecTimeout != Timeout.Infinite)
                 {
                     message = _consumer.Receive(TimeSpan.FromMilliseconds(msecTimeout));

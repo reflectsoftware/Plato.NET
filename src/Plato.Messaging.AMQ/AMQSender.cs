@@ -6,6 +6,8 @@ using Apache.NMS;
 using Apache.NMS.Util;
 using Plato.Messaging.AMQ.Interfaces;
 using Plato.Messaging.AMQ.Settings;
+using Plato.Messaging.Enums;
+using Plato.Messaging.Exceptions;
 using Plato.Messaging.Interfaces;
 using System;
 using System.Collections.Specialized;
@@ -93,56 +95,73 @@ namespace Plato.Messaging.AMQ
         /// <param name="createMessage">The create message.</param>
         public void Send(Action<ISenderProperties> action, Func<ISession, IMessage> createMessage)
         {
-            while (true)
+            try
             {
-                Open();
-
-                try
+                var connectionRetry = true;
+                while (true)
                 {
-                    if (_producer == null)
+                    Open();
+
+                    try
                     {
-                        var destination = SessionUtil.GetDestination(_session, _destination.Path);
-                        _producer = _session.CreateProducer(destination);
+                        if (_producer == null)
+                        {
+                            var destination = SessionUtil.GetDestination(_session, _destination.Path);
+                            _producer = _session.CreateProducer(destination);
+                        }
+
+                        var senderProperties = new AMQSenderProperties()
+                        {
+                            Properties = new NameValueCollection()
+                        };
+
+                        action?.Invoke(senderProperties);
+
+                        var request = createMessage(_session);
+                        request.NMSCorrelationID = senderProperties.CorrelationId;
+                        request.NMSTimeToLive = senderProperties.TTL;
+
+                        foreach (var key in senderProperties.Properties.AllKeys)
+                        {
+                            request.Properties[key] = senderProperties.Properties[key];
+                        }
+
+                        _producer.Send(request);
+
+                        return;
                     }
-
-                    var senderProperties = new AMQSenderProperties()
+                    catch (Exception ex)
                     {
-                        Properties = new NameValueCollection()
-                    };
+                        Close();
 
-                    action?.Invoke(senderProperties);
+                        var newException = AMQExceptionHandler.ExceptionHandler(_connection, ex);
+                        if (newException != null)
+                        {
+                            if (newException.ExceptionCode == MessageExceptionCode.LostConnection
+                              && connectionRetry)
+                            {
+                                // try the reconnection cycle
+                                connectionRetry = false;
+                                continue;
+                            }
 
-                    var request = createMessage(_session);
-                    request.NMSCorrelationID = senderProperties.CorrelationId;
-                    request.NMSTimeToLive = senderProperties.TTL;
+                            throw newException;
+                        }
 
-                    foreach (var key in senderProperties.Properties.AllKeys)
-                    {
-                        request.Properties[key] = senderProperties.Properties[key];
+                        throw;
                     }
-
-                    _producer.Send(request);
-
-                    return;
                 }
-                catch (Exception ex)
+            }
+            catch (MessageException ex)
+            {
+                switch (ex.ExceptionCode)
                 {
-                    Close();
-                    
-                    if ((ex is NMSConnectionException) || (ex is IOException))
-                    {
-                        // retry
-                        continue;
-                    }
-
-                    var newException = AMQExceptionHandler.ExceptionHandler(_connection, ex);
-                    if (newException != null)
-                    {
-                        throw newException;
-                    }
-
-                    throw;
+                    case MessageExceptionCode.LostConnection:
+                        Close();
+                        break;
                 }
+
+                throw;
             }
         }
 
