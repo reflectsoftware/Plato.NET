@@ -87,6 +87,10 @@
     <Compile Include="AMQSenderProperties.cs" />
     <Compile Include="AMQReceiverResult.cs" />
     <Compile Include="Interfaces\IAMQConnectionFactory.cs" />
+    <Compile Include="Interfaces\IAMQPool.cs" />
+    <Compile Include="Interfaces\IAMQPoolAsync.cs" />
+    <Compile Include="Interfaces\IAMQPoolContainer.cs" />
+    <Compile Include="Interfaces\IAMQPoolContainerAsync.cs" />
     <Compile Include="Interfaces\IAMQReceiverBytes.cs" />
     <Compile Include="Interfaces\IAMQReceiverText.cs" />
     <Compile Include="Interfaces\IAMQReceiver.cs" />
@@ -95,6 +99,16 @@
     <Compile Include="Interfaces\IAMQSenderBytes.cs" />
     <Compile Include="Interfaces\IAMQSenderText.cs" />
     <Compile Include="Interfaces\IAMQReceiverFactory.cs" />
+    <Compile Include="Pool\AMQConsumerPool.cs" />
+    <Compile Include="Pool\AMQConsumerPoolAsync.cs" />
+    <Compile Include="Pool\AMQPool.cs" />
+    <Compile Include="Pool\AMQPoolAsync.cs" />
+    <Compile Include="Pool\AMQPoolBase.cs" />
+    <Compile Include="Pool\AMQPoolContainer.cs" />
+    <Compile Include="Pool\AMQPoolContainerAsync.cs" />
+    <Compile Include="Pool\AMQPoolStates.cs" />
+    <Compile Include="Pool\AMQProducerPool.cs" />
+    <Compile Include="Pool\AMQProducerPoolAsync.cs" />
     <Compile Include="Settings\AMQConnectionSettings.cs" />
     <Compile Include="Settings\AMQDestinationSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -110,6 +124,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Plato.Cache\Plato.Cache.csproj">
+      <Project>{96E1C168-23CA-4423-96F9-46E547561F3C}</Project>
+      <Name>Plato.Cache</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Plato.Configuration\Plato.Configuration.csproj">
       <Project>{4e421333-54d9-48ce-ba71-a3ec80e9fa0f}</Project>
       <Name>Plato.Configuration</Name>

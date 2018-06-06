@@ -12,6 +12,9 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Apache.NMS;
+using Plato.Messaging.AMQ;
+using Plato.Messaging.AMQ.Pool;
+using System.Threading;
 
 namespace Plato.TestHarness.Messenging
 {
@@ -179,12 +182,104 @@ namespace Plato.TestHarness.Messenging
             }
         }
 
+        #region Pool Test
+
+        static Task PoolTestAsync()
+        {
+            var configManager = new AMQConfigurationManager();            
+            var senderFactory = new AMQSenderFactory(new AMQConnectionFactory());
+            var receiverFactory = new AMQReceiverFactory(new AMQConnectionFactory());
+
+            using (var amqPool = new AMQPoolAsync(configManager, senderFactory, receiverFactory, 3, 100))
+            {
+                var tasks = new List<Task>();
+
+                for (var i = 0; i < 10; i++)
+                {
+                    var task = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            for (var j = 0; j < 10; j++)
+                            {
+                                using (var producer = await amqPool.GetProducerAsync("localConnection", "Test1"))
+                                {
+                                    var message = $"message: {i * j}";
+                                    await producer.Instance.SendAsync(message);
+
+                                    ReflectSoftware.Insight.GDebugReflectInsight.SendMessage($"{producer.PoolId} - {producer.Instance.Id} - {message}");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
+                    });
+
+                    tasks.Add(task);
+                }
+
+                Console.WriteLine("Waiting for Tasks to complete...");
+                Task.WaitAll(tasks.ToArray());
+                Console.WriteLine("Tasks completed.");
+
+                return Task.CompletedTask;
+            }
+        }
+
+        static void PoolThreadTest1(object obj)
+        {
+            var amqPoolCache = ((Tuple<AMQPool, int>)obj).Item1;
+            var i = ((Tuple<AMQPool, int>)obj).Item2;
+
+            try
+            {
+                for (var j = 0; j < 10; j++)
+                {
+                    using (var producer = amqPoolCache.GetProducer("localConnection", "Test1"))
+                    {
+                        var message = $"message: {i * j}";
+                        producer.Instance.Send(message);
+
+                        ReflectSoftware.Insight.GDebugReflectInsight.SendMessage($"{producer.PoolId} - {producer.Instance.Id} - {message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        static void PoolTest()
+        {
+            var configManager = new AMQConfigurationManager();
+            var senderFactory = new AMQSenderFactory(new AMQConnectionFactory());
+            var receiverFactory = new AMQReceiverFactory(new AMQConnectionFactory());
+
+            using (var amqPoole = new AMQPool(configManager, senderFactory, receiverFactory, 3, 100))
+            {
+                for (var i = 0; i < 10; i++)
+                {
+                    var t = new Thread(PoolThreadTest1);
+                    t.Start(new Tuple<AMQPool, int>(amqPoole, i));
+                }
+
+                Console.WriteLine("Waiting for Tasks to complete...");
+                Console.ReadKey();
+            }
+        }
+
+        #endregion Pool Test
+
         static public async Task RunAsync()
         {
             // await ProducerPerformanceTestAsync();
+            // await ProducerAsync();
+            // await ConsumerAsync();
 
-            //await ProducerAsync();
-            await ConsumerAsync();
+            await Task.Delay(0);
         }
     }
 }
