@@ -12,8 +12,7 @@ namespace Plato.TestHarness.Cache
     {
         public string Name { get; set; }
     }
-
-
+    
 
     public class MyPoolAsync : GenericObjectPoolAsync<MyPoolObject, object>
     {
@@ -33,12 +32,11 @@ namespace Plato.TestHarness.Cache
         {
             return Task.FromResult(new MyPoolObject { Name = $"Ross:{_count++}" });
         }
-    }
-    
+    }        
 
     public static class CachePlaygorund
     {
-        static public Task RunAsync()
+        static private Task TestPoolAsync()
         {
             var myPool = new MyPoolAsync(3, 5);
             var rnd = new Random((int)DateTime.Now.Ticks);
@@ -66,6 +64,31 @@ namespace Plato.TestHarness.Cache
             Console.WriteLine("Done");
 
             return Task.CompletedTask;
+        }
+
+        static private Task TestNonAsyncCacheAsync()
+        {
+            using (var localCache = new LocalMemoryCache())
+            {
+                var cacheKey = "mykey";
+                var value = localCache.Get(cacheKey, (name, args) =>
+                {
+                    return new CacheDataInfo<string>
+                    {
+                        NewCacheData = "Ross"
+                    };
+                });
+
+                Console.WriteLine(value);
+            }
+            
+            return Task.CompletedTask;
+        }
+        
+        static public async Task RunAsync()
+        {
+            // await TestPoolAsync();
+            await TestNonAsyncCacheAsync();
         }
     }
 }

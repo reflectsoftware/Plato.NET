@@ -24,13 +24,21 @@ namespace Plato.Cache
         protected TData Data { get; private set; }
 
         /// <summary>
+        /// Gets the identifier.
+        /// </summary>
+        /// <value>
+        /// The identifier.
+        /// </value>
+        public Guid Id { get; private set; }
+
+        /// <summary>
         /// Gets a value indicating whether this <see cref="GenericObjectPool{T}"/> is disposed.
         /// </summary>
         /// <value>
         /// <c>true</c> if disposed; otherwise, <c>false</c>.
         /// </value>
         public bool Disposed { get; private set; }
-
+        
         /// <summary>
         /// Gets the maximum object usage.
         /// </summary>
@@ -66,7 +74,8 @@ namespace Plato.Cache
             _availablePoolObjects = 0;
             MaxObjectUsage = 0;
 
-            Disposed = false;
+            Id = Guid.NewGuid();
+            Disposed = false;            
             InitialPoolSize = initialPoolSize;
             MaxGrowSize = maxGrowSize;
             Data = data;
