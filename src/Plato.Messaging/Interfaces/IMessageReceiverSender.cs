@@ -13,6 +13,14 @@ namespace Plato.Messaging.Interfaces
     public interface IMessageReceiverSender : IDisposable
     {
         /// <summary>
+        /// Gets the identifier.
+        /// </summary>
+        /// <value>
+        /// The identifier.
+        /// </value>
+        Guid Id { get; }
+
+        /// <summary>
         /// Gets a value indicating whether this <see cref="IMessageReceiverSender" /> is disposed.
         /// </summary>
         /// <value>

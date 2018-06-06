@@ -22,7 +22,8 @@ namespace Plato.Messaging.RMQ
         protected DateTime _lastConnectionDateTime;
         
         public bool Disposed { get; private set; }
-
+        public Guid Id { get; private set; }
+    
         /// <summary>
         /// Initializes the <see cref="RMQReceiverSender"/> class.
         /// </summary>
@@ -38,7 +39,9 @@ namespace Plato.Messaging.RMQ
         /// <param name="connectionSettings">The connection settings.</param>
         public RMQReceiverSender(IRMQConnectionFactory connectionFactory, RMQConnectionSettings connectionSettings)
         {
-            Disposed = false;
+            Id = Guid.NewGuid();
+            Disposed = false;   
+            
             _lastConnectionDateTime = DateTime.MinValue;
             _connectionFactory = connectionFactory;
             _connectionSettings = connectionSettings;

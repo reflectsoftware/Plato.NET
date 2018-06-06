@@ -28,6 +28,7 @@ namespace Plato.Messaging.AMQ
         ///   <c>true</c> if disposed; otherwise, <c>false</c>.
         /// </value>
         public bool Disposed { get; private set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AMQReceiverSender"/> class.
@@ -35,7 +36,9 @@ namespace Plato.Messaging.AMQ
         /// <param name="settings">The settings.</param>
         public AMQReceiverSender(IAMQConnectionFactory connectionFactory, AMQConnectionSettings connectionSettings)
         {
+            Id = Guid.NewGuid();
             Disposed = false;
+
             _connectionSettings = connectionSettings;
             _connectionFactory = connectionFactory;            
             _connection = null;
