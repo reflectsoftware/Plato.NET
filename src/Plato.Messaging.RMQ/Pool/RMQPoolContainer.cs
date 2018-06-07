@@ -4,6 +4,7 @@
 
 using Plato.Cache;
 using Plato.Core.Miscellaneous;
+using Plato.Messaging.Interfaces;
 using Plato.Messaging.RMQ.Interfaces;
 using System;
 
@@ -14,16 +15,16 @@ namespace Plato.Messaging.RMQ.Pool
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Plato.Messaging.RMQ.Interfaces.IRMQPoolContainer{T}" />
-    public class RMQPoolContainer<T> : IRMQPoolContainer<T>  where T : class
+    public class RMQPoolContainer<T> : IRMQPoolContainer<T>  where T : IMessageReceiverSender
     {
-        private readonly PoolInstance<T, RMQPoolStates> _container;
+        private readonly PoolInstance<RMQObjectPoolData, object> _container;
         private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQPoolContainer{T}"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-        public RMQPoolContainer(PoolInstance<T, RMQPoolStates> container)
+        public RMQPoolContainer(PoolInstance<RMQObjectPoolData, object> container)
         {
             Guard.AgainstNull(() => container);
 
@@ -45,15 +46,6 @@ namespace Plato.Messaging.RMQ.Pool
         }
 
         /// <summary>
-        /// Totals the size of the pool.
-        /// </summary>
-        /// <returns></returns>
-        public long TotalPoolSize()
-        {
-            return _container.Pool.TotalPoolSize;
-        }
-
-        /// <summary>
         /// Gets the instance.
         /// </summary>
         /// <value>
@@ -63,7 +55,7 @@ namespace Plato.Messaging.RMQ.Pool
         {
             get
             {
-                return _container.Instance;
+                return (T)_container.Instance.Instance;
             }
         }
 

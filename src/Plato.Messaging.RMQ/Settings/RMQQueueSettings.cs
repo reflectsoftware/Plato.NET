@@ -111,7 +111,7 @@ namespace Plato.Messaging.RMQ.Settings
             AutoDelete = autoDelete;
             Persistent = persistent;
             RoutingKeys = routingKeys ?? new List<string>();
-            Arguments = arguments;
+            Arguments = arguments ?? new Dictionary<string, object>();
             ConsumerSettings = new RMQConsumerSettings();
         }
     }

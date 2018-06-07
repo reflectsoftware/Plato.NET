@@ -10,7 +10,7 @@ namespace Plato.Messaging.AMQ.Interfaces
 {
     public interface IAMQSenderReceiverFactory
     {
-        IMessageReceiverSender Create(Type type, AMQConnectionSettings connectionSettings, AMQDestinationSettings destinationSettings);
-        T Create<T>(AMQConnectionSettings connectionSettings, AMQDestinationSettings destinationSettings) where T : IMessageReceiverSender;
+        IMessageReceiverSender Create(Type type, AMQConnectionSettings connection, AMQDestinationSettings destination);
+        T Create<T>(AMQConnectionSettings connection, AMQDestinationSettings destination) where T : IMessageReceiverSender;
     }
 }

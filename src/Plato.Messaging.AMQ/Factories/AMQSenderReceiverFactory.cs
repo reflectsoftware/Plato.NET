@@ -16,9 +16,9 @@ namespace Plato.Messaging.AMQ.Factories
     /// <seealso cref="Plato.Messaging.AMQ.Interfaces.IAMQSenderReceiverFactory" />
     public class AMQSenderReceiverFactory : IAMQSenderReceiverFactory
     {
-        private IAMQSenderFactory _senderFactory;
-        private IAMQReceiverFactory _receiverFactory;
-        private Dictionary<Type, Func<AMQConnectionSettings, AMQDestinationSettings, IMessageReceiverSender>> _invokers;
+        private readonly IAMQSenderFactory _senderFactory;
+        private readonly IAMQReceiverFactory _receiverFactory;
+        private readonly Dictionary<Type, Func<AMQConnectionSettings, AMQDestinationSettings, IMessageReceiverSender>> _invokers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AMQSenderReceiverFactory"/> class.
@@ -41,24 +41,24 @@ namespace Plato.Messaging.AMQ.Factories
         /// </summary>
         private void PrepareInvokers()
         {
-            _invokers[typeof(IAMQSender)] = (connectionSettings, destinationSettings) => _senderFactory.Create(connectionSettings, destinationSettings);
-            _invokers[typeof(IAMQSenderBytes)] = (connectionSettings, destinationSettings) => _senderFactory.CreateBytes(connectionSettings, destinationSettings);
-            _invokers[typeof(IAMQSenderText)] = (connectionSettings, destinationSettings) => _senderFactory.CreateText(connectionSettings, destinationSettings);
+            _invokers[typeof(IAMQSender)] = (connection, destination) => _senderFactory.Create(connection, destination);
+            _invokers[typeof(IAMQSenderBytes)] = (connection, destination) => _senderFactory.CreateBytes(connection, destination);
+            _invokers[typeof(IAMQSenderText)] = (connection, destination) => _senderFactory.CreateText(connection, destination);
 
-            _invokers[typeof(IAMQReceiver)] = (connectionSettings, destinationSettings) => _receiverFactory.Create(connectionSettings, destinationSettings);
-            _invokers[typeof(IAMQReceiverBytes)] = (connectionSettings, destinationSettings) => _receiverFactory.CreateBytes(connectionSettings, destinationSettings);
-            _invokers[typeof(IAMQReceiverText)] = (connectionSettings, destinationSettings) => _receiverFactory.CreateText(connectionSettings, destinationSettings);
+            _invokers[typeof(IAMQReceiver)] = (connection, destination) => _receiverFactory.Create(connection, destination);
+            _invokers[typeof(IAMQReceiverBytes)] = (connection, destination) => _receiverFactory.CreateBytes(connection, destination);
+            _invokers[typeof(IAMQReceiverText)] = (connection, destination) => _receiverFactory.CreateText(connection, destination);
         }
 
         /// <summary>
         /// Creates the specified type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <param name="connectionSettings">The connection settings.</param>
-        /// <param name="destinationSettings">The destination settings.</param>
+        /// <param name="connection">The connection settings.</param>
+        /// <param name="destination">The destination settings.</param>
         /// <returns></returns>
         /// <exception cref="KeyNotFoundException"></exception>
-        public IMessageReceiverSender Create(Type type, AMQConnectionSettings connectionSettings, AMQDestinationSettings destinationSettings)
+        public IMessageReceiverSender Create(Type type, AMQConnectionSettings connection, AMQDestinationSettings destination)
         {            
             if (!_invokers.ContainsKey(type))
             {
@@ -67,19 +67,19 @@ namespace Plato.Messaging.AMQ.Factories
 
             var invoker = _invokers[type];
 
-            return invoker(connectionSettings, destinationSettings);
+            return invoker(connection, destination);
         }
 
         /// <summary>
         /// Creates the specified connection settings.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="connectionSettings">The connection settings.</param>
-        /// <param name="destinationSettings">The destination settings.</param>
+        /// <param name="connection">The connection settings.</param>
+        /// <param name="destination">The destination settings.</param>
         /// <returns></returns>
-        public T Create<T>(AMQConnectionSettings connectionSettings, AMQDestinationSettings destinationSettings) where T : IMessageReceiverSender
+        public T Create<T>(AMQConnectionSettings connection, AMQDestinationSettings destination) where T : IMessageReceiverSender
         {
-            return (T)Create(typeof(T), connectionSettings, destinationSettings);
+            return (T)Create(typeof(T), connection, destination);
         }
     }
 }

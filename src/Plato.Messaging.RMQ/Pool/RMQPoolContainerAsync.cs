@@ -4,9 +4,9 @@
 
 using Plato.Cache;
 using Plato.Core.Miscellaneous;
+using Plato.Messaging.Interfaces;
 using Plato.Messaging.RMQ.Interfaces;
 using System;
-using System.Threading.Tasks;
 
 namespace Plato.Messaging.RMQ.Pool
 {
@@ -14,16 +14,17 @@ namespace Plato.Messaging.RMQ.Pool
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class RMQPoolContainerAsync<T> : IRMQPoolContainerAsync<T> where T : class
+    /// <seealso cref="Plato.Messaging.RMQ.Interfaces.IRMQPoolContainer{T}" />
+    public class RMQPoolContainerAsync<T> : IRMQPoolContainer<T> where T : IMessageReceiverSender
     {
-        private readonly PoolInstanceAsync<T, RMQPoolStates> _container;
+        private readonly PoolInstanceAsync<RMQObjectPoolData, object> _container;
         private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQPoolContainerAsync{T}"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-        public RMQPoolContainerAsync(PoolInstanceAsync<T, RMQPoolStates> container)
+        public RMQPoolContainerAsync(PoolInstanceAsync<RMQObjectPoolData, object> container)
         {
             Guard.AgainstNull(() => container);
 
@@ -45,15 +46,6 @@ namespace Plato.Messaging.RMQ.Pool
         }
 
         /// <summary>
-        /// Totals the pool size asynchronous.
-        /// </summary>
-        /// <returns></returns>
-        public Task<long> TotalPoolSizeAsync()
-        {
-            return _container.Pool.TotalPoolSizeAsync();
-        }
-
-        /// <summary>
         /// Gets the instance.
         /// </summary>
         /// <value>
@@ -63,7 +55,7 @@ namespace Plato.Messaging.RMQ.Pool
         {
             get
             {
-                return _container.Instance;
+                return (T)_container.Instance.Instance;
             }
         }
 

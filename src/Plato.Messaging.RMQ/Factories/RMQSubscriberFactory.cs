@@ -30,7 +30,7 @@ namespace Plato.Messaging.RMQ.Factories
         /// <param name="exchangeSettings">The exchange settings.</param>
         /// <param name="queueSettings">The queue settings.</param>
         /// <returns></returns>
-        public IRMQSubscriberBytes CreateByte(
+        public IRMQSubscriberBytes CreateBytes(
             RMQConnectionSettings connectionSettings,
             RMQExchangeSettings exchangeSettings, 
             RMQQueueSettings queueSettings)

@@ -14,7 +14,7 @@ namespace Plato.Messaging.RMQ.Interfaces
         /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="queueSettings">The queue settings.</param>
         /// <returns></returns>
-        IRMQProducerBytes CreateByte(RMQConnectionSettings connectionSettings, RMQQueueSettings queueSettings);
+        IRMQProducerBytes CreateBytes(RMQConnectionSettings connectionSettings, RMQQueueSettings queueSettings);
 
         /// <summary>
         /// Creates the text.
