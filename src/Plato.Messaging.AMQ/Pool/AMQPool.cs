@@ -4,6 +4,7 @@
 
 using Plato.Cache;
 using Plato.Messaging.AMQ.Interfaces;
+using Plato.Messaging.Interfaces;
 
 namespace Plato.Messaging.AMQ.Pool
 {
@@ -14,114 +15,34 @@ namespace Plato.Messaging.AMQ.Pool
     /// <seealso cref="Plato.Messaging.AMQ.Interfaces.IAMQPool" />
     public class AMQPool: AMQPoolBase, IAMQPool
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AMQPool"/> class.
-        /// </summary>
-        /// <param name="configurationManager">The configuration manager.</param>
-        /// <param name="senderFactory">The sender factory.</param>
-        /// <param name="receiverFactory">The receiver factory.</param>
-        /// <param name="initialPoolSize">Initial size of the pool.</param>
-        /// <param name="maxGrowSize">Maximum size of the grow.</param>
         public AMQPool(
-            IAMQConfigurationManager configurationManager, 
-            IAMQSenderFactory senderFactory, 
-            IAMQReceiverFactory receiverFactory,
-            int initialPoolSize,
-            int maxGrowSize) : base(configurationManager, senderFactory, receiverFactory, initialPoolSize, maxGrowSize)
+            IAMQConfigurationManager configurationManager,
+            IAMQSenderReceiverFactory factory,
+            int maxGrowSize) : base(configurationManager, factory, maxGrowSize)
         {
         }
 
         /// <summary>
-        /// Gets the bytes producer.
+        /// Gets the specified connection name.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="connectionName">Name of the connection.</param>
         /// <param name="queueName">Name of the queue.</param>
         /// <returns></returns>
-        public IAMQPoolContainer<IAMQSenderBytes> GetBytesProducer(string connectionName, string queueName)
-        {
-            var states = VerifyPoolStates(connectionName, queueName);
-
-            var cacheKey = $"bytes:producer:{connectionName}:{queueName}".ToLower();
-            var pool = _cache.Get(cacheKey, (name, args) =>
-            {
-                return new CacheDataInfo<AMQBytesProducerPool>
-                {
-                    NewCacheData = new AMQBytesProducerPool(states, _initialPoolSize, _maxGrowSize)
-                };
-            });
-
-            var container = pool.Container();
-            return new AMQPoolContainer<IAMQSenderBytes>(container);
-        }
-
-        /// <summary>
-        /// Gets the bytes consumer.
-        /// </summary>
-        /// <param name="connectionName">Name of the connection.</param>
-        /// <param name="queueName">Name of the queue.</param>
-        /// <returns></returns>
-        public IAMQPoolContainer<IAMQReceiverBytes> GetBytesConsumer(string connectionName, string queueName)
+        public IAMQPoolContainer<T> Get<T>(string connectionName, string queueName) where T: IMessageReceiverSender
         {
             var states = VerifyPoolStates(connectionName, queueName);
+            var type = typeof(T);
 
-            var cacheKey = $"bytes:consumer:{connectionName}:{queueName}".ToLower();
+            var cacheKey = $"type:{type.Name}:{connectionName}:{queueName}".ToLower();
             var pool = _cache.Get(cacheKey, (name, args) =>
             {
-                return new CacheDataInfo<AMQBytesConsumerPool>
-                {
-                    NewCacheData = new AMQBytesConsumerPool(states, _initialPoolSize, _maxGrowSize)
-                };
+                var objectPool = new AMQObjectPool(_factory, type, states.Connection, states.Destination, _maxGrowSize);
+                return new CacheDataInfo<AMQObjectPool> { NewCacheData = objectPool };
             });
 
             var container = pool.Container();
-            return new AMQPoolContainer<IAMQReceiverBytes>(container);
-        }
-
-
-        /// <summary>
-        /// Gets the producer.
-        /// </summary>
-        /// <param name="connectionName">Name of the connection.</param>
-        /// <param name="queueName">Name of the queue.</param>
-        /// <returns></returns>
-        public IAMQPoolContainer<IAMQSenderText> GetTextProducer(string connectionName, string queueName)
-        {            
-            var states = VerifyPoolStates(connectionName, queueName);            
-
-            var cacheKey = $"text:producer:{connectionName}:{queueName}".ToLower();
-            var pool = _cache.Get(cacheKey, (name, args) =>
-            {
-                return new CacheDataInfo<AMQTextProducerPool>
-                {
-                    NewCacheData = new AMQTextProducerPool(states, _initialPoolSize, _maxGrowSize)
-                };
-            });
-
-            var container = pool.Container();
-            return new AMQPoolContainer<IAMQSenderText>(container);
-        }
-
-        /// <summary>
-        /// Gets the consumer.
-        /// </summary>
-        /// <param name="connectionName">Name of the connection.</param>
-        /// <param name="queueName">Name of the queue.</param>
-        /// <returns></returns>
-        public IAMQPoolContainer<IAMQReceiverText> GetTextConsumer(string connectionName, string queueName)
-        {
-            var states = VerifyPoolStates(connectionName, queueName);
-
-            var cacheKey = $"text:consumer:{connectionName}:{queueName}".ToLower();
-            var pool = _cache.Get(cacheKey, (name, args) =>
-            {
-                return new CacheDataInfo<AMQTextConsumerPool>
-                {
-                    NewCacheData = new AMQTextConsumerPool(states, _initialPoolSize, _maxGrowSize)
-                };
-            });
-
-            var container = pool.Container();
-            return new AMQPoolContainer<IAMQReceiverText>(container);
+            return new AMQPoolContainer<T>(container);
         }
     }
 }

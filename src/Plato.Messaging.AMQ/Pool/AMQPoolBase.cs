@@ -6,6 +6,7 @@ using Plato.Cache;
 using Plato.Cache.Interfaces;
 using Plato.Core.Miscellaneous;
 using Plato.Messaging.AMQ.Interfaces;
+using Plato.Messaging.AMQ.Settings;
 using System;
 
 namespace Plato.Messaging.AMQ.Pool
@@ -16,32 +17,37 @@ namespace Plato.Messaging.AMQ.Pool
     /// <seealso cref="System.IDisposable" />
     public abstract class AMQPoolBase : IDisposable
     {
-        private bool _disposed;
-        protected readonly int _initialPoolSize;
+        protected class ConfigStates
+        {
+            public AMQConnectionSettings Connection { get; set; }
+            public AMQDestinationSettings Destination { get; set; }
+        }
+
+        private bool _disposed;        
         protected readonly int _maxGrowSize;
         protected readonly ILocalMemoryCache _cache;
         protected readonly IAMQConfigurationManager _configurationManager;
-        protected readonly IAMQSenderFactory _senderFactory;
-        protected readonly IAMQReceiverFactory _receiverFactory;
+        protected readonly IAMQSenderReceiverFactory _factory;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AMQPoolBase"/> class.
+        /// </summary>
+        /// <param name="configurationManager">The configuration manager.</param>
+        /// <param name="factory">The factory.</param>
+        /// <param name="maxGrowSize">Maximum size of the grow.</param>
         public AMQPoolBase(
             IAMQConfigurationManager configurationManager,
-            IAMQSenderFactory senderFactory,
-            IAMQReceiverFactory receiverFactory,
-            int initialPoolSize,
+            IAMQSenderReceiverFactory factory,            
             int maxGrowSize)
         {
             Guard.AgainstNull(() => configurationManager);
-            Guard.AgainstNull(() => senderFactory);
-            Guard.AgainstNull(() => receiverFactory);
+            Guard.AgainstNull(() => factory);            
 
             _disposed = false;
-            _cache = new LocalMemoryCache();
-            _initialPoolSize = initialPoolSize;
+            _cache = new LocalMemoryCache();            
             _maxGrowSize = maxGrowSize;
             _configurationManager = configurationManager;
-            _senderFactory = senderFactory;
-            _receiverFactory = receiverFactory;
+            _factory = factory;
         }
 
         /// <summary>
@@ -52,14 +58,12 @@ namespace Plato.Messaging.AMQ.Pool
         /// <returns></returns>
         /// <exception cref="Exception">
         /// </exception>
-        protected AMQPoolStates VerifyPoolStates(string connectionName, string queueName)
+        protected ConfigStates VerifyPoolStates(string connectionName, string queueName)
         {
-            var states = new AMQPoolStates
+            var states = new ConfigStates
             {
                 Connection = _configurationManager.GetConnectionSettings(connectionName),
                 Destination = _configurationManager.GetDestinationSettings(queueName),
-                SenderFactory = _senderFactory,
-                ReceiverFactory = _receiverFactory
             };
 
             if (string.IsNullOrWhiteSpace(states.Connection.Uri))

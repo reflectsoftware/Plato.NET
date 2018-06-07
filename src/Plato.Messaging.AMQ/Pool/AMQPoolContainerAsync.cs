@@ -5,8 +5,8 @@
 using Plato.Cache;
 using Plato.Core.Miscellaneous;
 using Plato.Messaging.AMQ.Interfaces;
+using Plato.Messaging.Interfaces;
 using System;
-using System.Threading.Tasks;
 
 namespace Plato.Messaging.AMQ.Pool
 {
@@ -14,17 +14,17 @@ namespace Plato.Messaging.AMQ.Pool
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Plato.Messaging.AMQ.Interfaces.IAMQPoolContainerAsync{T}" />
-    public class AMQPoolContainerAsync<T> : IAMQPoolContainerAsync<T>  where T : class
+    /// <seealso cref="Plato.Messaging.AMQ.Interfaces.IAMQPoolContainer{T}" />
+    public class AMQPoolContainerAsync<T> : IAMQPoolContainer<T> where T : IMessageReceiverSender
     {
-        private readonly PoolInstanceAsync<T, AMQPoolStates> _container;
+        private readonly PoolInstanceAsync<AMQObjectPoolData, object> _container;
         private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AMQPoolContainerAsync{T}"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-        public AMQPoolContainerAsync(PoolInstanceAsync<T, AMQPoolStates> container)
+        public AMQPoolContainerAsync(PoolInstanceAsync<AMQObjectPoolData, object> container)
         {
             Guard.AgainstNull(() => container);
 
@@ -46,15 +46,6 @@ namespace Plato.Messaging.AMQ.Pool
         }
 
         /// <summary>
-        /// Totals the pool size asynchronous.
-        /// </summary>
-        /// <returns></returns>
-        public Task<long> TotalPoolSizeAsync()
-        {
-            return _container.Pool.TotalPoolSizeAsync();
-        }
-
-        /// <summary>
         /// Gets the instance.
         /// </summary>
         /// <value>
@@ -64,7 +55,7 @@ namespace Plato.Messaging.AMQ.Pool
         {
             get
             {
-                return _container.Instance;
+                return (T)_container.Instance.Instance;
             }
         }
 

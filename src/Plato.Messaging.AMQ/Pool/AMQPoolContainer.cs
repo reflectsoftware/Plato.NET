@@ -5,6 +5,7 @@
 using Plato.Cache;
 using Plato.Core.Miscellaneous;
 using Plato.Messaging.AMQ.Interfaces;
+using Plato.Messaging.Interfaces;
 using System;
 
 namespace Plato.Messaging.AMQ.Pool
@@ -14,16 +15,16 @@ namespace Plato.Messaging.AMQ.Pool
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Plato.Messaging.AMQ.Interfaces.IAMQPoolContainer{T}" />
-    public class AMQPoolContainer<T> : IAMQPoolContainer<T>  where T : class
+    public class AMQPoolContainer<T> : IAMQPoolContainer<T> where T: IMessageReceiverSender
     {
-        private readonly PoolInstance<T, AMQPoolStates> _container;
+        private readonly PoolInstance<AMQObjectPoolData, object> _container;
         private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AMQPoolContainer{T}"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-        public AMQPoolContainer(PoolInstance<T, AMQPoolStates> container)
+        public AMQPoolContainer(PoolInstance<AMQObjectPoolData, object> container)
         {
             Guard.AgainstNull(() => container);
 
@@ -45,15 +46,6 @@ namespace Plato.Messaging.AMQ.Pool
         }
 
         /// <summary>
-        /// Totals the size of the pool.
-        /// </summary>
-        /// <returns></returns>
-        public long TotalPoolSize()
-        {
-            return _container.Pool.TotalPoolSize;
-        }
-
-        /// <summary>
         /// Gets the instance.
         /// </summary>
         /// <value>
@@ -63,7 +55,7 @@ namespace Plato.Messaging.AMQ.Pool
         {
             get
             {
-                return _container.Instance;
+                return (T)_container.Instance.Instance;
             }
         }
 

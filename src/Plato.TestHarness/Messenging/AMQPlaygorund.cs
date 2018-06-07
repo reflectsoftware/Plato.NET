@@ -1,6 +1,7 @@
 ﻿using Apache.NMS;
 using Plato.Messaging.AMQ;
 using Plato.Messaging.AMQ.Factories;
+using Plato.Messaging.AMQ.Interfaces;
 using Plato.Messaging.AMQ.Pool;
 using Plato.Messaging.AMQ.Settings;
 using Plato.Messaging.Enums;
@@ -34,11 +35,11 @@ namespace Plato.TestHarness.Messenging
                 Durable = true,
             };
 
-            return new AMQConfigurationManager(new[] { connectionSettings }, new[] { destinationSettings } );
+            return new AMQConfigurationManager(new[] { connectionSettings }, new[] { destinationSettings });
         }
 
         static private Task ProducerAsync()
-        {            
+        {
             var configManager = CreateConfigurationManager();
             var senderFactory = new AMQSenderFactory(new AMQConnectionFactory());
             var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
@@ -177,8 +178,9 @@ namespace Plato.TestHarness.Messenging
             var configManager = CreateConfigurationManager();
             var senderFactory = new AMQSenderFactory(new AMQConnectionFactory());
             var receiverFactory = new AMQReceiverFactory(new AMQConnectionFactory());
+            var factory = new AMQSenderReceiverFactory(senderFactory, receiverFactory);
 
-            using (var amqPool = new AMQPoolAsync(configManager, senderFactory, receiverFactory, 3, 100))
+            using (var amqPool = new AMQPoolAsync(configManager, factory, 5))
             {
                 var tasks = new List<Task>();
 
@@ -190,7 +192,7 @@ namespace Plato.TestHarness.Messenging
                         {
                             for (var j = 0; j < 10; j++)
                             {
-                                using (var producer = await amqPool.GetTextProducerAsync("localConnection", "MY_AMQ_TEST"))
+                                using (var producer = await amqPool.GetAsync<IAMQSenderText>("defaultConnection", "MY_AMQ_TEST"))
                                 {
                                     var message = $"message: {i * j}";
                                     await producer.Instance.SendAsync(message);
@@ -225,7 +227,7 @@ namespace Plato.TestHarness.Messenging
             {
                 for (var j = 0; j < 10; j++)
                 {
-                    using (var producer = amqPoolCache.GetTextProducer("localConnection", "MY_AMQ_TEST"))
+                    using (var producer = amqPoolCache.Get<IAMQSenderText>("defaultConnection", "MY_AMQ_TEST"))
                     {
                         var message = $"message: {i * j}";
                         producer.Instance.Send(message);
@@ -245,8 +247,9 @@ namespace Plato.TestHarness.Messenging
             var configManager = CreateConfigurationManager();
             var senderFactory = new AMQSenderFactory(new AMQConnectionFactory());
             var receiverFactory = new AMQReceiverFactory(new AMQConnectionFactory());
+            var factory = new AMQSenderReceiverFactory(senderFactory, receiverFactory);
 
-            using (var amqPoole = new AMQPool(configManager, senderFactory, receiverFactory, 3, 100))
+            using (var amqPoole = new AMQPool(configManager, factory, 5))
             {
                 for (var i = 0; i < 10; i++)
                 {
@@ -266,6 +269,9 @@ namespace Plato.TestHarness.Messenging
             // await ProducerPerformanceTestAsync();
             // await ProducerAsync();
             // await ConsumerAsync();
+
+            await PoolTestAsync();
+            // PoolTest();
 
             await Task.Delay(0);
         }
