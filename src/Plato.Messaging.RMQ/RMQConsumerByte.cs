@@ -12,8 +12,8 @@ namespace Plato.Messaging.RMQ
     /// 
     /// </summary>
     /// <seealso cref="Plato.Messaging.RMQ.RMQConsumer" />
-    /// <seealso cref="Plato.Messaging.RMQ.Interfaces.IRMQConsumerByte" />
-    public class RMQConsumerByte : RMQConsumer, IRMQConsumerByte
+    /// <seealso cref="Plato.Messaging.RMQ.Interfaces.IRMQConsumerBytes" />
+    public class RMQConsumerByte : RMQConsumer, IRMQConsumerBytes
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQConsumerByte" /> class.

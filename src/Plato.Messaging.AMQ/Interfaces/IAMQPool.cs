@@ -7,8 +7,10 @@ using System;
 namespace Plato.Messaging.AMQ.Interfaces
 {
     public interface IAMQPool: IDisposable
-    {        
-        IAMQPoolContainer<IAMQReceiverText> GetConsumer(string connectionName, string queueName);
-        IAMQPoolContainer<IAMQSenderText> GetProducer(string connectionName, string queueName);
+    {
+        IAMQPoolContainer<IAMQReceiverBytes> GetBytesConsumer(string connectionName, string queueName);
+        IAMQPoolContainer<IAMQSenderBytes> GetBytesProducer(string connectionName, string queueName);
+        IAMQPoolContainer<IAMQReceiverText> GetTextConsumer(string connectionName, string queueName);
+        IAMQPoolContainer<IAMQSenderText> GetTextProducer(string connectionName, string queueName);
     }
 }

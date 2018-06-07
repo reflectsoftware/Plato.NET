@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 namespace Plato.Messaging.AMQ.Interfaces
 {
     public interface IAMQPoolAsync: IDisposable
-    {        
-        Task<IAMQPoolContainerAsync<IAMQReceiverText>> GetConsumerAsync(string connectionName, string queueName);
-        Task<IAMQPoolContainerAsync<IAMQSenderText>> GetProducerAsync(string connectionName, string queueName);
+    {
+        Task<IAMQPoolContainerAsync<IAMQReceiverBytes>> GetBytesConsumerAsync(string connectionName, string queueName);
+        Task<IAMQPoolContainerAsync<IAMQSenderBytes>> GetBytesProducerAsync(string connectionName, string queueName);
+        Task<IAMQPoolContainerAsync<IAMQReceiverText>> GetTextConsumerAsync(string connectionName, string queueName);
+        Task<IAMQPoolContainerAsync<IAMQSenderText>> GetTextProducerAsync(string connectionName, string queueName);
     }
 }

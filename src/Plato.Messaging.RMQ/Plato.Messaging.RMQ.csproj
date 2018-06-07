@@ -68,8 +68,12 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Factories\RMQPublisherFactory.cs" />
+    <Compile Include="Interfaces\IRMQPool.cs" />
+    <Compile Include="Interfaces\IRMQPoolAsync.cs" />
+    <Compile Include="Interfaces\IRMQPoolContainer.cs" />
+    <Compile Include="Interfaces\IRMQPoolContainerAsync.cs" />
     <Compile Include="Interfaces\IRMQPublisherFactory.cs" />
-    <Compile Include="Interfaces\IRMQReceiverByte.cs" />
+    <Compile Include="Interfaces\IRMQReceiverBytes.cs" />
     <Compile Include="Interfaces\IRMQReceiverText.cs" />
     <Compile Include="Interfaces\IRMQSubscriberFactory.cs" />
     <Compile Include="Factories\RMQConsumerFactory.cs" />
@@ -80,17 +84,20 @@
     <Compile Include="Interfaces\IRMQConfigurationManager.cs" />
     <Compile Include="Interfaces\IRMQConnectionFactory.cs" />
     <Compile Include="Interfaces\IRMQConsumer.cs" />
-    <Compile Include="Interfaces\IRMQConsumerByte.cs" />
+    <Compile Include="Interfaces\IRMQConsumerBytes.cs" />
     <Compile Include="Interfaces\IRMQConsumerText.cs" />
-    <Compile Include="Interfaces\IRMQProducerByte.cs" />
+    <Compile Include="Interfaces\IRMQProducerBytes.cs" />
     <Compile Include="Interfaces\IRMQProducerText.cs" />
     <Compile Include="Interfaces\IRMQPublisher.cs" />
     <Compile Include="Interfaces\IRMQPublisherText.cs" />
-    <Compile Include="Interfaces\IRMQPublisherByte.cs" />
+    <Compile Include="Interfaces\IRMQPublisherBytes.cs" />
     <Compile Include="Interfaces\IRMQSubscriber.cs" />
     <Compile Include="Interfaces\IRMQSubscriberText.cs" />
-    <Compile Include="Interfaces\IRMQSubscriberByte.cs" />
+    <Compile Include="Interfaces\IRMQSubscriberBytes.cs" />
     <Compile Include="IRMQQueue.cs" />
+    <Compile Include="Pool\RMQPoolContainerAsync.cs" />
+    <Compile Include="Pool\RMQPoolContainer.cs" />
+    <Compile Include="Pool\RMQPoolStates.cs" />
     <Compile Include="RMQBasicConsumer.cs" />
     <Compile Include="RMQConsumerText.cs" />
     <Compile Include="RMQConfigurationManager.cs" />
@@ -131,6 +138,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Plato.Cache\Plato.Cache.csproj">
+      <Project>{96e1c168-23ca-4423-96f9-46e547561f3c}</Project>
+      <Name>Plato.Cache</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Plato.Configuration\Plato.Configuration.csproj">
       <Project>{4e421333-54d9-48ce-ba71-a3ec80e9fa0f}</Project>
       <Name>Plato.Configuration</Name>

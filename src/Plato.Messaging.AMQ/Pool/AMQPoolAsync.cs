@@ -25,21 +25,71 @@ namespace Plato.Messaging.AMQ.Pool
         }
 
         /// <summary>
+        /// Gets the bytes producer asynchronous.
+        /// </summary>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="queueName">Name of the queue.</param>
+        /// <returns></returns>
+        public async Task<IAMQPoolContainerAsync<IAMQSenderBytes>> GetBytesProducerAsync(string connectionName, string queueName)
+        {
+            var states = VerifyPoolStates(connectionName, queueName);
+
+            var cacheKey = $"bytes:pool:producer:{connectionName}:{queueName}".ToLower();
+            var pool = await _cache.GetAsync(cacheKey, (name, args) =>
+            {
+                var item = new CacheDataInfo<AMQBytesProducerPoolAsync>
+                {
+                    NewCacheData = new AMQBytesProducerPoolAsync(states, _initialPoolSize, _maxGrowSize)
+                };
+
+                return Task.FromResult(item);
+            });
+
+            var container = await pool.ContainerAsync();
+            return new AMQPoolContainerAsync<IAMQSenderBytes>(container);
+        }
+
+        /// <summary>
+        /// Gets the bytes consumer asynchronous.
+        /// </summary>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="queueName">Name of the queue.</param>
+        /// <returns></returns>
+        public async Task<IAMQPoolContainerAsync<IAMQReceiverBytes>> GetBytesConsumerAsync(string connectionName, string queueName)
+        {
+            var states = VerifyPoolStates(connectionName, queueName);
+
+            var cacheKey = $"bytes:pool:consumer:{connectionName}:{queueName}".ToLower();
+            var pool = await _cache.GetAsync(cacheKey, (name, args) =>
+            {
+                var item = new CacheDataInfo<AMQBytesConsumerPoolAsync>
+                {
+                    NewCacheData = new AMQBytesConsumerPoolAsync(states, _initialPoolSize, _maxGrowSize)
+                };
+
+                return Task.FromResult(item);
+            });
+
+            var container = await pool.ContainerAsync();
+            return new AMQPoolContainerAsync<IAMQReceiverBytes>(container);
+        }
+
+        /// <summary>
         /// Gets the producer asynchronous.
         /// </summary>
         /// <param name="connectionName">Name of the connection.</param>
         /// <param name="queueName">Name of the queue.</param>
         /// <returns></returns>
-        public async Task<IAMQPoolContainerAsync<IAMQSenderText>> GetProducerAsync(string connectionName, string queueName)
+        public async Task<IAMQPoolContainerAsync<IAMQSenderText>> GetTextProducerAsync(string connectionName, string queueName)
         {            
             var states = VerifyPoolStates(connectionName, queueName);            
 
-            var cacheKey = $"amq:pool:producer:{connectionName}:{queueName}".ToLower();
+            var cacheKey = $"text:pool:producer:{connectionName}:{queueName}".ToLower();
             var pool = await _cache.GetAsync(cacheKey, (name, args) =>
             {
-                var item = new CacheDataInfo<AMQProducerPoolAsync>
+                var item = new CacheDataInfo<AMQTextProducerPoolAsync>
                 {
-                    NewCacheData = new AMQProducerPoolAsync(states, _initialPoolSize, _maxGrowSize)
+                    NewCacheData = new AMQTextProducerPoolAsync(states, _initialPoolSize, _maxGrowSize)
                 };
 
                 return Task.FromResult(item);
@@ -55,16 +105,16 @@ namespace Plato.Messaging.AMQ.Pool
         /// <param name="connectionName">Name of the connection.</param>
         /// <param name="queueName">Name of the queue.</param>
         /// <returns></returns>
-        public async Task<IAMQPoolContainerAsync<IAMQReceiverText>> GetConsumerAsync(string connectionName, string queueName)
+        public async Task<IAMQPoolContainerAsync<IAMQReceiverText>> GetTextConsumerAsync(string connectionName, string queueName)
         {
             var states = VerifyPoolStates(connectionName, queueName);
 
-            var cacheKey = $"amq:pool:consumer:{connectionName}:{queueName}".ToLower();
+            var cacheKey = $"text:pool:consumer:{connectionName}:{queueName}".ToLower();
             var pool = await _cache.GetAsync(cacheKey, (name, args) =>
             {
-                var item = new CacheDataInfo<AMQConsumerPoolAsync>
+                var item = new CacheDataInfo<AMQTextConsumerPoolAsync>
                 {
-                    NewCacheData = new AMQConsumerPoolAsync(states, _initialPoolSize, _maxGrowSize)
+                    NewCacheData = new AMQTextConsumerPoolAsync(states, _initialPoolSize, _maxGrowSize)
                 };
 
                 return Task.FromResult(item);

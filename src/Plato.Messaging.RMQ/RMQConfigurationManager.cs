@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using System.Xml;
+using System.Text;
 
 namespace Plato.Messaging.RMQ
 {
@@ -22,9 +23,10 @@ namespace Plato.Messaging.RMQ
     /// </summary>
     /// <seealso cref="Plato.Messaging.RMQ.Interfaces.IRMQConfigurationManager" />
     public class RMQConfigurationManager : IRMQConfigurationManager
-    {
-        private readonly NodeChildAttributes _nodeAttributes;
+    {        
         private readonly IConfigNode _configNode;
+
+        public NodeChildAttributes NodeAttributes { get; protected set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQConfigurationManager"/> class.
@@ -40,12 +42,12 @@ namespace Plato.Messaging.RMQ
                     if (xmlConfigSection != null)
                     {
                         _configNode = new ConfigNode(xmlConfigSection);
-                        _nodeAttributes = ConfigHelper.GetNodeChildAttributes(_configNode, ".");
+                        NodeAttributes = ConfigHelper.GetNodeChildAttributes(_configNode, ".");
                     }
                 }
                 catch (ConfigurationErrorsException)
                 {
-                    _nodeAttributes = new NodeChildAttributes();
+                    NodeAttributes = new NodeChildAttributes();
                 }
             }
             else
@@ -53,7 +55,95 @@ namespace Plato.Messaging.RMQ
                 using (var configContainer = new ConfigContainer(configPath, "./rmqSettings"))
                 {
                     _configNode = configContainer.Node;
-                    _nodeAttributes = ConfigHelper.GetNodeChildAttributes(_configNode, ".");
+                    NodeAttributes = ConfigHelper.GetNodeChildAttributes(_configNode, ".");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQConfigurationManager" /> class.
+        /// </summary>
+        /// <param name="connections">The connections.</param>
+        /// <param name="queueSettings">The queue settings.</param>
+        public RMQConfigurationManager(
+            IEnumerable<RMQConnectionSettings> connections, 
+            IEnumerable<RMQExchangeSettings> exchangeSettings = null,
+            IEnumerable<RMQQueueSettings> queueSettings = null)
+        {
+            NodeAttributes = new NodeChildAttributes();
+            NodeAttributes.ParentAttributes.NodeName = "rmqSettings";
+
+            if (connections != null)
+            {
+                foreach (var connection in connections)
+                {
+                    var childNode = new NodeAttributes()
+                    {
+                        NodeName = "connectionSettings",
+                        Attributes = new NameValueCollection()
+                    };
+
+                    childNode.Attributes["name"] = connection.Name;
+                    childNode.Attributes["username"] = connection.Username;
+                    childNode.Attributes["password"] = connection.Password;
+                    childNode.Attributes["virtualhost"] = connection.VirtualHost;
+                    childNode.Attributes["uri"] = connection.Uri;
+                    childNode.Attributes["delayOnReconnect"] = connection.DelayOnReconnect.ToString();
+
+                    NodeAttributes.ChildAttributes.Add(childNode);
+                }
+            }
+
+            if(exchangeSettings != null)
+            {
+                foreach (var exchangeSetting in exchangeSettings)
+                {
+                    var childNode = new NodeAttributes()
+                    {
+                        NodeName = "exchange",
+                        Attributes = new NameValueCollection()
+                    };
+
+                    childNode.Attributes["name"] = exchangeSetting.Name;
+                    childNode.Attributes["exchangeName"] = exchangeSetting.ExchangeName;
+                    childNode.Attributes["type"] = exchangeSetting.Type;
+                    childNode.Attributes["autoDelete"] = exchangeSetting.AutoDelete ? "true" : "false";                    
+
+                    NodeAttributes.ChildAttributes.Add(childNode);
+                }
+            }
+
+            if (queueSettings != null)
+            {
+                foreach (var queueSetting in queueSettings)
+                {
+                    var childNode = new NodeAttributes()
+                    {
+                        NodeName = "queue",
+                        Attributes = new NameValueCollection()
+                    };
+
+                    childNode.Attributes["name"] = queueSetting.Name;
+                    childNode.Attributes["queueName"] = queueSetting.QueueName;                    
+                    childNode.Attributes["durable"] = queueSetting.Durable ? "true" : "false";
+                    childNode.Attributes["exclusive"] = queueSetting.Exclusive ? "true" : "false";
+                    childNode.Attributes["autoDelete"] = queueSetting.AutoDelete ? "true" : "false";
+                    childNode.Attributes["persistent"] = queueSetting.Persistent ? "true" : "false";   
+                    
+                    if(queueSetting.RoutingKeys != null && queueSetting.RoutingKeys.Any())
+                    {
+                        var sb = new StringBuilder();
+                        foreach(var rkey in queueSetting.RoutingKeys)
+                        {
+                            sb.Append($"{rkey},");
+                        }
+
+                        // remove the extra comma
+                        sb.Remove(sb.Length - 1, 1);
+                        childNode.Attributes["routingKeys"] = sb.ToString();
+                    }                    
+
+                    NodeAttributes.ChildAttributes.Add(childNode);
                 }
             }
         }
@@ -65,11 +155,11 @@ namespace Plato.Messaging.RMQ
         /// <returns></returns>
         public List<NameValueCollection> GetAttributesCollectionForAllNodes(string nodeName)
         {
-            List<NameValueCollection> collections = null;
+            var collections = (List<NameValueCollection>)null;
 
-            if (_nodeAttributes != null)
+            if (NodeAttributes != null)
             {
-                collections = _nodeAttributes.ChildAttributes.Where(x => x.NodeName == nodeName).Select(x => x.Attributes).ToList();
+                collections = NodeAttributes.ChildAttributes.Where(x => x.NodeName == nodeName).Select(x => x.Attributes).ToList();
             }
 
             return collections ?? new List<NameValueCollection>();
@@ -82,11 +172,11 @@ namespace Plato.Messaging.RMQ
         /// <param name="name">The name.</param>
         /// <returns></returns>
         public NameValueCollection GetAttributes(string nodeName, string name)
-        {
-            NameValueCollection attributes = null;
-            if (_nodeAttributes != null)
+        {            
+            var attributes = (NameValueCollection)null;
+            if (NodeAttributes != null)
             {
-                var nodeAttributes = _nodeAttributes.ChildAttributes.FirstOrDefault(x => x.NodeName == nodeName && x.Attributes["name"] == name);
+                var nodeAttributes = NodeAttributes.ChildAttributes.FirstOrDefault(x => x.NodeName == nodeName && x.Attributes["name"] == name);
                 if (nodeAttributes != null)
                 {
                     attributes = new NameValueCollection(nodeAttributes.Attributes);
@@ -136,7 +226,7 @@ namespace Plato.Messaging.RMQ
                 settings.Endpoints.Add(uri);
             }
 
-           return settings;
+            return settings;
         }
 
         /// <summary>
@@ -172,7 +262,7 @@ namespace Plato.Messaging.RMQ
 
             var queueSettings = new RMQQueueSettings(name)
             {
-                QueueName = StringHelper.IfNullOrEmptyUseDefault(attributes["QueueName"], name),
+                QueueName = StringHelper.IfNullOrEmptyUseDefault(attributes["queueName"], name),
                 Exclusive = StringHelper.IfNullOrEmptyUseDefault(attributes["exclusive"], "true") == "true",
                 Durable = StringHelper.IfNullOrEmptyUseDefault(attributes["durable"], "true") == "true",
                 AutoDelete = StringHelper.IfNullOrEmptyUseDefault(attributes["autoDelete"], "false") == "true",
@@ -182,30 +272,30 @@ namespace Plato.Messaging.RMQ
             };
 
             var sRoutingKeys = StringHelper.IfNullOrEmptyUseDefault(attributes["routingKeys"], string.Empty);
-            foreach(var routingKey in sRoutingKeys.Split(new char[] {','}))
+            foreach (var routingKey in sRoutingKeys.Split(new char[] { ',' }))
             {
                 routingKeys.Add(routingKey.Trim());
-            }            
+            }
 
-            if(_configNode != null)
+            if (_configNode != null)
             {
                 // get arguments if they exist
                 var argsNode = _configNode.GetConfigNode($"./queue[@name='{name}']/arguments");
-                if(argsNode != null)
+                if (argsNode != null)
                 {
                     attributes = argsNode.GetAttributes();
-                    foreach(var key in attributes.AllKeys)
-                    {                        
-                        if(!queueSettings.Arguments.ContainsKey(key))
+                    foreach (var key in attributes.AllKeys)
+                    {
+                        if (!queueSettings.Arguments.ContainsKey(key))
                         {
                             queueSettings.Arguments[key] = attributes[key];
                         }
                     }
                 }
-                
+
                 // get consumer info if it exists
                 var consumerNode = _configNode.GetConfigNode($"./queue[@name='{name}']/consumer");
-                if(consumerNode != null)
+                if (consumerNode != null)
                 {
                     attributes = consumerNode.GetAttributes();
                     queueSettings.ConsumerSettings.Tag = StringHelper.IfNullOrEmptyUseDefault(attributes["tag"], Guid.NewGuid().ToString());
@@ -214,7 +304,7 @@ namespace Plato.Messaging.RMQ
                     queueSettings.ConsumerSettings.NoLocal = StringHelper.IfNullOrEmptyUseDefault(attributes["noLocal"], "true") == "true";
                 }
             }
-            
+
             return queueSettings;
         }
     }

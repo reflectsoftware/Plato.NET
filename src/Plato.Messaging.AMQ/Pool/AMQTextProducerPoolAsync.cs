@@ -4,35 +4,36 @@
 
 using Plato.Cache;
 using Plato.Messaging.AMQ.Interfaces;
+using System.Threading.Tasks;
 
 namespace Plato.Messaging.AMQ.Pool
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="GenericObjectPool{Plato.Messaging.AMQ.Interfaces.IAMQReceiverText, Plato.Messaging.AMQ.Pool.AMQPoolStates}" />
-    internal class AMQConsumerPool: GenericObjectPool<IAMQReceiverText, AMQPoolStates>
+    /// <seealso cref="Plato.Cache.GenericObjectPoolAsync{Plato.Messaging.AMQ.Interfaces.IAMQSenderText, Plato.Messaging.AMQ.Pool.AMQPoolStates}" />
+    internal class AMQTextProducerPoolAsync : GenericObjectPoolAsync<IAMQSenderText, AMQPoolStates>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AMQConsumerPool"/> class.
+        /// Initializes a new instance of the <see cref="AMQTextProducerPoolAsync"/> class.
         /// </summary>
         /// <param name="states">The states.</param>
         /// <param name="initialPoolSize">Initial size of the pool.</param>
         /// <param name="maxGrowSize">Maximum size of the grow.</param>
-        public AMQConsumerPool(
+        public AMQTextProducerPoolAsync(
             AMQPoolStates states,             
-            int initialPoolSize,
+            int initialPoolSize, 
             int maxGrowSize) : base(initialPoolSize, maxGrowSize, states)
-        {
+        {                   
         }
 
         /// <summary>
         /// Creates the pool object.
         /// </summary>
         /// <returns></returns>
-        protected override IAMQReceiverText CreatePoolObject()
+        protected override Task<IAMQSenderText> CreatePoolObjectAsync()
         {
-            return Data.ReceiverFactory.CreateText(Data.Connection, Data.Destination);
-        }
+            return Task.FromResult(Data.SenderFactory.CreateText(Data.Connection, Data.Destination));
+        }        
     }
 }

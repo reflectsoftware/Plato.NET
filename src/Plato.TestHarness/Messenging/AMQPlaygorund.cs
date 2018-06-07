@@ -1,54 +1,48 @@
-﻿using Plato.Messaging.AMQ.Factories;
+﻿using Apache.NMS;
+using Plato.Messaging.AMQ;
+using Plato.Messaging.AMQ.Factories;
+using Plato.Messaging.AMQ.Pool;
 using Plato.Messaging.AMQ.Settings;
 using Plato.Messaging.Enums;
 using Plato.Messaging.Exceptions;
-using Plato.Messaging.RMQ;
-using Plato.Messaging.RMQ.Factories;
-using Plato.Messaging.RMQ.Settings;
 using Plato.SqlServer;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using Apache.NMS;
-using Plato.Messaging.AMQ;
-using Plato.Messaging.AMQ.Pool;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Plato.TestHarness.Messenging
 {
     public class AMQPlayground
     {
-        static private AMQConnectionSettings GetRMQConnectionSettings()
+        static AMQConfigurationManager CreateConfigurationManager()
         {
             var connectionSettings = new AMQConnectionSettings
             {
                 Name = "defaultConnection",
                 Username = "admin",
-                Password = "admin",                
+                Password = "admin",
                 Uri = "tcp://localhost:61616?tcpNoDelay=true,tcp://localhost:61616?tcpNoDelay=true",
-                DelayOnReconnect = 1000,                
+                DelayOnReconnect = 1000,
             };
 
-            // prepare endpoints
-            foreach (var uri in connectionSettings.Uri.Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                connectionSettings.Endpoints.Add(uri);
-            }
-
-            return connectionSettings;
-        }
-
-        static private Task ProducerAsync()
-        {            
-            var connectionSettings = GetRMQConnectionSettings();
-            var senderFactory = new AMQSenderFactory(new AMQConnectionFactory());
-            var queueSettings = new AMQDestinationSettings("MY_AMQ_TEST", "queue://MY_AMQ_TEST")
+            var destinationSettings = new AMQDestinationSettings("MY_AMQ_TEST", "queue://MY_AMQ_TEST")
             {
                 DeliveryMode = MsgDeliveryMode.Persistent,
                 Durable = true,
             };
+
+            return new AMQConfigurationManager(new[] { connectionSettings }, new[] { destinationSettings } );
+        }
+
+        static private Task ProducerAsync()
+        {            
+            var configManager = CreateConfigurationManager();
+            var senderFactory = new AMQSenderFactory(new AMQConnectionFactory());
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            var queueSettings = configManager.GetDestinationSettings("MY_AMQ_TEST");
 
             using (var sender = senderFactory.CreateText(connectionSettings, queueSettings))
             {
@@ -63,13 +57,10 @@ namespace Plato.TestHarness.Messenging
 
         static private async Task ProducerPerformanceTestAsync()
         {
-            var connectionSettings = GetRMQConnectionSettings();
+            var configManager = CreateConfigurationManager();
             var senderFactory = new AMQSenderFactory(new AMQConnectionFactory());
-            var queueSettings = new AMQDestinationSettings("MY_AMQ_TEST", "queue://MY_AMQ_TEST")
-            {
-                DeliveryMode = MsgDeliveryMode.Persistent,
-                Durable = true,
-            };
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            var queueSettings = configManager.GetDestinationSettings("MY_AMQ_TEST");
 
             using (var producer = senderFactory.CreateText(connectionSettings, queueSettings))
             {
@@ -120,13 +111,10 @@ namespace Plato.TestHarness.Messenging
 
         static private Task ConsumerAsync()
         {
-            var connectionSettings = GetRMQConnectionSettings();
+            var configManager = CreateConfigurationManager();
             var receiverFactory = new AMQReceiverFactory(new AMQConnectionFactory());
-            var queueSettings = new AMQDestinationSettings("MY_AMQ_TEST", "queue://MY_AMQ_TEST")
-            {
-                DeliveryMode = MsgDeliveryMode.Persistent,
-                Durable = true,
-            };
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            var queueSettings = configManager.GetDestinationSettings("MY_AMQ_TEST");
 
             using (var receiver = receiverFactory.CreateText(connectionSettings, queueSettings))
             {
@@ -186,7 +174,7 @@ namespace Plato.TestHarness.Messenging
 
         static Task PoolTestAsync()
         {
-            var configManager = new AMQConfigurationManager();            
+            var configManager = CreateConfigurationManager();
             var senderFactory = new AMQSenderFactory(new AMQConnectionFactory());
             var receiverFactory = new AMQReceiverFactory(new AMQConnectionFactory());
 
@@ -202,7 +190,7 @@ namespace Plato.TestHarness.Messenging
                         {
                             for (var j = 0; j < 10; j++)
                             {
-                                using (var producer = await amqPool.GetProducerAsync("localConnection", "Test1"))
+                                using (var producer = await amqPool.GetTextProducerAsync("localConnection", "MY_AMQ_TEST"))
                                 {
                                     var message = $"message: {i * j}";
                                     await producer.Instance.SendAsync(message);
@@ -237,7 +225,7 @@ namespace Plato.TestHarness.Messenging
             {
                 for (var j = 0; j < 10; j++)
                 {
-                    using (var producer = amqPoolCache.GetProducer("localConnection", "Test1"))
+                    using (var producer = amqPoolCache.GetTextProducer("localConnection", "MY_AMQ_TEST"))
                     {
                         var message = $"message: {i * j}";
                         producer.Instance.Send(message);
@@ -254,7 +242,7 @@ namespace Plato.TestHarness.Messenging
 
         static void PoolTest()
         {
-            var configManager = new AMQConfigurationManager();
+            var configManager = CreateConfigurationManager();
             var senderFactory = new AMQSenderFactory(new AMQConnectionFactory());
             var receiverFactory = new AMQReceiverFactory(new AMQConnectionFactory());
 

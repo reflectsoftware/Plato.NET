@@ -14,8 +14,8 @@ namespace Plato.Messaging.RMQ
     /// 
     /// </summary>
     /// <seealso cref="Plato.Messaging.RMQ.RMQProducer" />
-    /// <seealso cref="Plato.Messaging.RMQ.Interfaces.IRMQProducerByte" />
-    public class RMQProducerByte : RMQProducer, IRMQProducerByte
+    /// <seealso cref="Plato.Messaging.RMQ.Interfaces.IRMQProducerBytes" />
+    public class RMQProducerByte : RMQProducer, IRMQProducerBytes
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQProducerByte"/> class.

@@ -4,7 +4,7 @@
 
 namespace Plato.Messaging.RMQ.Interfaces
 {
-    public interface IRMQConsumerByte : IRMQReceiverByte, IRMQConsumer
+    public interface IRMQSubscriberBytes : IRMQReceiverBytes, IRMQSubscriber
     {        
     }
 }

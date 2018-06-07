@@ -11,9 +11,15 @@ namespace Plato.Messaging.AMQ.Pool
     /// 
     /// </summary>
     /// <seealso cref="Plato.Cache.GenericObjectPool{Plato.Messaging.AMQ.Interfaces.IAMQSenderText, Plato.Messaging.AMQ.Pool.AMQPoolStates}" />
-    internal class AMQProducerPool: GenericObjectPool<IAMQSenderText, AMQPoolStates>
+    internal class AMQTextProducerPool: GenericObjectPool<IAMQSenderText, AMQPoolStates>
     {
-        public AMQProducerPool(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AMQTextProducerPool"/> class.
+        /// </summary>
+        /// <param name="states">The states.</param>
+        /// <param name="initialPoolSize">Initial size of the pool.</param>
+        /// <param name="maxGrowSize">Maximum size of the grow.</param>
+        public AMQTextProducerPool(
             AMQPoolStates states,             
             int initialPoolSize, 
             int maxGrowSize) : base(initialPoolSize, maxGrowSize, states)

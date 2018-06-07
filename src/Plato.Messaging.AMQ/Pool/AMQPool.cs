@@ -32,21 +32,68 @@ namespace Plato.Messaging.AMQ.Pool
         }
 
         /// <summary>
+        /// Gets the bytes producer.
+        /// </summary>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="queueName">Name of the queue.</param>
+        /// <returns></returns>
+        public IAMQPoolContainer<IAMQSenderBytes> GetBytesProducer(string connectionName, string queueName)
+        {
+            var states = VerifyPoolStates(connectionName, queueName);
+
+            var cacheKey = $"bytes:producer:{connectionName}:{queueName}".ToLower();
+            var pool = _cache.Get(cacheKey, (name, args) =>
+            {
+                return new CacheDataInfo<AMQBytesProducerPool>
+                {
+                    NewCacheData = new AMQBytesProducerPool(states, _initialPoolSize, _maxGrowSize)
+                };
+            });
+
+            var container = pool.Container();
+            return new AMQPoolContainer<IAMQSenderBytes>(container);
+        }
+
+        /// <summary>
+        /// Gets the bytes consumer.
+        /// </summary>
+        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="queueName">Name of the queue.</param>
+        /// <returns></returns>
+        public IAMQPoolContainer<IAMQReceiverBytes> GetBytesConsumer(string connectionName, string queueName)
+        {
+            var states = VerifyPoolStates(connectionName, queueName);
+
+            var cacheKey = $"bytes:consumer:{connectionName}:{queueName}".ToLower();
+            var pool = _cache.Get(cacheKey, (name, args) =>
+            {
+                return new CacheDataInfo<AMQBytesConsumerPool>
+                {
+                    NewCacheData = new AMQBytesConsumerPool(states, _initialPoolSize, _maxGrowSize)
+                };
+            });
+
+            var container = pool.Container();
+            return new AMQPoolContainer<IAMQReceiverBytes>(container);
+        }
+
+
+        /// <summary>
         /// Gets the producer.
         /// </summary>
         /// <param name="connectionName">Name of the connection.</param>
         /// <param name="queueName">Name of the queue.</param>
         /// <returns></returns>
-        public IAMQPoolContainer<IAMQSenderText> GetProducer(string connectionName, string queueName)
+        public IAMQPoolContainer<IAMQSenderText> GetTextProducer(string connectionName, string queueName)
         {            
             var states = VerifyPoolStates(connectionName, queueName);            
 
-            var cacheKey = $"amq:pool:producer:{connectionName}:{queueName}".ToLower();
+            var cacheKey = $"text:producer:{connectionName}:{queueName}".ToLower();
             var pool = _cache.Get(cacheKey, (name, args) =>
             {
-                return new CacheDataInfo<AMQProducerPool>
+                return new CacheDataInfo<AMQTextProducerPool>
                 {
-                    NewCacheData = new AMQProducerPool(states, _initialPoolSize, _maxGrowSize)
+                    NewCacheData = new AMQTextProducerPool(states, _initialPoolSize, _maxGrowSize)
                 };
             });
 
@@ -60,16 +107,16 @@ namespace Plato.Messaging.AMQ.Pool
         /// <param name="connectionName">Name of the connection.</param>
         /// <param name="queueName">Name of the queue.</param>
         /// <returns></returns>
-        public IAMQPoolContainer<IAMQReceiverText> GetConsumer(string connectionName, string queueName)
+        public IAMQPoolContainer<IAMQReceiverText> GetTextConsumer(string connectionName, string queueName)
         {
             var states = VerifyPoolStates(connectionName, queueName);
 
-            var cacheKey = $"amq:pool:consumer:{connectionName}:{queueName}".ToLower();
+            var cacheKey = $"text:consumer:{connectionName}:{queueName}".ToLower();
             var pool = _cache.Get(cacheKey, (name, args) =>
             {
-                return new CacheDataInfo<AMQConsumerPool>
+                return new CacheDataInfo<AMQTextConsumerPool>
                 {
-                    NewCacheData = new AMQConsumerPool(states, _initialPoolSize, _maxGrowSize)
+                    NewCacheData = new AMQTextConsumerPool(states, _initialPoolSize, _maxGrowSize)
                 };
             });
 

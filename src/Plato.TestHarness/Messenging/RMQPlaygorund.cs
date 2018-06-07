@@ -16,7 +16,7 @@ namespace Plato.TestHarness.Messenging
     {
         // http://zoltanaltfatter.com/2016/09/06/dead-letter-queue-configuration-rabbitmq/
 
-        static private RMQConnectionSettings GetRMQConnectionSettings()
+        static RMQConfigurationManager CreateConfigurationManager()
         {
             var connectionSettings = new RMQConnectionSettings
             {
@@ -24,33 +24,33 @@ namespace Plato.TestHarness.Messenging
                 Username = "local-dev-user",
                 Password = "local-dev-user",
                 VirtualHost = "local-dev-vh",
-                Uri = "amqp://localhost:5673",
-                DelayOnReconnect = 1000,
-                ForceReconnectionTime = TimeSpan.FromMinutes(6),
+                Uri = "amqp://localhost:5672,amqp://localhost:5673,amqp://localhost:5674",
+                DelayOnReconnect = 2000,
             };
 
-            // prepare endpoints
-            foreach (var uri in connectionSettings.Uri.Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                connectionSettings.Endpoints.Add(uri);
-            }
+            var queueSettings = new RMQQueueSettings("MY_RMQ_TEST", "MY_RMQ_TEST")
+            {                
+                Durable = true,
+                AutoDelete = false,
+                Persistent = true,
+                Exclusive = false,                       
+            };
 
-            return connectionSettings;
-        }
+            return new RMQConfigurationManager(new[] { connectionSettings }, queueSettings: new[] { queueSettings });
+        }             
 
         static private Task ProducerAsync()
         {
             var args = new Dictionary<string, object>
             {
                 { "x-dead-letter-exchange", "" },
-                { "x-dead-letter-routing-key", "My.DLQ" }
+                { "x-dead-letter-routing-key", "DLQ.MY_RMQ_TEST" }
             };
 
-            
-            var configManager = new RMQConfigurationManager();
-            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            var configManager = CreateConfigurationManager();            
             var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());
-            var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue", true, false, false, true, arguments: args);                        
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            var queueSettings = configManager.GetQueueSettings("MY_RMQ_TEST", args); 
 
             using (var producer = procuderFactory.CreateText(connectionSettings, queueSettings))
             {
@@ -71,10 +71,10 @@ namespace Plato.TestHarness.Messenging
                 { "x-dead-letter-routing-key", "My.DLQ" }
             };
 
-            var configManager = new RMQConfigurationManager();
+            var configManager = CreateConfigurationManager();            
+            var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());
             var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
-            var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());            
-            var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue", true, false, false, true, arguments: args);
+            var queueSettings = configManager.GetQueueSettings("MY_RMQ_TEST", args);
 
             using (var producer = procuderFactory.CreateText(connectionSettings, queueSettings))
             {
@@ -130,11 +130,11 @@ namespace Plato.TestHarness.Messenging
                 { "x-dead-letter-exchange", "" },
                 { "x-dead-letter-routing-key", "My.DLQ" }
             };
-               
-            var configManager = new RMQConfigurationManager();
-            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+
+            var configManager = CreateConfigurationManager();
             var consumerFactory = new RMQConsumerFactory(new RMQConnectionFactory());
-            var queueSettings = new RMQQueueSettings("My.Queue", "My.Queue", true, false, false, true, arguments: args);
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            var queueSettings = configManager.GetQueueSettings("MY_RMQ_TEST", args);
 
             using (var consumer = consumerFactory.CreateText(connectionSettings, queueSettings))
             {
@@ -198,9 +198,8 @@ namespace Plato.TestHarness.Messenging
         static public async Task RunAsync()
         {
             // await ProducerPerformanceTestAsync();
-
-            // await ProducerAsync();
-            await ConsumerAsync();
+            await ProducerAsync();
+            //await ConsumerAsync();
         }
     }
 }

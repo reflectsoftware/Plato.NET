@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Plato.Messaging.RMQ
 {
-    public class RMQPublisherByte : RMQPublisher, IRMQPublisherByte
+    public class RMQPublisherByte : RMQPublisher, IRMQPublisherBytes
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQPublisherByte" /> class.

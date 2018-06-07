@@ -29,7 +29,7 @@ namespace Plato.Messaging.RMQ.Factories
         /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="queueSettings">The settings.</param>
         /// <returns></returns>
-        public IRMQConsumerByte CreateByte(RMQConnectionSettings connectionSettings, RMQQueueSettings queueSettings)
+        public IRMQConsumerBytes CreateByte(RMQConnectionSettings connectionSettings, RMQQueueSettings queueSettings)
         {
             return new RMQConsumerByte(_connectionFactory, connectionSettings, queueSettings);
         }
