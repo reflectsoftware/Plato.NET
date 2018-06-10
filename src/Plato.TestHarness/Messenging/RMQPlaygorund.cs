@@ -304,6 +304,54 @@ namespace Plato.TestHarness.Messenging
             }
         }
 
+        static void SimplePoolTest()
+        {
+            var args = new Dictionary<string, object>
+            {
+                { "x-dead-letter-exchange", "" },
+                { "x-dead-letter-routing-key", "DLQ_MY_RMQ_TEST" }
+            };
+
+            var configManager = CreateConfigurationManager();
+            var consumerFactory = new RMQConsumerFactory(new RMQConnectionFactory());
+            var producerFactory = new RMQProducerFactory(new RMQConnectionFactory());
+            var subscriberFactory = new RMQSubscriberFactory(new RMQConnectionFactory());
+            var publisherFactory = new RMQPublisherFactory(new RMQConnectionFactory());
+            var factory = new RMQSenderReceiverFactory(consumerFactory, producerFactory, subscriberFactory, publisherFactory);
+
+            using (var amqPool = new RMQPool(configManager, factory, 5))
+            {
+                using (var producer = amqPool.Get<IRMQProducerText>("defaultConnection", "MY_RMQ_TEST", queueArgs: args))
+                {
+                    producer.Instance.Send("Simple test");
+                }
+            }
+        }
+
+        static async Task SimplePoolTestAsync()
+        {
+            var args = new Dictionary<string, object>
+            {
+                { "x-dead-letter-exchange", "" },
+                { "x-dead-letter-routing-key", "DLQ_MY_RMQ_TEST" }
+            };
+
+            var configManager = CreateConfigurationManager();
+            var consumerFactory = new RMQConsumerFactory(new RMQConnectionFactory());
+            var producerFactory = new RMQProducerFactory(new RMQConnectionFactory());
+            var subscriberFactory = new RMQSubscriberFactory(new RMQConnectionFactory());
+            var publisherFactory = new RMQPublisherFactory(new RMQConnectionFactory());
+            var factory = new RMQSenderReceiverFactory(consumerFactory, producerFactory, subscriberFactory, publisherFactory);
+
+            using (var amqPool = new RMQPoolAsync(configManager, factory, 5))
+            {
+                using (var producer = await amqPool.GetAsync<IRMQProducerText>("defaultConnection", "MY_RMQ_TEST", queueArgs: args))
+                {
+                    await producer.Instance.SendAsync("Simple test");
+                }
+            }
+        }
+
         #endregion Pool Test
 
         static public async Task RunAsync()
@@ -312,8 +360,10 @@ namespace Plato.TestHarness.Messenging
             //await ProducerAsync();
             //await ConsumerAsync();
 
-            await PoolTestAsync();
+            // await PoolTestAsync();
             // PoolTest();
+            // SimplePoolTest();
+            await SimplePoolTestAsync();
 
             await Task.Delay(0);
         }
