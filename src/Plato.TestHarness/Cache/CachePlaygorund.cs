@@ -75,6 +75,7 @@ namespace Plato.TestHarness.Cache
                 {
                     return new CacheDataInfo<string>
                     {
+                        KeepAlive= TimeSpan.FromHours(4),
                         NewCacheData = "Ross"
                     };
                 });
