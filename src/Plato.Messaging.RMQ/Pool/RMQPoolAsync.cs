@@ -20,7 +20,7 @@ namespace Plato.Messaging.RMQ.Pool
         public RMQPoolAsync(
             IRMQConfigurationManager configurationManager,
             IRMQSenderReceiverFactory factory,
-            int maxGrowSize) : base(configurationManager, factory, maxGrowSize)
+            int maxGrowSize = 3) : base(configurationManager, factory, maxGrowSize)
         {
         }
 
