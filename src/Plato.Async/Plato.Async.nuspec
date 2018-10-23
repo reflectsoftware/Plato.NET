@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Plato.Async deployment package</description>
     <summary></summary>
-    <copyright>© 2017 ReflectSoftware Inc.</copyright>
+    <copyright>© 2018 ReflectSoftware Inc.</copyright>
     <tags>plato .net services work-manager exceptions dapper redis RabbitMQ ActiveMQ</tags>
     <releaseNotes></releaseNotes>
   </metadata>
