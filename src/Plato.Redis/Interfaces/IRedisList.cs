@@ -26,5 +26,7 @@ namespace Plato.Redis.Interfaces
         Task AddAsync(ITransaction tran, T item);
         Task ClearAsync();
         Task ClearAsync(ITransaction tran);
+        Task<T> GetAsync(int index);        
+        Task<IEnumerable<T>> GetValuesAsync();
     }
 }

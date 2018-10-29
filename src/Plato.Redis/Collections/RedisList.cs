@@ -230,6 +230,27 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
+        /// Gets the asynchronous.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns></returns>
+        public async Task<T> GetAsync(int index)
+        {
+            var value = await RedisDb.ListGetByIndexAsync(RedisKey, index);
+            return value.HasValue ? Serializer.Deserialize<T>(value) : default(T);
+        }
+
+        /// <summary>
+        /// Get Values the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> GetValuesAsync()
+        {
+            var values = await RedisDb.ListRangeAsync(RedisKey);
+            return values.Where(x => x.HasValue).Select(x => Serializer.Deserialize<T>(x));
+        }
+
+        /// <summary>
         /// Gets or sets the <see cref="T"/> at the specified index.
         /// </summary>
         /// <value>

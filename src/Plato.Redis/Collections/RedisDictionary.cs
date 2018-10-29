@@ -269,6 +269,45 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
+        /// Gets the value asynchronous.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public async Task<TValue> GetAsync(TKey key)
+        {
+            var redisValue = await RedisDb.HashGetAsync(RedisKey, KeySerializer.Serialize(key));
+            return redisValue.IsNull ? default(TValue) : ValueSerializer.Deserialize<TValue>(redisValue);
+        }
+
+        /// <summary>
+        /// Gets the values asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ICollection<TValue>> GetValuesAsync()
+        {
+            return new Collection<TValue>((await RedisDb.HashValuesAsync(RedisKey)).Select(h => ValueSerializer.Deserialize<TValue>(h)).ToList());
+        }
+
+        /// <summary>
+        /// Gets the keys asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ICollection<TKey>> GetKeysAsync()
+        {
+            return new Collection<TKey>((await RedisDb.HashKeysAsync(RedisKey)).Select(h => KeySerializer.Deserialize<TKey>(h)).ToList());
+        }
+
+        /// <summary>
+        /// Determines whether [contains key asynchronous] [the specified key].
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public async Task<bool> ContainsKeyAsync(TKey key)
+        {
+            return await RedisDb.HashExistsAsync(RedisKey, KeySerializer.Serialize(key));
+        }
+
+        /// <summary>
         /// Gets the value associated with the specified key.
         /// </summary>
         /// <param name="key">The key whose value to get.</param>
