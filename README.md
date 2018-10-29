@@ -1,12 +1,17 @@
-# Plato.NET  [![Build Status](https://dev.azure.com/reflectsoftware/Plato.NET/_apis/build/status/Plato.NET-.NET%20Desktop-CI)](https://dev.azure.com/reflectsoftware/Plato.NET/_build/latest?definitionId=10) [![Documentation](https://img.shields.io/badge/docs-wiki-yellow.svg)](https://github.com/reflectsoftware/Plato.NET/wiki) [![Stars](https://img.shields.io/github/stars/reflectsoftware/Plato.NET.svg)](https://github.com/reflectsoftware/Plato.NET/stargazers) 
+# Plato.NET  [![Documentation](https://img.shields.io/badge/docs-wiki-yellow.svg)](https://github.com/reflectsoftware/Plato.NET/wiki) [![Stars](https://img.shields.io/github/stars/reflectsoftware/Plato.NET.svg)](https://github.com/reflectsoftware/Plato.NET/stargazers) 
 
 **Platforms** - .NET Framework 4.6.1 and higher
+
+## Build Status
+
+Branch  |  Build Status
+------------- | ---------------
+master | [![Build Status](https://dev.azure.com/reflectsoftware/Plato.NET/_apis/build/status/Plato.NET-.NET%20Desktop-CI?branchName=master)](https://dev.azure.com/reflectsoftware/Plato.NET/_build/latest?definitionId=10) | [![NuGet Version](https://img.shields.io/nuget/v/WindowsServiceFramework.svg)](https://www.nuget.org/packages/WindowsServiceFramework/) 
+develop | [![Build Status](https://dev.azure.com/reflectsoftware/Plato.NET/_apis/build/status/Plato.NET-.NET%20Desktop-CI?branchName=develop)](https://dev.azure.com/reflectsoftware/Plato.NET/_build/latest?definitionId=10)
 
 ### What is Plato.NET?
 
 Making .NET apps awesome!
-
-
 
 ### Packages
 
