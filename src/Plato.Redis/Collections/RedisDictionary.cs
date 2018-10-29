@@ -112,7 +112,7 @@ namespace Plato.Redis.Collections
         /// <returns></returns>
         public async Task<bool> AddAsync(ITransaction tran, TKey key, TValue value)
         {
-            return await AddAsync(tran, key, value);
+            return await AddAsync(tran, key, value, When.Always);
         }
 
         /// <summary>
