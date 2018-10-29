@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Plato.Redis.Collections
 {
@@ -56,6 +57,47 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
+        /// Inserts the asynchronous.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        public async Task InsertAsync(int index, T item)
+        {
+            if (RedisDb.ListLength(RedisKey) > index)
+            {
+                var before = RedisDb.ListGetByIndex(RedisKey, index);
+                await RedisDb.ListInsertBeforeAsync(RedisKey, before, Serializer.Serialize(item));
+            }
+            else
+            {
+                throw new IndexOutOfRangeException($"Index: '{index}' for Redis list: '{RedisKey}' is out of range.");
+            }
+        }
+
+        /// <summary>
+        /// Inserts the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="index">The index.</param>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        public async Task InsertAsync(ITransaction tran, int index, T item)
+        {
+            if (RedisDb.ListLength(RedisKey) > index)
+            {
+                var before = RedisDb.ListGetByIndex(RedisKey, index);
+                await tran.ListInsertBeforeAsync(RedisKey, before, Serializer.Serialize(item));
+            }
+            else
+            {
+                throw new IndexOutOfRangeException($"Index: '{index}' for Redis list: '{RedisKey}' is out of range.");
+            }
+        }
+
+        /// <summary>
         /// Removes the <see cref="T:System.Collections.Generic.IList`1" /> item at the specified index.
         /// </summary>
         /// <param name="index">The zero-based index of the item to remove.</param>
@@ -66,6 +108,125 @@ namespace Plato.Redis.Collections
             {
                 RedisDb.ListRemove(RedisKey, value);
             }
+        }
+
+        /// <summary>
+        /// Removes at asnc.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns></returns>
+        public async Task RemoveAtAsnc(int index)
+        {
+            var value = RedisDb.ListGetByIndex(RedisKey, index);
+            if (!value.IsNull)
+            {
+                await RedisDb.ListRemoveAsync(RedisKey, value);
+            }
+        }
+
+        /// <summary>
+        /// Removes at asnc.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="index">The index.</param>
+        /// <returns></returns>
+        public async Task RemoveAtAsnc(ITransaction tran, int index)
+        {
+            var value = RedisDb.ListGetByIndex(RedisKey, index);
+            if (!value.IsNull)
+            {
+                await tran.ListRemoveAsync(RedisKey, value);
+            }
+        }
+
+        /// <summary>
+        /// Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </summary>
+        /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
+        /// <returns>
+        /// true if <paramref name="item" /> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false. This method also returns false if <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </returns>
+        public bool Remove(T item)
+        {
+            return RedisDb.ListRemove(RedisKey, Serializer.Serialize(item)) > 0;
+        }
+
+        /// <summary>
+        /// Removes the asynchronous.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public async Task<bool> RemoveAsync(T item)
+        {
+            return await RedisDb.ListRemoveAsync(RedisKey, Serializer.Serialize(item)) > 0;
+        }
+
+        /// <summary>
+        /// Removes the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public async Task<bool> RemoveAsync(ITransaction tran, T item)
+        {
+            return await tran.ListRemoveAsync(RedisKey, Serializer.Serialize(item)) > 0;
+        }
+
+        /// <summary>
+        /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </summary>
+        /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
+        public void Add(T item)
+        {
+            RedisDb.ListRightPush(RedisKey, Serializer.Serialize(item));
+        }
+
+        /// <summary>
+        /// Adds the asynchronous.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public async Task AddAsync(T item)
+        {
+            await RedisDb.ListRightPushAsync(RedisKey, Serializer.Serialize(item));
+        }
+
+        /// <summary>
+        /// Adds the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public async Task AddAsync(ITransaction tran, T item)
+        {
+            await tran.ListRightPushAsync(RedisKey, Serializer.Serialize(item));
+        }
+
+        /// <summary>
+        /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </summary>
+        public void Clear()
+        {
+            RedisDb.KeyDelete(RedisKey);
+        }
+
+        /// <summary>
+        /// Clears the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task ClearAsync()
+        {
+            await RedisDb.KeyDeleteAsync(RedisKey);
+        }
+
+        /// <summary>
+        /// Clears the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <returns></returns>
+        public async Task ClearAsync(ITransaction tran)
+        {
+            await tran.KeyDeleteAsync(RedisKey);
         }
 
         /// <summary>
@@ -87,23 +248,6 @@ namespace Plato.Redis.Collections
             {
                 RedisDb.ListSetByIndex(RedisKey, index, Serializer.Serialize(value));
             }
-        }
-
-        /// <summary>
-        /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
-        /// </summary>
-        /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
-        public void Add(T item)
-        {
-            RedisDb.ListRightPush(RedisKey, Serializer.Serialize(item));
-        }
-
-        /// <summary>
-        /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.
-        /// </summary>
-        public void Clear()
-        {
-            RedisDb.KeyDelete(RedisKey);
         }
 
         /// <summary>
@@ -193,18 +337,6 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
-        /// Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1" />.
-        /// </summary>
-        /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
-        /// <returns>
-        /// true if <paramref name="item" /> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false. This method also returns false if <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.
-        /// </returns>
-        public bool Remove(T item)
-        {
-            return RedisDb.ListRemove(RedisKey, Serializer.Serialize(item)) > 0;
-        }
-
-        /// <summary>
         /// Gets the values.
         /// </summary>
         /// <value>
@@ -245,5 +377,4 @@ namespace Plato.Redis.Collections
             return GetEnumerator();
         }
     }
-
 }

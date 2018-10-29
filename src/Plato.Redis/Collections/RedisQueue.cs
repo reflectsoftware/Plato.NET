@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Plato.Redis.Collections
 {
@@ -60,6 +61,75 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
+        /// Clears the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task ClearAsync()
+        {
+            await _redisList.ClearAsync();
+        }
+
+        /// <summary>
+        /// Clears the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <returns></returns>
+        public async Task ClearAsync(ITransaction tran)
+        {
+            await _redisList.ClearAsync(tran);
+        }
+
+        /// <summary>
+        /// Enqueues the specified item.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        public void Enqueue(T item)
+        {
+            _redisList.Add(item);
+        }
+
+        /// <summary>
+        /// Enqueues the asynchronous.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public async Task EnqueueAsync(T item)
+        {
+            await _redisList.AddAsync(item);
+        }
+
+        /// <summary>
+        /// Enqueues the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public async Task EnqueueAsync(ITransaction tran, T item)
+        {
+            await _redisList.AddAsync(tran, item);
+        }
+
+        /// <summary>
+        /// Dequeues this instance.
+        /// </summary>
+        /// <returns></returns>
+        public T Dequeue()
+        {
+            var value = _redisList.RedisDb.ListLeftPop(_redisList.RedisKey);
+            return value.HasValue ? _redisList.Serializer.Deserialize<T>(value) : default(T);
+        }
+
+        /// <summary>
+        /// Dequeues the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<T> DequeueAsync()
+        {
+            var value = await _redisList.RedisDb.ListLeftPopAsync(_redisList.RedisKey);
+            return value.HasValue ? _redisList.Serializer.Deserialize<T>(value) : default(T);
+        }
+
+        /// <summary>
         /// Determines whether the <see cref="T:System.Collections.Generic.ICollection`1" /> contains a specific value.
         /// </summary>
         /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
@@ -88,26 +158,7 @@ namespace Plato.Redis.Collections
         {
             var copyArray = ToArray();
             Array.Copy(array, index, copyArray, 0, copyArray.Length);
-        }
-
-        /// <summary>
-        /// Enqueues the specified item.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        public void Enqueue(T item)
-        {
-            _redisList.Add(item);
-        }
-
-        /// <summary>
-        /// Dequeues this instance.
-        /// </summary>
-        /// <returns></returns>
-        public T Dequeue()
-        {
-            var value = _redisList.RedisDb.ListLeftPop(_redisList.RedisKey);
-            return value.HasValue ? _redisList.Serializer.Deserialize<T>(value) : default(T);
-        }
+        }       
 
         /// <summary>
         /// Peeks this instance.

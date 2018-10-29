@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Plato.Redis.Collections
 {
@@ -57,6 +58,31 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
+        /// Adds the asynchronous.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="when">The when.</param>
+        /// <returns></returns>
+        public async Task<bool> AddAsync(TKey key, TValue value, When when)
+        {
+            return await RedisDb.HashSetAsync(RedisKey, KeySerializer.Serialize(key), ValueSerializer.Serialize(value), when: when);
+        }
+
+        /// <summary>
+        /// Adds the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="when">The when.</param>
+        /// <returns></returns>
+        public async Task<bool> AddAsync(ITransaction tran, TKey key, TValue value, When when)
+        {
+            return await tran.HashSetAsync(RedisKey, KeySerializer.Serialize(key), ValueSerializer.Serialize(value), when: when);
+        }
+
+        /// <summary>
         /// Adds an element with the provided key and value to the <see cref="T:System.Collections.Generic.IDictionary`2" />.
         /// </summary>
         /// <param name="key">The object to use as the key of the element to add.</param>
@@ -65,17 +91,28 @@ namespace Plato.Redis.Collections
         {
             Add(key, value, When.Always);            
         }
-        
+
         /// <summary>
-        /// Determines whether the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key.
+        /// Adds the asynchronous.
         /// </summary>
-        /// <param name="key">The key to locate in the <see cref="T:System.Collections.Generic.IDictionary`2" />.</param>
-        /// <returns>
-        /// true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the key; otherwise, false.
-        /// </returns>
-        public bool ContainsKey(TKey key)
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public async Task<bool> AddAsync(TKey key, TValue value)
         {
-            return RedisDb.HashExists(RedisKey, KeySerializer.Serialize(key));
+            return await AddAsync(key, value, When.Always);
+        }
+
+        /// <summary>
+        /// Adds the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public async Task<bool> AddAsync(ITransaction tran, TKey key, TValue value)
+        {
+            return await AddAsync(tran, key, value);
         }
 
         /// <summary>
@@ -88,6 +125,147 @@ namespace Plato.Redis.Collections
         public bool Remove(TKey key)
         {
             return RedisDb.HashDelete(RedisKey, KeySerializer.Serialize(key));
+        }
+
+        /// <summary>
+        /// Removes the asynchronous.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public async Task<bool> RemoveAsync(TKey key)
+        {
+            return await RedisDb.HashDeleteAsync(RedisKey, KeySerializer.Serialize(key));
+        }
+
+        /// <summary>
+        /// Removes the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public async Task<bool> RemoveAsync(ITransaction tran, TKey key)
+        {
+            return await tran.HashDeleteAsync(RedisKey, KeySerializer.Serialize(key));
+        }
+
+        /// <summary>
+        /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </summary>
+        /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
+        public void Add(KeyValuePair<TKey, TValue> item)
+        {
+            Add(item.Key, item.Value);
+        }
+
+        /// <summary>
+        /// Adds the asynchronous.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public async Task AddAsync(KeyValuePair<TKey, TValue> item)
+        {
+            await AddAsync(item.Key, item.Value);
+        }
+
+        /// <summary>
+        /// Adds the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public async Task AddAsync(ITransaction tran, KeyValuePair<TKey, TValue> item)
+        {
+            await AddAsync(tran, item.Key, item.Value);
+        }
+
+        /// <summary>
+        /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </summary>
+        public void Clear()
+        {
+            RedisDb.KeyDelete(RedisKey);
+        }
+
+        /// <summary>
+        /// Clears the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task ClearAsync()
+        {
+            await RedisDb.KeyDeleteAsync(RedisKey);
+        }
+
+        /// <summary>
+        /// Clears the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <returns></returns>
+        public async Task ClearAsync(ITransaction tran)
+        {
+            await tran.KeyDeleteAsync(RedisKey);
+        }
+
+        /// <summary>
+        /// Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </summary>
+        /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
+        /// <returns>
+        /// true if <paramref name="item" /> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false. This method also returns false if <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </returns>
+        public bool Remove(KeyValuePair<TKey, TValue> item)
+        {
+            return Remove(item.Key);
+        }
+
+        /// <summary>
+        /// Removes the asynchronous.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public async Task<bool> RemoveAsync(KeyValuePair<TKey, TValue> item)
+        {
+            return await RemoveAsync(item.Key);
+        }
+
+        /// <summary>
+        /// Removes the asynchronous.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public async Task<bool> RemoveAsync(ITransaction tran, KeyValuePair<TKey, TValue> item)
+        {
+            return await RemoveAsync(tran, item.Key);
+        }
+
+        /// <summary>
+        /// Adds the multiple.
+        /// </summary>
+        /// <param name="items">The items.</param>
+        public void AddMultiple(IEnumerable<KeyValuePair<TKey, TValue>> items)
+        {
+            RedisDb.HashSet(RedisKey, items.Select(i => new HashEntry(KeySerializer.Serialize(i.Key), ValueSerializer.Serialize(i.Value))).ToArray());
+        }
+
+        /// <summary>
+        /// Adds the multiple asyn.
+        /// </summary>
+        /// <param name="items">The items.</param>
+        /// <returns></returns>
+        public async Task AddMultipleAsyn(IEnumerable<KeyValuePair<TKey, TValue>> items)
+        {
+            await RedisDb.HashSetAsync(RedisKey, items.Select(i => new HashEntry(KeySerializer.Serialize(i.Key), ValueSerializer.Serialize(i.Value))).ToArray());
+        }
+
+        /// <summary>
+        /// Adds the multiple asyn.
+        /// </summary>
+        /// <param name="tran">The tran.</param>
+        /// <param name="items">The items.</param>
+        /// <returns></returns>
+        public async Task AddMultipleAsyn(ITransaction tran, IEnumerable<KeyValuePair<TKey, TValue>> items)
+        {
+            await tran.HashSetAsync(RedisKey, items.Select(i => new HashEntry(KeySerializer.Serialize(i.Key), ValueSerializer.Serialize(i.Value))).ToArray());
         }
 
         /// <summary>
@@ -130,6 +308,18 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
+        /// Determines whether the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate in the <see cref="T:System.Collections.Generic.IDictionary`2" />.</param>
+        /// <returns>
+        /// true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the key; otherwise, false.
+        /// </returns>
+        public bool ContainsKey(TKey key)
+        {
+            return RedisDb.HashExists(RedisKey, KeySerializer.Serialize(key));
+        }
+
+        /// <summary>
         /// Gets an <see cref="T:System.Collections.Generic.ICollection`1" /> containing the values in the <see cref="T:System.Collections.Generic.IDictionary`2" />.
         /// </summary>
         public ICollection<TValue> Values
@@ -164,24 +354,7 @@ namespace Plato.Redis.Collections
             {
                 Add(key, value);
             }
-        }
-
-        /// <summary>
-        /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
-        /// </summary>
-        /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
-        public void Add(KeyValuePair<TKey, TValue> item)
-        {
-            Add(item.Key, item.Value);
-        }
-
-        /// <summary>
-        /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.
-        /// </summary>
-        public void Clear()
-        {
-            RedisDb.KeyDelete(RedisKey);
-        }
+        }        
 
         /// <summary>
         /// Determines whether the <see cref="T:System.Collections.Generic.ICollection`1" /> contains a specific value.
@@ -229,18 +402,6 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
-        /// Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1" />.
-        /// </summary>
-        /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
-        /// <returns>
-        /// true if <paramref name="item" /> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false. This method also returns false if <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.
-        /// </returns>
-        public bool Remove(KeyValuePair<TKey, TValue> item)
-        {
-            return Remove(item.Key);
-        }
-
-        /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>
@@ -264,15 +425,6 @@ namespace Plato.Redis.Collections
         IEnumerator IEnumerable.GetEnumerator()
         {
             yield return GetEnumerator();
-        }
-
-        /// <summary>
-        /// Adds the multiple.
-        /// </summary>
-        /// <param name="items">The items.</param>
-        public void AddMultiple(IEnumerable<KeyValuePair<TKey, TValue>> items)
-        {
-            RedisDb.HashSet(RedisKey, items.Select(i => new HashEntry(KeySerializer.Serialize(i.Key), ValueSerializer.Serialize(i.Value))).ToArray());
         }
     }
 }

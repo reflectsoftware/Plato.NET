@@ -2,7 +2,9 @@
 // Copyright (c) 2017 ReflectSoftware Inc.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
+using StackExchange.Redis;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Plato.Redis.Interfaces
 {
@@ -14,5 +16,15 @@ namespace Plato.Redis.Interfaces
     public interface IRedisList<T> : IList<T>
     {
         IEnumerable<T> Values { get; }
+        Task InsertAsync(int index, T item);
+        Task InsertAsync(ITransaction tran, int index, T item);
+        Task RemoveAtAsnc(int index);
+        Task RemoveAtAsnc(ITransaction tran, int index);
+        Task<bool> RemoveAsync(ITransaction tran, T item);
+        Task<bool> RemoveAsync(T item);
+        Task AddAsync(T item);
+        Task AddAsync(ITransaction tran, T item);
+        Task ClearAsync();
+        Task ClearAsync(ITransaction tran);
     }
 }

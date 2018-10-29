@@ -544,7 +544,10 @@ namespace Plato.TestHarness.RedisTest
             {             
                 using (var redisConnection = new RedisConnection(connectionStrings))
                 {
-                    var d = new RedisDictionary<string, Crap>(redisConnection.GetDatabase(), "test", new JsonRedisSerializer()); // new MsgPackRedisSerializer());        
+                    var d = new RedisDictionary<string, Crap>(redisConnection.GetDatabase(), "test", new JsonRedisSerializer()); // new MsgPackRedisSerializer());       
+
+
+
                     var dtest = new Dictionary<int, string>();
                     dtest.Add(1, "Ross");
                     dtest.Add(2, "Tammy");
