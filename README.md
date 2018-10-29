@@ -6,8 +6,8 @@
 
 Branch  |  Build Status
 ------------- | ---------------
-master | [![Build Status](https://dev.azure.com/reflectsoftware/Plato.NET/_apis/build/status/Plato.NET-.NET%20Desktop-CI?branchName=master)](https://dev.azure.com/reflectsoftware/Plato.NET/_build/latest?definitionId=10) | [![NuGet Version](https://img.shields.io/nuget/v/WindowsServiceFramework.svg)](https://www.nuget.org/packages/WindowsServiceFramework/) 
-develop | [![Build Status](https://dev.azure.com/reflectsoftware/Plato.NET/_apis/build/status/Plato.NET-.NET%20Desktop-CI?branchName=develop)](https://dev.azure.com/reflectsoftware/Plato.NET/_build/latest?definitionId=10)
+master | [![Build Status](https://dev.azure.com/reflectsoftware/Plato.NET/_apis/build/status/Plato.NET-.NET%20Desktop-CI?branchName=master)](https://dev.azure.com/reflectsoftware/Plato.NET/_build/latest?definitionId=10&branchname=master) | [![NuGet Version](https://img.shields.io/nuget/v/WindowsServiceFramework.svg)](https://www.nuget.org/packages/WindowsServiceFramework/) 
+develop | [![Build Status](https://dev.azure.com/reflectsoftware/Plato.NET/_apis/build/status/Plato.NET-.NET%20Desktop-CI?branchName=develop)](https://dev.azure.com/reflectsoftware/Plato.NET/_build/latest?definitionId=10&branchname=develop)
 
 ### What is Plato.NET?
 
