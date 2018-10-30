@@ -97,6 +97,8 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Containers\HashRedisCacheContainer.cs" />
+    <Compile Include="Interfaces\IRedisCollectionFactory.cs" />
+    <Compile Include="Factories\RedisCollectionFactory.cs" />
     <Compile Include="Interfaces\IRedisCacheContainer.cs" />
     <Compile Include="Containers\StringRedisCacheContainer.cs" />
     <Compile Include="Interfaces\IRedisCacheKeyLockAcquisition.cs" />

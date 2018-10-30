@@ -26,9 +26,8 @@ namespace Plato.Redis.Interfaces
         Task ClearAsync(ITransaction tran);
         Task<bool> RemoveAsync(KeyValuePair<TKey, TValue> item);
         Task<bool> RemoveAsync(ITransaction tran, KeyValuePair<TKey, TValue> item);
-        Task AddMultipleAsyn(IEnumerable<KeyValuePair<TKey, TValue>> items);
-        Task AddMultipleAsyn(ITransaction tran, IEnumerable<KeyValuePair<TKey, TValue>> items);
-
+        Task AddMultipleAsync(IEnumerable<KeyValuePair<TKey, TValue>> items);
+        Task AddMultipleAsync(ITransaction tran, IEnumerable<KeyValuePair<TKey, TValue>> items);
         Task<TValue> GetAsync(TKey key);
         Task<bool> ContainsKeyAsync(TKey key);
         Task<ICollection<TKey>> GetKeysAsync();

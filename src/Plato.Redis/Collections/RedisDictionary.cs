@@ -248,22 +248,22 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
-        /// Adds the multiple asyn.
+        /// Adds the multiple asynchronous.
         /// </summary>
         /// <param name="items">The items.</param>
         /// <returns></returns>
-        public async Task AddMultipleAsyn(IEnumerable<KeyValuePair<TKey, TValue>> items)
+        public async Task AddMultipleAsync(IEnumerable<KeyValuePair<TKey, TValue>> items)
         {
             await RedisDb.HashSetAsync(RedisKey, items.Select(i => new HashEntry(KeySerializer.Serialize(i.Key), ValueSerializer.Serialize(i.Value))).ToArray());
         }
 
         /// <summary>
-        /// Adds the multiple asyn.
+        /// Adds the multiple asynchronous.
         /// </summary>
         /// <param name="tran">The tran.</param>
         /// <param name="items">The items.</param>
         /// <returns></returns>
-        public async Task AddMultipleAsyn(ITransaction tran, IEnumerable<KeyValuePair<TKey, TValue>> items)
+        public async Task AddMultipleAsync(ITransaction tran, IEnumerable<KeyValuePair<TKey, TValue>> items)
         {
             await tran.HashSetAsync(RedisKey, items.Select(i => new HashEntry(KeySerializer.Serialize(i.Key), ValueSerializer.Serialize(i.Value))).ToArray());
         }
