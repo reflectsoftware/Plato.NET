@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Plato.Redis.Interfaces
 {
-    public interface IRedisQueue<T> : IEnumerable<T>, IEnumerable, ICollection, IReadOnlyCollection<T>
+    public interface IRedisQueue<T> : IEnumerable<T>, IEnumerable, ICollection
     {
         void Clear();
         bool Contains(T item);

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Plato.Redis.Interfaces
 {
     /// <seealso cref="System.Collections.Generic.IReadOnlyCollection{T}" />
-    public interface IRedisStack<T> : IEnumerable<T>, IEnumerable, ICollection, IReadOnlyCollection<T>
+    public interface IRedisStack<T> : IEnumerable<T>, IEnumerable, ICollection
     {
         void Clear();
         bool Contains(T item);
