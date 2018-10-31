@@ -15,8 +15,10 @@ namespace Plato.Redis.Interfaces
         void Clear();
         bool Contains(T item);
         T Pop();
-        void Push(T item);
+        Task<T> PopAsync();
+        void Push(T item);        
         T Peek();
+        Task<T> PeekAsync();
         T[] ToArray();
         Task ClearAsync();
         Task ClearAsync(ITransaction tran);

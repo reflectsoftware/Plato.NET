@@ -119,14 +119,32 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
+        /// Pops the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<T> PopAsync()
+        {
+            var value = await _redisList.RedisDb.ListLeftPopAsync(_redisList.RedisKey);
+            return value.HasValue ? _redisList.Serializer.Deserialize<T>(value) : default(T);
+        }
+
+        /// <summary>
         /// Peeks this instance.
         /// </summary>
         /// <returns></returns>
         public T Peek()
         {
-            return _redisList[0];
+            return _redisList.Peek();
         }
 
+        /// <summary>
+        /// Peeks the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<T> PeekAsync()
+        {
+            return await _redisList.PeekAsync();
+        }
 
         /// <summary>
         /// Determines whether the <see cref="T:System.Collections.Generic.ICollection`1" /> contains a specific value.

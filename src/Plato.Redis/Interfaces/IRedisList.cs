@@ -18,14 +18,16 @@ namespace Plato.Redis.Interfaces
         IEnumerable<T> Values { get; }
         Task InsertAsync(int index, T item);
         Task InsertAsync(ITransaction tran, int index, T item);
-        Task RemoveAtAsnc(int index);
-        Task RemoveAtAsnc(ITransaction tran, int index);
+        Task RemoveAtAsync(int index);
+        Task RemoveAtAsync(ITransaction tran, int index);
         Task<bool> RemoveAsync(ITransaction tran, T item);
         Task<bool> RemoveAsync(T item);
         Task AddAsync(T item);
         Task AddAsync(ITransaction tran, T item);
         Task ClearAsync();
         Task ClearAsync(ITransaction tran);
+        T Peek();
+        Task<T> PeekAsync();
         Task<T> GetAsync(int index);        
         Task<IEnumerable<T>> GetValuesAsync();
     }

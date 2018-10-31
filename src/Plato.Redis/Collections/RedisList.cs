@@ -111,11 +111,11 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
-        /// Removes at asnc.
+        /// Removes at asynchronous.
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public async Task RemoveAtAsnc(int index)
+        public async Task RemoveAtAsync(int index)
         {
             var value = RedisDb.ListGetByIndex(RedisKey, index);
             if (!value.IsNull)
@@ -125,12 +125,12 @@ namespace Plato.Redis.Collections
         }
 
         /// <summary>
-        /// Removes at asnc.
+        /// Removes at asynchronous.
         /// </summary>
         /// <param name="tran">The tran.</param>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public async Task RemoveAtAsnc(ITransaction tran, int index)
+        public async Task RemoveAtAsync(ITransaction tran, int index)
         {
             var value = RedisDb.ListGetByIndex(RedisKey, index);
             if (!value.IsNull)
@@ -227,6 +227,26 @@ namespace Plato.Redis.Collections
         public async Task ClearAsync(ITransaction tran)
         {
             await tran.KeyDeleteAsync(RedisKey);
+        }
+
+        /// <summary>
+        /// Peeks this instance.
+        /// </summary>
+        /// <returns></returns>
+        public T Peek()
+        {
+            var value = RedisDb.ListGetByIndex(RedisKey, 0);
+            return value.HasValue ? Serializer.Deserialize<T>(value) : default(T);
+        }
+
+        /// <summary>
+        /// Peeks the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<T> PeekAsync()
+        {
+            var value = await RedisDb.ListGetByIndexAsync(RedisKey, 0);
+            return value.HasValue ? Serializer.Deserialize<T>(value) : default(T);
         }
 
         /// <summary>

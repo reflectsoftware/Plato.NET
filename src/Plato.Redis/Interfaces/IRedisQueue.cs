@@ -21,6 +21,8 @@ namespace Plato.Redis.Interfaces
         Task EnqueueAsync(ITransaction tran, T item);
         Task<T> DequeueAsync();
         T Peek();
+        Task<T> PeekAsync();
+
         T[] ToArray();
     }
 }

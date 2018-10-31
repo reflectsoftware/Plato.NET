@@ -166,7 +166,16 @@ namespace Plato.Redis.Collections
         /// <returns></returns>
         public T Peek()
         {
-            return _redisList[0];
+            return _redisList.Peek();
+        }
+
+        /// <summary>
+        /// Peeks the asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<T> PeekAsync()
+        {
+            return await _redisList.PeekAsync();
         }
 
         /// <summary>
