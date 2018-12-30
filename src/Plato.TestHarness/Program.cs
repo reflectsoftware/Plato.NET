@@ -1,4 +1,6 @@
-﻿namespace Plato.TestHarness
+﻿using System.Threading.Tasks;
+
+namespace Plato.TestHarness
 {
     class Program
     {
