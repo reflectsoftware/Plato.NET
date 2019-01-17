@@ -1,32 +1,14 @@
 ﻿[
   {
     "_id": "59741b5451a02c6160f30905",
-    "index": 0,
-    "guid": "12c45bf2-0ecb-4bef-b22c-32626fbf4a78",
-    "isActive": false,
-    "balance": "$3,718.73",
-    "picture": "http://placehold.it/32x32",
+    "about": "Fugiat non id et tempor cupidatat eh cillum velit aliquip est sint ad. Elit minim dolor qui mollit minim aute ullamco nulla minim deserunt fugiat et minim. Ullamco commodo velit est dolor ea aliquip eiusmod.\r\n",
+    "address": "908 Bokee Court, Trail, New Hampshire, 7462",
     "age": 21,
-    "eyeColor": "green",
-    "name": "Carla Manning",
-    "gender": "female",
+    "balance": "$3,718.73",
     "company": "ECRATER",
     "email": "carlamanning@ecrater.com",
-    "phone": "+1 (884) 513-3610",
-    "address": "908 Bokee Court, Trail, New Hampshire, 7462",
-    "about": "Fugiat non id et tempor cupidatat cillum velit aliquip est sint ad. Elit minim dolor qui mollit minim aute ullamco nulla minim deserunt fugiat et minim. Ullamco commodo velit est dolor ea aliquip eiusmod.\r\n",
-    "registered": "2015-09-02T07:45:51 +04:00",
-    "latitude": -20.2502,
-    "longitude": 119.715968,
-    "tags": [
-      "aliqua",
-      "ullamco",
-      "irure",
-      "fugiat",
-      "sint",
-      "nisi",
-      "exercitation"
-    ],
+    "eyeColor": "green",
+    "favoriteFruit": "strawberry",
     "friends": [
       {
         "id": 0,
@@ -41,8 +23,26 @@
         "name": "Essie Dickerson"
       }
     ],
+    "gender": "female",
     "greeting": "Hello, Carla Manning! You have 7 unread messages.",
-    "favoriteFruit": "strawberry"
+    "guid": "12c45bf2-0ecb-4bef-b22c-32626fbf4a78",
+    "index": 0,
+    "isActive": false,
+    "latitude": -20.2502,
+    "longitude": 119.715968,
+    "name": "Carla Manning",
+    "phone": "+1 (884) 513-3610",
+    "picture": "http://placehold.it/32x32",
+    "registered": "2015-09-02T07:45:51 +04:00",
+    "tags": [
+      "aliqua",
+      "ullamco",
+      "irure",
+      "fugiat",
+      "sint",
+      "nisi",
+      "exercitation"
+    ]
   },
   {
     "_id": "59741b54f98a69cd79ba68a4",
