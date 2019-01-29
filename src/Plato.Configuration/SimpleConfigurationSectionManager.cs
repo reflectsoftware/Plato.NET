@@ -19,7 +19,7 @@ namespace Plato.Configuration
         public NodeChildAttributes NodeAttributes { get; protected set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XSimpleConfigurationSectionManager"/> class.
+        /// Initializes a new instance of the <see cref="SimpleConfigurationSectionManager"/> class.
         /// </summary>
         public SimpleConfigurationSectionManager(string settings = null, string configPath = null)
         {
@@ -39,7 +39,7 @@ namespace Plato.Configuration
             }
             else
             {
-                using (var configContainer = new ConfigContainer(configPath, "./rmqSettings"))
+                using (var configContainer = new ConfigContainer(configPath, $"./{settings}"))
                 {
                     var cc = configContainer.Node;
                     NodeAttributes = ConfigHelper.GetNodeChildAttributes(cc, ".");
