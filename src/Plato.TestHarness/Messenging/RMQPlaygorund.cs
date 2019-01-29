@@ -352,6 +352,19 @@ namespace Plato.TestHarness.Messenging
             }
         }
 
+        static async Task SimpleTestWithConfigArgumentsAsync()
+        {
+            var configManager = new RMQConfigurationManager();
+            var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            var queueSettings = configManager.GetQueueSettings("MyTest");
+
+            using (var producer = procuderFactory.CreateText(connectionSettings, queueSettings))
+            {
+                await producer.SendAsync("Simple test");
+            }
+        }
+
         #endregion Pool Test
 
         static public async Task RunAsync()
@@ -363,7 +376,8 @@ namespace Plato.TestHarness.Messenging
             // await PoolTestAsync();
             // PoolTest();
             // SimplePoolTest();
-            await SimplePoolTestAsync();
+            // await SimplePoolTestAsync();
+            await SimpleTestWithConfigArgumentsAsync();
 
             await Task.Delay(0);
         }
