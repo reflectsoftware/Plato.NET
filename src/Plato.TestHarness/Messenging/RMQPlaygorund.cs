@@ -51,11 +51,11 @@ namespace Plato.TestHarness.Messenging
             };
 
             var configManager = CreateConfigurationManager();            
-            var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());
+            var producerFactory = new RMQProducerFactory(new RMQConnectionFactory());
             var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
             var queueSettings = configManager.GetQueueSettings("MY_RMQ_TEST", args); 
 
-            using (var producer = procuderFactory.CreateText(connectionSettings, queueSettings))
+            using (var producer = producerFactory.CreateText(connectionSettings, queueSettings))
             {
                 producer.Send("test1");
                 producer.Send("test2");
@@ -75,11 +75,11 @@ namespace Plato.TestHarness.Messenging
             };
 
             var configManager = CreateConfigurationManager();            
-            var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());
+            var producerFactory = new RMQProducerFactory(new RMQConnectionFactory());
             var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
             var queueSettings = configManager.GetQueueSettings("MY_RMQ_TEST", args);
 
-            using (var producer = procuderFactory.CreateText(connectionSettings, queueSettings))
+            using (var producer = producerFactory.CreateText(connectionSettings, queueSettings))
             {
                 while (true)
                 {
@@ -355,15 +355,58 @@ namespace Plato.TestHarness.Messenging
         static async Task SimpleTestWithConfigArgumentsAsync()
         {
             var configManager = new RMQConfigurationManager();
-            var procuderFactory = new RMQProducerFactory(new RMQConnectionFactory());
+            var producerFactory = new RMQProducerFactory(new RMQConnectionFactory());
             var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
             var queueSettings = configManager.GetQueueSettings("MyTest");
 
-            using (var producer = procuderFactory.CreateText(connectionSettings, queueSettings))
+            using (var producer = producerFactory.CreateText(connectionSettings, queueSettings))
             {
                 await producer.SendAsync("Simple test");
             }
         }
+
+        static async Task SimplePublisherTestWithConfigArgumentsAsync()
+        {
+            var configManager = new RMQConfigurationManager();
+            var publsiherFactory = new RMQPublisherFactory(new RMQConnectionFactory());
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+
+            var exchangeSettings = configManager.GetExchangeSettings("Test.DirectExchange");
+            var queueSettings = configManager.GetQueueSettings("Test.DirectQueue");
+
+            using (var publisher = publsiherFactory.CreateText(connectionSettings, exchangeSettings, queueSettings))
+            {
+                await publisher.SendAsync("Simple test", (iprops) =>
+                {
+                    var props = (RMQSenderProperties)iprops;
+                    props.RoutingKey = "R1";
+                });
+            }
+        }
+
+        static async Task PoolPublisherWithConfigurationAsync()
+        {
+            var configManager = new RMQConfigurationManager();
+            //var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            //var exchangeSettings = configManager.GetExchangeSettings("Test.FanoutExchange");
+            //var queueSettings = configManager.GetQueueSettings("Test.FanoutQueue");
+
+            var consumerFactory = new RMQConsumerFactory(new RMQConnectionFactory());
+            var producerFactory = new RMQProducerFactory(new RMQConnectionFactory());
+            var subscriberFactory = new RMQSubscriberFactory(new RMQConnectionFactory());
+            var publisherFactory = new RMQPublisherFactory(new RMQConnectionFactory());
+            var factory = new RMQSenderReceiverFactory(consumerFactory, producerFactory, subscriberFactory, publisherFactory);
+
+            using (var amqPool = new RMQPoolAsync(configManager, factory, 5))
+            {
+                using (var publisher = await amqPool.GetAsync<IRMQPublisherText>("defaultConnection", "Test.FanoutQueue", "Test.FanoutExchange"))
+                {
+                    await publisher.Instance.SendAsync("Simple test1");
+                    await publisher.Instance.SendAsync("Simple test2");
+                }
+            }
+        }
+        
 
         #endregion Pool Test
 
@@ -377,7 +420,9 @@ namespace Plato.TestHarness.Messenging
             // PoolTest();
             // SimplePoolTest();
             // await SimplePoolTestAsync();
-            await SimpleTestWithConfigArgumentsAsync();
+            // await SimpleTestWithConfigArgumentsAsync();
+            // await SimplePublisherTestWithConfigArgumentsAsync();
+            await PoolPublisherWithConfigurationAsync();
 
             await Task.Delay(0);
         }
