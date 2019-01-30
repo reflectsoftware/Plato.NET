@@ -18,13 +18,11 @@ namespace Plato.Messaging.RMQ
         /// <param name="connectionFactory">The connection factory.</param>
         /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="exchangeSettings">The exchange settings.</param>
-        /// <param name="queueSettings">The queue settings.</param>
         public RMQPublisherByte(
             IRMQConnectionFactory connectionFactory,
             RMQConnectionSettings connectionSettings,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings = null)
-            : base(connectionFactory, connectionSettings, exchangeSettings, queueSettings)
+            RMQExchangeSettings exchangeSettings)
+            : base(connectionFactory, connectionSettings, exchangeSettings)
         {
         }
 

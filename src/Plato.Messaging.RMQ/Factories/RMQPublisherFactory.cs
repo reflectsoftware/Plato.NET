@@ -29,14 +29,12 @@ namespace Plato.Messaging.RMQ.Factories
         /// </summary>
         /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="exchangeSettings">The exchange settings.</param>
-        /// <param name="queueSettings">The queue settings.</param>
         /// <returns></returns>
         public IRMQPublisherBytes CreateBytes(
             RMQConnectionSettings connectionSettings,
-            RMQExchangeSettings exchangeSettings, 
-            RMQQueueSettings queueSettings)
+            RMQExchangeSettings exchangeSettings)
         {
-            return new RMQPublisherByte(_connectionFactory, connectionSettings, exchangeSettings, queueSettings);
+            return new RMQPublisherByte(_connectionFactory, connectionSettings, exchangeSettings);
         }
 
         /// <summary>
@@ -44,14 +42,12 @@ namespace Plato.Messaging.RMQ.Factories
         /// </summary>
         /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="exchangeSettings">The exchange settings.</param>
-        /// <param name="queueSettings">The queue settings.</param>
         /// <returns></returns>
         public IRMQPublisherText CreateText(
             RMQConnectionSettings connectionSettings,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings)
+            RMQExchangeSettings exchangeSettings)
         {
-            return new RMQPublisherText(_connectionFactory, connectionSettings, exchangeSettings, queueSettings);
+            return new RMQPublisherText(_connectionFactory, connectionSettings, exchangeSettings);
         }
     }
 }

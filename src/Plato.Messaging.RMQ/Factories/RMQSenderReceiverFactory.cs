@@ -21,7 +21,8 @@ namespace Plato.Messaging.RMQ.Factories
         private readonly IRMQPublisherFactory _publisherFactory;
         private readonly IRMQSubscriberFactory _subscriberFactory;
         private readonly Dictionary<Type, Func<RMQConnectionSettings, RMQQueueSettings, IMessageReceiverSender>> _invokers;
-        private readonly Dictionary<Type, Func<RMQConnectionSettings, RMQExchangeSettings, RMQQueueSettings, IMessageReceiverSender>> _pubSubInvokers;
+        private readonly Dictionary<Type, Func<RMQConnectionSettings, RMQExchangeSettings, IMessageReceiverSender>> _pubInvokers;
+        private readonly Dictionary<Type, Func<RMQConnectionSettings, RMQExchangeSettings, RMQQueueSettings, IMessageReceiverSender>> _subInvokers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RMQSenderReceiverFactory" /> class.
@@ -42,7 +43,8 @@ namespace Plato.Messaging.RMQ.Factories
             _publisherFactory = publisherFactory;
             
             _invokers = new Dictionary<Type, Func<RMQConnectionSettings, RMQQueueSettings, IMessageReceiverSender>>();
-            _pubSubInvokers = new Dictionary<Type, Func<RMQConnectionSettings, RMQExchangeSettings, RMQQueueSettings, IMessageReceiverSender>>();
+            _pubInvokers = new Dictionary<Type, Func<RMQConnectionSettings, RMQExchangeSettings, IMessageReceiverSender>>();
+            _subInvokers = new Dictionary<Type, Func<RMQConnectionSettings, RMQExchangeSettings, RMQQueueSettings, IMessageReceiverSender>>();
 
             PrepareInvokers();
         }
@@ -58,11 +60,11 @@ namespace Plato.Messaging.RMQ.Factories
             _invokers[typeof(IRMQProducerBytes)] = (connection, destination) => _producerFactory.CreateBytes(connection, destination);
             _invokers[typeof(IRMQProducerText)] = (connection, destination) => _producerFactory.CreateText(connection, destination);
 
-            _pubSubInvokers[typeof(IRMQPublisherBytes)] = (connection, exchange, destination) => _publisherFactory.CreateBytes(connection, exchange, destination);
-            _pubSubInvokers[typeof(IRMQPublisherText)] = (connection, exchange, destination) => _publisherFactory.CreateText(connection, exchange, destination);
+            _pubInvokers[typeof(IRMQPublisherBytes)] = (connection, exchange) => _publisherFactory.CreateBytes(connection, exchange);
+            _pubInvokers[typeof(IRMQPublisherText)] = (connection, exchange) => _publisherFactory.CreateText(connection, exchange);
 
-            _pubSubInvokers[typeof(IRMQSubscriberBytes)] = (connection, exchange, destination) => _subscriberFactory.CreateBytes(connection, exchange, destination);
-            _pubSubInvokers[typeof(IRMQSubscriberText)] = (connection, exchange, destination) => _subscriberFactory.CreateText(connection, exchange, destination);
+            _subInvokers[typeof(IRMQSubscriberBytes)] = (connection, exchange, destination) => _subscriberFactory.CreateBytes(connection, exchange, destination);
+            _subInvokers[typeof(IRMQSubscriberText)] = (connection, exchange, destination) => _subscriberFactory.CreateText(connection, exchange, destination);
         }
 
         /// <summary>
@@ -103,17 +105,49 @@ namespace Plato.Messaging.RMQ.Factories
         /// <param name="type">The type.</param>
         /// <param name="connection">The connection.</param>
         /// <param name="exchange">The exchange.</param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException">The following type: '{type.Name}</exception>
+        public IMessageReceiverSender Create(Type type, RMQConnectionSettings connection, RMQExchangeSettings exchange)
+        {
+            if (!_subInvokers.ContainsKey(type))
+            {
+                throw new KeyNotFoundException($"The following type: '{type.Name}' is not supported.");
+            }
+
+            var invoker = _pubInvokers[type];
+
+            return invoker(connection, exchange);
+        }
+
+        /// <summary>
+        /// Creates the specified connection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="connection">The connection.</param>
+        /// <param name="exchange">The exchange.</param>
+        /// <returns></returns>
+        public T Create<T>(RMQConnectionSettings connection, RMQExchangeSettings exchange) where T : IMessageReceiverSender
+        {
+            return (T)Create(typeof(T), connection, exchange);
+        }
+
+        /// <summary>
+        /// Creates the specified type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="connection">The connection.</param>
+        /// <param name="exchange">The exchange.</param>
         /// <param name="destination">The destination.</param>
         /// <returns></returns>
         /// <exception cref="KeyNotFoundException"></exception>
         public IMessageReceiverSender Create(Type type, RMQConnectionSettings connection, RMQExchangeSettings exchange, RMQQueueSettings destination)
         {
-            if (!_pubSubInvokers.ContainsKey(type))
+            if (!_subInvokers.ContainsKey(type))
             {
                 throw new KeyNotFoundException($"The following type: '{type.Name}' is not supported.");
             }
 
-            var invoker = _pubSubInvokers[type];
+            var invoker = _subInvokers[type];
 
             return invoker(connection, exchange, destination);
         }

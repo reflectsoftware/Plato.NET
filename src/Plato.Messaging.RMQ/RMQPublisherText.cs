@@ -11,14 +11,24 @@ using System.Threading.Tasks;
 
 namespace Plato.Messaging.RMQ
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="Plato.Messaging.RMQ.RMQPublisher" />
+    /// <seealso cref="Plato.Messaging.RMQ.Interfaces.IRMQPublisherText" />
     public class RMQPublisherText : RMQPublisher, IRMQPublisherText
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RMQPublisherText"/> class.
+        /// </summary>
+        /// <param name="connectionFactory">The connection factory.</param>
+        /// <param name="connectionSettings">The connection settings.</param>
+        /// <param name="exchangeSettings">The exchange settings.</param>
         public RMQPublisherText(
             IRMQConnectionFactory connectionFactory,
             RMQConnectionSettings connectionSettings,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings = null)
-            : base(connectionFactory, connectionSettings, exchangeSettings, queueSettings)
+            RMQExchangeSettings exchangeSettings)
+            : base(connectionFactory, connectionSettings, exchangeSettings)
         {
         }
 

@@ -118,7 +118,6 @@
     <Compile Include="RMQPublisherText.cs" />
     <Compile Include="RMQPublisherByte.cs" />
     <Compile Include="RMQPublisher.cs" />
-    <Compile Include="RMQPublisherSubscriber.cs" />
     <Compile Include="RMQReceiverSender.cs" />
     <Compile Include="RMQQueue.cs" />
     <Compile Include="RMQConsumerByte.cs" />

@@ -198,6 +198,73 @@ namespace Plato.TestHarness.Messenging
             }
         }
 
+        static private Task SubscriberAsync()
+        {
+            var configManager = new RMQConfigurationManager();
+            var subscriberFactory = new RMQSubscriberFactory(new RMQConnectionFactory());
+            var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            var exchangeSettings = configManager.GetExchangeSettings("Test.DirectExchange");
+            var queueSettings = configManager.GetQueueSettings("Test.DirectQueue");
+
+            using (var consumer = subscriberFactory.CreateText(connectionSettings, exchangeSettings, queueSettings))
+            {
+                consumer.Mode = ConsumerMode.OnNoMessage_ReturnNull;
+
+                while (true)
+                {
+                    try
+                    {
+                        try
+                        {
+                            var message = consumer.Receive(1000);
+                            if (message != null)
+                            {
+                                //message.Reject(true);
+                                //message.Reject();
+
+                                ReflectSoftware.Insight.GReflectInsight.SendMessage(message.Data);
+                                message.Acknowledge();
+                            }
+                        }
+                        catch (TimeoutException)
+                        {
+                        }
+                        catch (MessageException ex)
+                        {
+                            switch (ex.ExceptionCode)
+                            {
+                                case MessageExceptionCode.ExclusiveLock:
+                                    //await Task.Delay(5000);
+                                    break;
+
+                                case MessageExceptionCode.LostConnection:
+                                    //await Task.Delay(5000);
+                                    break;
+
+                                default:
+                                    throw;
+                            }
+                        }
+                        catch (SqlException ex)
+                        {
+                            if (SQLErrors.IsSevereErrorCode(ex.Number))
+                            {
+                                // issue connecting with SQL server
+                                //await Task.Delay(5000);
+                            }
+
+                            throw;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        consumer.ClearCacheBuffer();
+                        Console.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
         #region Pool Test
         static Task PoolTestAsync()
         {
@@ -370,11 +437,9 @@ namespace Plato.TestHarness.Messenging
             var configManager = new RMQConfigurationManager();
             var publsiherFactory = new RMQPublisherFactory(new RMQConnectionFactory());
             var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
+            var exchangeSettings = configManager.GetExchangeSettings("Test.DirectExchange");            
 
-            var exchangeSettings = configManager.GetExchangeSettings("Test.DirectExchange");
-            var queueSettings = configManager.GetQueueSettings("Test.DirectQueue");
-
-            using (var publisher = publsiherFactory.CreateText(connectionSettings, exchangeSettings, queueSettings))
+            using (var publisher = publsiherFactory.CreateText(connectionSettings, exchangeSettings))
             {
                 await publisher.SendAsync("Simple test", (iprops) =>
                 {
@@ -387,9 +452,6 @@ namespace Plato.TestHarness.Messenging
         static async Task PoolPublisherWithConfigurationAsync()
         {
             var configManager = new RMQConfigurationManager();
-            //var connectionSettings = configManager.GetConnectionSettings("defaultConnection");
-            //var exchangeSettings = configManager.GetExchangeSettings("Test.FanoutExchange");
-            //var queueSettings = configManager.GetQueueSettings("Test.FanoutQueue");
 
             var consumerFactory = new RMQConsumerFactory(new RMQConnectionFactory());
             var producerFactory = new RMQProducerFactory(new RMQConnectionFactory());
@@ -415,6 +477,7 @@ namespace Plato.TestHarness.Messenging
             //await ProducerPerformanceTestAsync();
             //await ProducerAsync();
             //await ConsumerAsync();
+            await SubscriberAsync();
 
             // await PoolTestAsync();
             // PoolTest();
@@ -422,7 +485,7 @@ namespace Plato.TestHarness.Messenging
             // await SimplePoolTestAsync();
             // await SimpleTestWithConfigArgumentsAsync();
             // await SimplePublisherTestWithConfigArgumentsAsync();
-            await PoolPublisherWithConfigurationAsync();
+            // await PoolPublisherWithConfigurationAsync();
 
             await Task.Delay(0);
         }

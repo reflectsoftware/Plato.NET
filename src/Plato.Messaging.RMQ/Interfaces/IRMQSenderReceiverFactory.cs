@@ -13,6 +13,9 @@ namespace Plato.Messaging.RMQ.Interfaces
         IMessageReceiverSender Create(Type type, RMQConnectionSettings connection, RMQQueueSettings destination);
         T Create<T>(RMQConnectionSettings connection, RMQQueueSettings destination) where T : IMessageReceiverSender;
 
+        IMessageReceiverSender Create(Type type, RMQConnectionSettings connection, RMQExchangeSettings exchange);
+        T Create<T>(RMQConnectionSettings connection, RMQExchangeSettings exchange) where T : IMessageReceiverSender;
+
         IMessageReceiverSender Create(Type type, RMQConnectionSettings connection, RMQExchangeSettings exchange, RMQQueueSettings destination);
         T Create<T>(RMQConnectionSettings connection, RMQExchangeSettings exchange, RMQQueueSettings destination) where T : IMessageReceiverSender;
     }

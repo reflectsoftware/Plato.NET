@@ -17,8 +17,10 @@ namespace Plato.Messaging.RMQ
     /// </summary>
     /// <seealso cref="Plato.Messaging.RMQ.RMQPublisherSubscriber" />
     /// <seealso cref="Plato.Messaging.RMQ.Interfaces.IRMQPublisher" />
-    public class RMQPublisher: RMQPublisherSubscriber, IRMQPublisher
+    public class RMQPublisher: RMQReceiverSender, IRMQPublisher
     {
+        protected readonly RMQExchangeSettings _exchangeSettings;
+
         /// <summary>
         /// Gets or sets the on return.
         /// </summary>
@@ -28,19 +30,18 @@ namespace Plato.Messaging.RMQ
         public Action<BasicReturnEventArgs> OnReturn { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RMQPublisher"/> class.
+        /// Initializes a new instance of the <see cref="RMQPublisher" /> class.
         /// </summary>
         /// <param name="connectionFactory">The connection factory.</param>
         /// <param name="connectionSettings">The connection settings.</param>
         /// <param name="exchangeSettings">The exchange settings.</param>
-        /// <param name="queueSettings">The queue settings.</param>
         public RMQPublisher(
             IRMQConnectionFactory connectionFactory,
             RMQConnectionSettings connectionSettings,
-            RMQExchangeSettings exchangeSettings,
-            RMQQueueSettings queueSettings = null)
-            : base(connectionFactory, connectionSettings, exchangeSettings, queueSettings)
+            RMQExchangeSettings exchangeSettings)
+            : base(connectionFactory, connectionSettings)
         {
+            _exchangeSettings = exchangeSettings;
         }
 
         /// <summary>
@@ -111,7 +112,7 @@ namespace Plato.Messaging.RMQ
                             null,
                             data);
 
-                        return;
+                        break;
                     }
                     catch (Exception ex)
                     {
